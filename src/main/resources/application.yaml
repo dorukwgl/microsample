@@ -1,0 +1,79 @@
+micronaut:
+  application:
+    name: microsample
+
+  server:
+    cors:
+      enabled: true
+      configurations:
+        web:
+          allowedOrigins: "http://localhost:3000"
+    netty:
+      use-native-transport: true
+      listeners:
+        http2Listener:
+          port: ${MICROSAMPLE_PORT}
+      event-loops:
+        default:
+          prefer-native-transport: true
+          transport: epoll
+
+# ==========================
+# Database Configuration
+# ==========================
+r2dbc:
+  datasources:
+    default:
+      url: r2dbc:${DATASOURCE_URL}
+      username: ${DATASOURCE_USERNAME}
+      password: ${DATASOURCE_PASSWORD}
+      dialect: POSTGRES
+      options:
+        maxSize: 5
+        schema: sample
+
+jimmer:
+  show-sql: true
+
+nats:
+  default:
+    addresses:
+      - "nats://localhost:4222"
+
+redis:
+  uri: "redis://localhost"
+
+# ==========================
+# Flyway Migration Settings
+# ==========================
+datasources:
+  default:                                  # this is the JDBC one for Flyway
+    url: jdbc:${DATASOURCE_URL}
+    username: ${DATASOURCE_USERNAME}
+    password: ${DATASOURCE_PASSWORD}
+    driverClassName: org.postgresql.Driver
+
+flyway:
+  datasources:
+    default:
+      enabled: true
+
+#      url: jdbc:${DATASOURCE_URL}
+#      username: ${DATASOURCE_USERNAME}
+#      password: ${DATASOURCE_PASSWORD}
+
+      validate-on-migrate: true
+      baseline-on-migrate: true
+      baseline-description: "Initial migration"
+      out-of-order: false
+      locations: classpath:db/migration
+      schemas: sample
+
+# ==========================
+# Logging
+# ==========================
+logger:
+  levels:
+    io.micronaut.flyway: TRACE
+    org.flywaydb: DEBUG
+    io.netty: DEBUG
