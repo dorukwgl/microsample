@@ -16,7 +16,7 @@ micronaut:
       event-loops:
         default:
           prefer-native-transport: true
-          transport: epoll
+          transport: io_uring
 
 # ==========================
 # Database Configuration
@@ -74,6 +74,14 @@ flyway:
 # ==========================
 logger:
   levels:
-    io.micronaut.flyway: TRACE
-    org.flywaydb: DEBUG
-    io.netty: DEBUG
+    ROOT: INFO
+    io.micronaut: INFO
+    io.netty: WARN
+    io.micronaut.http.server.netty: DEBUG
+    io.micronaut.context: WARN
+
+    org.flywaydb: INFO
+    io.micronaut.flyway: INFO
+
+    # If using jimmer
+    org.babyfish.jimmer.sql: WARN

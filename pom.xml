@@ -50,14 +50,9 @@
         </dependency>
         <dependency>
             <groupId>io.netty</groupId>
-            <artifactId>netty-transport-native-epoll</artifactId>
+            <artifactId>netty-transport-native-io_uring</artifactId>
             <scope>runtime</scope>
             <classifier>linux-x86_64</classifier>
-        </dependency>
-        <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-transport-classes-epoll</artifactId>
-            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>io.micronaut.nats</groupId>
@@ -159,7 +154,9 @@
                 <groupId>io.micronaut.maven</groupId>
                 <artifactId>micronaut-maven-plugin</artifactId>
                 <configuration>
-
+                    <jvmArguments>
+                        --enable-native-access=ALL-UNNAMED
+                    </jvmArguments>
                     <configFile>aot-${packaging}.properties</configFile>
                 </configuration>
             </plugin>
