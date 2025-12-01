@@ -47,7 +47,7 @@ redis:
 # Flyway Migration Settings
 # ==========================
 datasources:
-  default:                                  # this is the JDBC one for Flyway
+  default:
     url: jdbc:${DATASOURCE_URL}
     username: ${DATASOURCE_USERNAME}
     password: ${DATASOURCE_PASSWORD}
@@ -83,5 +83,4 @@ logger:
     org.flywaydb: INFO
     io.micronaut.flyway: INFO
 
-    # If using jimmer
     org.babyfish.jimmer.sql: WARN

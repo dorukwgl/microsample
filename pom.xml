@@ -22,6 +22,7 @@
         <micronaut.aot.enabled>false</micronaut.aot.enabled>
         <micronaut.aot.packageName>com.doruk.aot.generated</micronaut.aot.packageName>
         <jimmer.version>0.9.117</jimmer.version>
+        <flyway.version>11.18.0</flyway.version>
         <exec.mainClass>com.doruk.Application</exec.mainClass>
     </properties>
 
@@ -128,12 +129,12 @@
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
-            <version>11.18.0</version>
+            <version>${flyway.version}</version>
         </dependency>
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-database-postgresql</artifactId>
-            <version>11.18.0</version>
+            <version>${flyway.version}</version>
             <scope>runtime</scope>
         </dependency>
 
@@ -147,6 +148,7 @@
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.flywaydb/flyway-maven-plugin -->
     </dependencies>
     <build>
         <plugins>
@@ -223,7 +225,22 @@
                     </compilerArgs>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
+                <version>${flyway.version}</version>
+                <configuration>
+                    <url>jdbc:postgresql://localhost:5432/microsample</url>
+                    <user>doruk</user>
+                    <password>dorukdb</password>
+                    <schemas>
+                        <schema>sample</schema>
+                    </schemas>
+                    <locations>
+                        <location>filesystem:src/main/resources/db/migration</location>
+                    </locations>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
-
 </project>
