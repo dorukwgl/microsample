@@ -1,11 +1,14 @@
 package com.doruk.domain.exception;
 
 public class DomainException extends RuntimeException {
-    DomainException(String message) {
+    private final int statusCode;
+
+    DomainException(int statusCode, String message) {
+        this.statusCode = statusCode;
         super(message);
     }
 
-    DomainException(String message, Throwable cause) {
-        super(message, cause);
+    public int getStatusCode() {
+        return statusCode;
     }
 }
