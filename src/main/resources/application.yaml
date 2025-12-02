@@ -77,7 +77,7 @@ logger:
     ROOT: INFO
     io.micronaut: INFO
     io.netty: WARN
-    io.micronaut.http.server.netty: DEBUG
+    io.micronaut.http.server.netty: INFO
     io.micronaut.context: WARN
 
     org.flywaydb: INFO

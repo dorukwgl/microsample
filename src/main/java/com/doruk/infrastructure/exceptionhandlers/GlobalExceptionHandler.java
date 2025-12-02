@@ -1,5 +1,7 @@
 package com.doruk.infrastructure.exceptionhandlers;
 
+import com.doruk.infrastructure.logging.LoggingService;
+import com.doruk.infrastructure.util.ErrorBuilder;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpResponse;
@@ -7,8 +9,6 @@ import io.micronaut.http.annotation.Produces;
 import io.micronaut.http.server.exceptions.ExceptionHandler;
 import jakarta.inject.Singleton;
 
-import java.time.Instant;
-import java.util.HashMap;
 import java.util.Map;
 
 @Singleton
@@ -20,14 +20,9 @@ public class GlobalExceptionHandler
     @Override
     public HttpResponse<Map<String, Object>> handle(HttpRequest request, Exception exception) {
 
-        // Use Micronaut’s default problem details
-        Map<String, Object> defaultBody = new HashMap<>();
+        LoggingService.logError(exception.getMessage(), exception);
 
-        defaultBody.put("error", exception.getMessage());
-        defaultBody.put("path", request.getPath());
-        defaultBody.put("status", 500);
-        defaultBody.put("timestamp", Instant.now().toString());
-
+        var defaultBody = ErrorBuilder.buildErrorBody(request, "Internal Server Error", 500);
         return HttpResponse.serverError(defaultBody);
     }
 }
