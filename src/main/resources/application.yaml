@@ -30,6 +30,9 @@ micronaut:
         mapping: /swagger/**
       swagger-ui:
         paths: classpath:META-INF/swagger/views/swagger-ui
+        mapping: /api-docs/**
+      swagger-ui-default:
+        paths: classpath:META-INF/swagger/views/swagger-ui
         mapping: /swagger-ui/**
 
 # ==========================

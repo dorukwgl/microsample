@@ -150,6 +150,24 @@
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.flywaydb/flyway-maven-plugin -->
     </dependencies>
+<profiles>
+    <profile>
+        <id>docs</id>
+        <activation>
+            <activeByDefault>true</activeByDefault> <!-- Active by default for Dev -->
+        </activation>
+        <properties>
+            <openapi.args>-Amicronaut.openapi.views.spec=swagger-ui.enabled=true,swagger-ui.theme=material</openapi.args>
+        </properties>
+    </profile>
+    <profile>
+        <id>no-docs</id>
+        <properties>
+            <!-- In Prod, pass an empty argument or just don't enable the views -->
+            <openapi.args>-A</openapi.args>
+        </properties>
+    </profile>
+</profiles>
     <build>
         <plugins>
             <plugin>
@@ -222,6 +240,9 @@
                     <compilerArgs>
                         <arg>-Amicronaut.processing.group=com.doruk</arg>
                         <arg>-Amicronaut.processing.module=microsample</arg>
+
+                        <!-- GENERATE THE UI DOCS -->
+                        <arg>${openapi.args}</arg>
                     </compilerArgs>
                 </configuration>
             </plugin>

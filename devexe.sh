@@ -5,4 +5,4 @@ export MICROSAMPLE_PORT=9096
 export DATASOURCE_URL="postgresql://localhost:5432/microsample"
 export DATASOURCE_PASSWORD=dorukdb
 
-./mvnw mn:run
+./mvnw mn:run -Pdocs
