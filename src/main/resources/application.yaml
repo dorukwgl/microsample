@@ -23,6 +23,14 @@ micronaut:
 #      default-bootstrap:
 #        event-loop-shutdown-quiet-period: 0ms
 #        event-loop-shutdown-timeout: 0ms
+  router:
+    static-resources:
+      swagger:
+        paths: classpath:META-INF/swagger
+        mapping: /swagger/**
+      swagger-ui:
+        paths: classpath:META-INF/swagger/views/swagger-ui
+        mapping: /swagger-ui/**
 
 # ==========================
 # Database Configuration
