@@ -10,6 +10,7 @@ micronaut:
           allowedOrigins: "http://localhost:3000"
     netty:
       use-native-transport: true
+      user-forwarded-headers: true
       listeners:
         http2Listener:
           port: ${MICROSAMPLE_PORT}
@@ -17,6 +18,9 @@ micronaut:
         default:
           prefer-native-transport: true
           transport: io_uring
+#      default-bootstrap:
+#        event-loop-shutdown-quiet-period: 0ms
+#        event-loop-shutdown-timeout: 0ms
 
 # ==========================
 # Database Configuration

@@ -17,5 +17,4 @@ class MicrosampleTest {
     void testItWorks() {
         Assertions.assertTrue(application.isRunning());
     }
-
 }

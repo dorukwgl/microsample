@@ -59,9 +59,9 @@ public class LoggingFilter implements HttpServerFilter {
 
                     if (respBody != null) {
                         var bodyColor = status.getCode() > 400 ? RED_BOLD : CYAN_DIM;
-                        System.out.printf("%s: %s%s%n", bodyColor, respBody, RESET);
+                        System.out.printf("%s: %s%s", bodyColor, respBody, RESET);
                     }
-
+                    System.out.printf("%n");
                     return response;
                 });
     }

@@ -10,6 +10,7 @@ import io.micronaut.http.server.exceptions.NotFoundException;
 import jakarta.inject.Singleton;
 
 import java.util.Map;
+import java.util.Random;
 
 @Produces
 @Singleton
@@ -53,7 +54,7 @@ public class NotFoundExceptionHandler implements ExceptionHandler<NotFoundExcept
             "You expected meaning in a hollow space. Cute. Painfully cute.",
             "The thing you came for escaped reality. Just like those who promised forever with you."
     };
-    private static byte counter = 0;
+    private static byte counter = (byte)(new Random().nextInt(0, notFoundMessages.length));
 
     @Override
     public HttpResponse<Map<String, Object>> handle(HttpRequest request, NotFoundException exception) {

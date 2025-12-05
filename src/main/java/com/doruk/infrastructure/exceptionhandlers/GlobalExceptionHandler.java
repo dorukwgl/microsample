@@ -10,6 +10,7 @@ import io.micronaut.http.server.exceptions.ExceptionHandler;
 import jakarta.inject.Singleton;
 
 import java.util.Map;
+import java.util.Random;
 
 @Singleton
 @Produces
@@ -45,7 +46,7 @@ public class GlobalExceptionHandler implements ExceptionHandler<Exception, HttpR
             "I hit a breaking point so hard the echoes still haven’t stopped screaming.",
             "I crashed, but at least I’m self-aware enough to call it what it is—collapse, not coincidence."
     };
-    private static byte counter = 0;
+    private static byte counter = (byte)(new Random().nextInt(0, serverErrorMessages.length));
 
     @Override
     public HttpResponse<Map<String, Object>> handle(HttpRequest request, Exception exception) {

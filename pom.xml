@@ -4,19 +4,19 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.doruk</groupId>
     <artifactId>microsample</artifactId>
-    <version>0.1</version>
+    <version>1.0.0</version>
     <packaging>${packaging}</packaging>
 
     <parent>
         <groupId>io.micronaut.platform</groupId>
         <artifactId>micronaut-parent</artifactId>
-        <version>4.10.2</version>
+        <version>4.10.3</version>
     </parent>
     <properties>
         <packaging>jar</packaging>
         <jdk.version>25</jdk.version>
         <release.version>25</release.version>
-        <micronaut.version>4.10.2</micronaut.version>
+        <micronaut.version>4.10.3</micronaut.version>
         <micronaut.runtime>netty</micronaut.runtime>
         <micronaut.test.resources.enabled>false</micronaut.test.resources.enabled>
         <micronaut.aot.enabled>false</micronaut.aot.enabled>
