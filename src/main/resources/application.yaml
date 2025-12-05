@@ -1,6 +1,8 @@
 micronaut:
   application:
     name: microsample
+    publicUploadPath: "/var/www/microsample/public"
+    privateUploadPath: "/var/www/microsample/private"
 
   server:
     cors:
