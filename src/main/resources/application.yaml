@@ -20,7 +20,8 @@ micronaut:
         default:
           prefer-native-transport: true
           transport: io_uring
-#      default-bootstrap:
+    dispatch-options-requests: true
+  #      default-bootstrap:
 #        event-loop-shutdown-quiet-period: 0ms
 #        event-loop-shutdown-timeout: 0ms
   router:
