@@ -3,6 +3,16 @@ micronaut:
     name: microsample
     publicUploadPath: "/var/www/microsample/public"
     privateUploadPath: "/var/www/microsample/private"
+    security:
+      enabled: true
+      token:
+        jwt:
+          signatures:
+            secret:
+              generator:
+                secret: ${JWT_SECRET}
+          jwt:
+            expiresIn: 10m
 
   server:
     cors:
@@ -75,11 +85,6 @@ flyway:
   datasources:
     default:
       enabled: true
-
-#      url: jdbc:${DATASOURCE_URL}
-#      username: ${DATASOURCE_USERNAME}
-#      password: ${DATASOURCE_PASSWORD}
-
       validate-on-migrate: true
       baseline-on-migrate: true
       baseline-description: "Initial migration"

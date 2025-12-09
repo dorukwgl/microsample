@@ -50,7 +50,7 @@ CREATE TABLE permissions
 -- role -> permission mapping
 CREATE TABLE role_permissions
 (
-    role_name        BIGINT       NOT NULL REFERENCES roles (name) ON DELETE CASCADE,
+    role_name VARCHAR(100) NOT NULL REFERENCES roles (name) ON DELETE CASCADE,
     permission_name VARCHAR(200) NOT NULL REFERENCES permissions (name) ON DELETE CASCADE,
     PRIMARY KEY (role_name, permission_name)
 );
@@ -58,15 +58,15 @@ CREATE TABLE role_permissions
 -- user -> role mapping
 CREATE TABLE user_roles
 (
-    user_id BIGINT NOT NULL REFERENCES users (id) ON DELETE CASCADE,
-    role_id BIGINT NOT NULL REFERENCES roles (name) ON DELETE CASCADE,
-    PRIMARY KEY (user_id, role_id)
+    user_id uuid NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+    name varchar(100) NOT NULL REFERENCES roles (name) ON DELETE CASCADE,
+    PRIMARY KEY (user_id, name)
 );
 
 -- optional: additional permissions ( temporary )
 CREATE TABLE user_permissions
 (
-    user_id         BIGINT       NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+    user_id uuid NOT NULL REFERENCES users (id) ON DELETE CASCADE,
     permission_name VARCHAR(200) NOT NULL REFERENCES permissions (name) ON DELETE CASCADE,
     created_at    TIMESTAMP WITH TIME ZONE DEFAULT now(),
     expires_at    TIMESTAMP,
