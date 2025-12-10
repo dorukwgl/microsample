@@ -38,13 +38,15 @@ create table user_profiles
 -- roles
 CREATE TABLE roles
 (
-    name VARCHAR(100) NOT NULL UNIQUE
+    name VARCHAR(100) primary key,
+    deleted_at timestamp with time zone
 );
 
 -- permissions: store enum name as string
 CREATE TABLE permissions
 (
-    name varchar(200) primary key
+    name varchar(200) primary key,
+    deleted_at timestamp with time zone
 );
 
 -- role -> permission mapping
@@ -69,7 +71,7 @@ CREATE TABLE user_permissions
     user_id uuid NOT NULL REFERENCES users (id) ON DELETE CASCADE,
     permission_name VARCHAR(200) NOT NULL REFERENCES permissions (name) ON DELETE CASCADE,
     created_at    TIMESTAMP WITH TIME ZONE DEFAULT now(),
-    expires_at    TIMESTAMP,
+    expires_at    TIMESTAMP not null,
     PRIMARY KEY (user_id, permission_name)
 );
 
@@ -81,10 +83,7 @@ create table sessions
     session_id varchar(255) not null unique,
     device_info varchar(255) not null,
     device_id varchar(255) unique,
-    roles integer[] not null,
-    permissions integer[] not null,
-
-    deleted_at timestamp with time zone
+    permissions integer[] not null
 );
 
 create table biometrics
@@ -92,9 +91,7 @@ create table biometrics
     id uuid primary key default uuidv7(),
     user_id uuid not null references users (id) on delete cascade,
     public_key varchar(255) not null unique,
-    device_id varchar(255) not null unique,
-
-    deleted_at timestamp with time zone
+    device_id varchar(255) not null unique
 );
 
 

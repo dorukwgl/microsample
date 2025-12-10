@@ -62,6 +62,7 @@ r2dbc:
 
 jimmer:
   show-sql: true
+  default-enum-strategy: name
 
 nats:
   default:
