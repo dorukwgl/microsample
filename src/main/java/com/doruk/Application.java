@@ -13,6 +13,9 @@ import io.swagger.v3.oas.annotations.info.Info;
 public class Application {
 
     static void main(String[] args) {
-        Micronaut.run(Application.class, args);
+        var ctx = Micronaut.run(Application.class, args);
+
+        var envs = ctx.getEnvironment().getActiveNames();
+        System.out.println(envs);
     }
 }
