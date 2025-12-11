@@ -17,7 +17,7 @@ public class UserController {
 //    @Inject
 //    public RolesSeeder seeder;
     @Inject
-    private RolesSeeder rolesSeeder;
+    public RolesSeeder rolesSeeder;
 
     @Get("test")
     Mono<Map<String, String>> getUuid() {
@@ -26,7 +26,7 @@ public class UserController {
 
     @Get("ntest")
     Mono<Map<?, ?>> getNTest() {
-        System.out.println(rolesSeeder.getTest());
+        System.out.println(rolesSeeder.getClient().toString());
         return Mono.fromCallable(() -> Map.of("user", "david"));
     }
 
