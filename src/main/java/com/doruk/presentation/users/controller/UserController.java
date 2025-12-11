@@ -1,7 +1,9 @@
 package com.doruk.presentation.users.controller;
 
+import com.doruk.infrastructure.config.AppExecutors;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
+import io.micronaut.scheduling.annotation.ExecuteOn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import reactor.core.publisher.Mono;
 
@@ -17,11 +19,13 @@ public class UserController {
         return Mono.from(Mono.just(Map.of("uuid", UUID.randomUUID().toString())));
     }
 
+    @ExecuteOn(AppExecutors.BLOCKING)
     @Get("ntest")
     Mono<Map<?, ?>> getNTest() {
         return Mono.fromCallable(() -> Map.of("user", "david"));
     }
 
+    @ExecuteOn(AppExecutors.CPU)
     @Get("date")
     Mono<LocalDateTime> getDate() {
         return Mono.just(LocalDateTime.now());
@@ -32,6 +36,8 @@ public class UserController {
 //        throw new IllegalArgumentException();
 //        return Mono.just("hello");
 
-        return Mono.defer(() -> {return Mono.just("");});
+        return Mono.defer(() -> {
+            return Mono.just("");
+        });
     }
 }

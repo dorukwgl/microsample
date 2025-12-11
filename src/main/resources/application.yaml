@@ -3,16 +3,21 @@ micronaut:
     name: microsample
     publicUploadPath: "/var/www/microsample/public"
     privateUploadPath: "/var/www/microsample/private"
-    security:
-      enabled: true
-      token:
+  security:
+    enabled: false
+    reject-not-found: false
+    token:
+      jwt:
+        signatures:
+          secret:
+            generator:
+              secret: ${JWT_SECRET}
         jwt:
-          signatures:
-            secret:
-              generator:
-                secret: ${JWT_SECRET}
-          jwt:
-            expiresIn: 10m
+          expiresIn: 10m
+  executors:
+    cpu:
+      type: fixed
+      n-threads: 4
 
   server:
     cors:

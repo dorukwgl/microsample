@@ -2,7 +2,7 @@ package com.doruk.domain.shared.enums;
 
 import com.doruk.domain.exception.DomainException;
 
-public enum Permission {
+public enum Permissions {
     GHOST(0),
     USER_STATUS_UPDATE (1),
     DELETE_USERS (3),
@@ -10,7 +10,7 @@ public enum Permission {
 
     private final int value;
 
-    Permission(int value) {
+    Permissions(int value) {
         this.value = value;
     }
 
@@ -18,8 +18,8 @@ public enum Permission {
         return this.value;
     }
 
-    public static Permission fromId(int id) {
-        for (Permission permission : Permission.values()) {
+    public static Permissions fromId(int id) {
+        for (Permissions permission : Permissions.values()) {
             if (permission.id() == id) {
                 return permission;
             }
