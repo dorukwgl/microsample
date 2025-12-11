@@ -1,4 +1,22 @@
 package com.doruk.infrastructure.startup;
 
+
+import io.micronaut.context.annotation.Requires;
+import io.micronaut.context.event.StartupEvent;
+import io.micronaut.runtime.event.annotation.EventListener;
+import jakarta.inject.Singleton;
+import lombok.AllArgsConstructor;
+import org.babyfish.jimmer.sql.JSqlClient;
+
+@AllArgsConstructor
+@Singleton
+@Requires(env = "setup")
 public class PermissionSeeder {
+//    private final JSqlClient sqlClient;
+
+    @EventListener
+    public void seedPermissions(StartupEvent event) {
+        System.out.println("Permissions seeded");
+
+    }
 }

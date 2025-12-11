@@ -61,11 +61,6 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>io.micronaut.r2dbc</groupId>
-            <artifactId>micronaut-r2dbc-core</artifactId>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
             <groupId>io.micronaut.reactor</groupId>
             <artifactId>micronaut-reactor</artifactId>
             <scope>compile</scope>
@@ -86,14 +81,14 @@
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>r2dbc-postgresql</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
             <groupId>org.babyfish.jimmer</groupId>
             <artifactId>jimmer-sql</artifactId>
             <version>${jimmer.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.flynndi</groupId>
+            <artifactId>micronaut-jimmer</artifactId>
+            <version>0.0.1.CR5</version>
         </dependency>
         <dependency>
             <groupId>io.micronaut.openapi</groupId>
@@ -125,16 +120,21 @@
             <artifactId>micronaut-validation</artifactId>
             <scope>compile</scope>
         </dependency>
-        <!--      For flyway migrations, requires jdbc-->
         <dependency>
-            <groupId>org.flywaydb</groupId>
-            <artifactId>flyway-core</artifactId>
-            <version>${flyway.version}</version>
+            <groupId>io.micronaut.sql</groupId>
+            <artifactId>micronaut-jdbc-hikari</artifactId>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
+        </dependency>
+        <!--      For flyway migrations, requires jdbc-->
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+            <version>${flyway.version}</version>
         </dependency>
         <dependency>
             <groupId>org.flywaydb</groupId>
@@ -160,6 +160,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+            <version>1.18.42</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
@@ -209,6 +210,7 @@
                         <path>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
+                            <version>1.18.42</version>
                         </path>
                         <path>
                             <groupId>org.babyfish.jimmer</groupId>

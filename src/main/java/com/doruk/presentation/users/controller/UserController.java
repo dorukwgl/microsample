@@ -1,10 +1,10 @@
 package com.doruk.presentation.users.controller;
 
-import com.doruk.infrastructure.config.AppExecutors;
+import com.doruk.infrastructure.startup.RolesSeeder;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
-import io.micronaut.scheduling.annotation.ExecuteOn;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.inject.Inject;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
@@ -14,18 +14,22 @@ import java.util.UUID;
 @Tag(name = "User Management, Registrations & Profiles")
 @Controller("users")
 public class UserController {
+//    @Inject
+//    public RolesSeeder seeder;
+    @Inject
+    private RolesSeeder rolesSeeder;
+
     @Get("test")
     Mono<Map<String, String>> getUuid() {
         return Mono.from(Mono.just(Map.of("uuid", UUID.randomUUID().toString())));
     }
 
-    @ExecuteOn(AppExecutors.BLOCKING)
     @Get("ntest")
     Mono<Map<?, ?>> getNTest() {
+        System.out.println(rolesSeeder.getTest());
         return Mono.fromCallable(() -> Map.of("user", "david"));
     }
 
-    @ExecuteOn(AppExecutors.CPU)
     @Get("date")
     Mono<LocalDateTime> getDate() {
         return Mono.just(LocalDateTime.now());
@@ -35,7 +39,6 @@ public class UserController {
     Mono<String> getTest() {
 //        throw new IllegalArgumentException();
 //        return Mono.just("hello");
-
         return Mono.defer(() -> {
             return Mono.just("");
         });

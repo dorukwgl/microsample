@@ -50,24 +50,28 @@ micronaut:
       swagger-ui-default:
         paths: classpath:META-INF/swagger/views/swagger-ui
         mapping: /swagger-ui/**
-
+  jimmer:
+    datasources:
+      default:
+        show-sql: true
+        show-parameters: true
+        default-enum-strategy: name
+        executor: blocking
 # ==========================
 # Database Configuration
 # ==========================
-r2dbc:
-  datasources:
-    default:
-      url: r2dbc:${DATASOURCE_URL}
-      username: ${DATASOURCE_USERNAME}
-      password: ${DATASOURCE_PASSWORD}
-      dialect: POSTGRES
-      options:
-        maxSize: 5
-        schema: sample
+datasources:
+  default:
+    url: jdbc:${DATASOURCE_URL}
+    username: ${DATASOURCE_USERNAME}
+    password: ${DATASOURCE_PASSWORD}
+    driverClassName: org.postgresql.Driver
+    dialect: POSTGRES
 
-jimmer:
-  show-sql: true
-  default-enum-strategy: name
+    hikari:
+      maximum-pool-size: 30
+      minimum-idle: 5
+      auto-commit: true
 
 nats:
   default:
@@ -80,12 +84,6 @@ redis:
 # ==========================
 # Flyway Migration Settings
 # ==========================
-datasources:
-  default:
-    url: jdbc:${DATASOURCE_URL}
-    username: ${DATASOURCE_USERNAME}
-    password: ${DATASOURCE_PASSWORD}
-    driverClassName: org.postgresql.Driver
 
 flyway:
   datasources:
