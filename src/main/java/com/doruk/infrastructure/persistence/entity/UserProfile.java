@@ -38,5 +38,6 @@ public interface UserProfile {
     LocalDateTime updatedAt();
 
     @LogicalDeleted
+    @Nullable
     LocalDateTime deletedAt();
 }

@@ -1,5 +1,6 @@
 package com.doruk.infrastructure.persistence.entity;
 
+import jakarta.annotation.Nullable;
 import org.babyfish.jimmer.sql.*;
 
 import java.time.LocalDateTime;
@@ -24,6 +25,7 @@ public interface Role {
     List<Permission> permissions();
 
     @LogicalDeleted
+    @Nullable
     @Column(name = "deleted_at")
     LocalDateTime deletedAt();
 }
