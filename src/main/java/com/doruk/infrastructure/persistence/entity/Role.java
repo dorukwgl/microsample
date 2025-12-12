@@ -24,8 +24,8 @@ public interface Role {
     )
     List<Permission> permissions();
 
-    @LogicalDeleted
+    @LogicalDeleted("now")
     @Nullable
-    @Column(name = "deleted_at")
+//    @Column(name = "deleted_at")
     LocalDateTime deletedAt();
 }

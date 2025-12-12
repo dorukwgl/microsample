@@ -22,7 +22,8 @@ CREATE TABLE users
 -- profile
 create table user_profiles
 (
-    user_id uuid primary key references users (id) on delete cascade,
+    id bigserial primary key,
+    user_id uuid unique references users (id) on delete cascade,
     full_name varchar(255),
     icon_url varchar(255),
     address varchar(255),
@@ -68,11 +69,11 @@ CREATE TABLE user_roles
 -- optional: additional permissions ( temporary )
 CREATE TABLE user_permissions
 (
+    id bigserial primary key,
     user_id uuid NOT NULL REFERENCES users (id) ON DELETE CASCADE,
     permission_name VARCHAR(200) NOT NULL REFERENCES permissions (name) ON DELETE CASCADE,
     created_at    TIMESTAMP WITH TIME ZONE DEFAULT now(),
-    expires_at    TIMESTAMP not null,
-    PRIMARY KEY (user_id, permission_name)
+    expires_at    TIMESTAMP not null
 );
 
 -- SESSIONS AND BIOMETRICS --
@@ -98,3 +99,5 @@ create table biometrics
 -- index all foreign keys
 create index idx_sessions_user_id on sessions (user_id);
 create index idx_biometrics_user_id on biometrics (user_id);
+create index idx_user_permissions_user_id on user_permissions (user_id);
+create index idx_user_permissions_permission_name on user_permissions (permission_name);

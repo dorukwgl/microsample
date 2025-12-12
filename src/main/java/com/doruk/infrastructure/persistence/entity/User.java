@@ -51,7 +51,7 @@ public interface User {
     LocalDateTime updatedAt();
 
     @Nullable
-    @LogicalDeleted
+    @LogicalDeleted("now")
     @Column(name = "deleted_at")
     LocalDateTime deletedAt();
 

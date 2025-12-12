@@ -26,7 +26,6 @@ public class UserController {
 
     @Get("ntest")
     Mono<Map<?, ?>> getNTest() {
-        System.out.println(rolesSeeder.getClient().toString());
         return Mono.fromCallable(() -> Map.of("user", "david"));
     }
 

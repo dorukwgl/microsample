@@ -20,7 +20,7 @@ public interface Permission {
     @OneToMany(mappedBy = "permission")
     List<UserPermission> elevatedGrants();
 
-    @LogicalDeleted
+    @LogicalDeleted("now")
     @Nullable
     @Column(name = "deleted_at")
     LocalDateTime deletedAt();

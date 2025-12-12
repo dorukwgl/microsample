@@ -25,6 +25,7 @@ micronaut:
       configurations:
         web:
           allowedOrigins: "http://localhost:3000"
+    dispatch-options-requests: true
     netty:
       use-native-transport: true
       user-forwarded-headers: true
@@ -35,10 +36,9 @@ micronaut:
         default:
           prefer-native-transport: true
           transport: io_uring
-    dispatch-options-requests: true
-  #      default-bootstrap:
-#        event-loop-shutdown-quiet-period: 0ms
-#        event-loop-shutdown-timeout: 0ms
+      default-bootstrap:
+      event-loop-shutdown-quiet-period: 0ms
+      event-loop-shutdown-timeout: 0ms
   router:
     static-resources:
       swagger:
@@ -57,6 +57,7 @@ micronaut:
         show-parameters: true
         default-enum-strategy: name
         executor: blocking
+        default-schema: sample
     language: java
 # ==========================
 # Database Configuration

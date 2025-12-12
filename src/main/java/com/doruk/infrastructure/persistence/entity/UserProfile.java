@@ -12,7 +12,6 @@ public interface UserProfile {
 
     // The ID matches the User ID exactly
     @Id
-    @Column(name = "user_id")
     UUID id();
 
     // The relationship to User
@@ -22,6 +21,7 @@ public interface UserProfile {
 
     @Nullable
     String fullName();
+
     @Nullable
     String iconUrl();
 
@@ -37,7 +37,7 @@ public interface UserProfile {
     LocalDateTime createdAt();
     LocalDateTime updatedAt();
 
-    @LogicalDeleted
+    @LogicalDeleted("now")
     @Nullable
     LocalDateTime deletedAt();
 }
