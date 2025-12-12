@@ -1,0 +1,95 @@
+package com.doruk.infrastructure.config;
+
+import com.doruk.infrastructure.logging.LoggingService;
+import io.micronaut.context.annotation.Context;
+import io.micronaut.context.annotation.Factory;
+import io.micronaut.context.annotation.Primary;
+import jakarta.inject.Singleton;
+import org.babyfish.jimmer.meta.ImmutableProp;
+import org.babyfish.jimmer.sql.EnumType;
+import org.babyfish.jimmer.sql.JSqlClient;
+import org.babyfish.jimmer.sql.dialect.Dialect;
+import org.babyfish.jimmer.sql.dialect.H2Dialect;
+import org.babyfish.jimmer.sql.dialect.MySqlDialect;
+import org.babyfish.jimmer.sql.dialect.PostgresDialect;
+import org.babyfish.jimmer.sql.runtime.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.function.Function;
+
+@Factory
+public class JSqlClientFactory {
+    @Singleton
+    @Primary
+    public JSqlClient create(JimmerConfig config, DataSource dataSource) {
+
+        JSqlClient.Builder builder = JSqlClient.newBuilder();
+
+        builder.setConnectionManager(new ConnectionManager() {
+            @Override
+            public <R> R execute(@Nullable Connection con, Function<Connection, R> block) {
+                if (con != null)
+                    return block.apply(con);
+
+                try (Connection connection = dataSource.getConnection()) {
+                    return block.apply(connection);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
+        builder.setDefaultEnumStrategy(EnumType.Strategy.NAME);
+
+        builder.setDialect(config != null && config.dialect() != null ?
+                createDialect(config.dialect()) : new PostgresDialect());
+
+        if (config == null)
+            return builder.build();
+
+        if (config.showSql())
+            builder.setExecutor(createLoggingExecutor(config));
+        else
+            builder.setExecutor(DefaultExecutor.INSTANCE);
+
+        return builder.build();
+    }
+
+    private Executor createLoggingExecutor(JimmerConfig config) {
+        return new Executor() {
+            @Override
+            public <R> R execute(Args<R> args) {
+                if (config.showSql()) {
+                    LoggingService.logInfo(args.sql);
+                }
+
+                return DefaultExecutor.INSTANCE.execute(args);
+            }
+
+            @Override
+            public BatchContext executeBatch(@NotNull Connection con, @NotNull String sql, @Nullable ImmutableProp generatedIdProp, @NotNull ExecutionPurpose purpose, @NotNull JSqlClientImplementor sqlClient) {
+                if (config.showSql()) {
+                    LoggingService.logInfo(sql);
+                }
+
+                return DefaultExecutor.INSTANCE.executeBatch(con, sql, generatedIdProp, purpose, sqlClient);
+            }
+        };
+    }
+
+    /**
+     * Create dialect based on configuration
+     */
+    private Dialect createDialect(String dialectName) {
+        return switch (dialectName.toLowerCase()) {
+            case "mysql" -> new MySqlDialect();
+            case "postgres" -> new PostgresDialect();
+            case "h2" -> new H2Dialect();
+            default -> throw new IllegalArgumentException("Unsupported dialect: " + dialectName);
+        };
+    }
+}

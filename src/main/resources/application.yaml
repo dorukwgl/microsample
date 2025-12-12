@@ -50,15 +50,6 @@ micronaut:
       swagger-ui-default:
         paths: classpath:META-INF/swagger/views/swagger-ui
         mapping: /swagger-ui/**
-  jimmer:
-    datasources:
-      default:
-        show-sql: true
-        show-parameters: true
-        default-enum-strategy: name
-        executor: blocking
-        default-schema: sample
-    language: java
 # ==========================
 # Database Configuration
 # ==========================
@@ -69,11 +60,16 @@ datasources:
     password: ${DATASOURCE_PASSWORD}
     driverClassName: org.postgresql.Driver
     dialect: POSTGRES
+    schema: sample
 
     hikari:
       maximum-pool-size: 30
       minimum-idle: 5
       auto-commit: true
+
+jimmer:
+  show-sql: true
+  dialect: postgres
 
 nats:
   default:

@@ -86,11 +86,6 @@
             <version>${jimmer.version}</version>
         </dependency>
         <dependency>
-            <groupId>io.github.flynndi</groupId>
-            <artifactId>micronaut-jimmer</artifactId>
-            <version>0.0.1.CR5</version>
-        </dependency>
-        <dependency>
             <groupId>io.micronaut.openapi</groupId>
             <artifactId>micronaut-openapi-annotations</artifactId>
             <scope>provided</scope>
