@@ -17,10 +17,10 @@ public class Seeder {
 
     @EventListener
     public void seed(StartupEvent e) {
+        allPermissionSeeder.seedAllPermissions();
         rolesSeeder.seedRoles();
         permissionSeeder.seedPermissions();
         grantsSeeder.seedGrants();
-        allPermissionSeeder.seedAllPermissions();
 
         System.out.println("Seeding Completed...");
     }

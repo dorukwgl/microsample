@@ -7,6 +7,7 @@ import io.micronaut.context.annotation.Requires;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import org.babyfish.jimmer.sql.JSqlClient;
+import org.babyfish.jimmer.sql.ast.mutation.SaveMode;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -21,9 +22,14 @@ public class AllPermissionSeeder {
         List<Permission> permissions = new LinkedList<>();
         for (Permissions permission : Permissions.values()) {
             permissions.add(PermissionDraft.$.produce(p ->
-                    p.setName(permission.name())));
+            {
+                p.setName(permission.name());
+                p.setDeletedAt(null);
+            }));
         }
-        sqlClient.saveEntitiesCommand(permissions).execute();
+
+        sqlClient.saveEntitiesCommand(permissions)
+                .execute();
 
         System.out.println("All permissions from Permissions enum seeded...");
     }
