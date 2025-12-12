@@ -3,8 +3,9 @@ package com.doruk.domain.shared.enums;
 import com.doruk.domain.exception.DomainException;
 
 public enum Permissions {
-    GHOST(0),
-    USER_STATUS_UPDATE (1),
+    GHOST_PERMISSION(0),
+    DICTATOR_PERMISSION(1),
+    USER_STATUS_UPDATE (2),
     DELETE_USERS (3),
     UPDATE_OWN_PROFILE (4);
 
