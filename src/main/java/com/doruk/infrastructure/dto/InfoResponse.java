@@ -1,3 +1,7 @@
 package com.doruk.infrastructure.dto;
 
-public record InfoResponse(String message){}
+import io.micronaut.serde.annotation.Serdeable;
+
+@Serdeable
+public record InfoResponse(String message) {
+}

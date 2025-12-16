@@ -137,7 +137,6 @@
             <version>${flyway.version}</version>
             <scope>runtime</scope>
         </dependency>
-
         <dependency>
             <groupId>io.micronaut.security</groupId>
             <artifactId>micronaut-security</artifactId>
@@ -146,7 +145,6 @@
             <groupId>io.micronaut.security</groupId>
             <artifactId>micronaut-security-jwt</artifactId>
         </dependency>
-
         <dependency>
             <groupId>io.micronaut.validation</groupId>
             <artifactId>micronaut-validation-processor</artifactId>

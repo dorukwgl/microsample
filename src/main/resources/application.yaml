@@ -4,16 +4,21 @@ micronaut:
     publicUploadPath: "/var/www/microsample/public"
     privateUploadPath: "/var/www/microsample/private"
   security:
-    enabled: false
+    enabled: true
     reject-not-found: false
     token:
       jwt:
+        enabled: true
         signatures:
-          secret:
-            generator:
-              secret: ${JWT_SECRET}
-        jwt:
-          expiresIn: 10m
+          jwks:
+            local-signer:
+              url: http://localhost:41518/.well-known/jwks.json
+              cache-expiration: 600s
+        claims-validators:
+          audience: ${APP_ID}
+          issuer: com.doruk.jwks
+
+    authentication: bearer
   executors:
     cpu:
       type: fixed

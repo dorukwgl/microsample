@@ -12,6 +12,7 @@ import org.babyfish.jimmer.sql.dialect.Dialect;
 import org.babyfish.jimmer.sql.dialect.H2Dialect;
 import org.babyfish.jimmer.sql.dialect.MySqlDialect;
 import org.babyfish.jimmer.sql.dialect.PostgresDialect;
+import org.babyfish.jimmer.sql.fetcher.ReferenceFetchType;
 import org.babyfish.jimmer.sql.runtime.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -44,6 +45,7 @@ public class JSqlClientFactory {
         });
 
         builder.setDefaultEnumStrategy(EnumType.Strategy.NAME);
+        builder.setDefaultReferenceFetchType(ReferenceFetchType.JOIN_IF_NO_CACHE);
 
         builder.setDialect(config != null && config.dialect() != null ?
                 createDialect(config.dialect()) : new PostgresDialect());
@@ -55,7 +57,6 @@ public class JSqlClientFactory {
             builder.setExecutor(createLoggingExecutor(config));
         else
             builder.setExecutor(DefaultExecutor.INSTANCE);
-
         return builder.build();
     }
 

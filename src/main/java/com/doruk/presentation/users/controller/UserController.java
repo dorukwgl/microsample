@@ -1,10 +1,9 @@
 package com.doruk.presentation.users.controller;
 
-import com.doruk.infrastructure.persistence.entity.Permission;
+import com.doruk.infrastructure.dto.InfoResponse;
 import com.doruk.infrastructure.persistence.entity.PermissionFetcher;
 import com.doruk.infrastructure.persistence.entity.PermissionTable;
 import com.doruk.presentation.users.dto.TestDto;
-import com.doruk.presentation.users.dto.TestMessage;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -31,8 +30,8 @@ public class UserController {
     }
 
     @Get("testjson")
-    TestMessage getMessage() {
-        return new TestMessage("hello world");
+    InfoResponse getMessage() {
+        return new InfoResponse("got your message");
     }
 
     @Get("permissions")
@@ -65,6 +64,7 @@ public class UserController {
 
     @Get("permissions/all")
     Mono<List<TestDto>> getAllPermissions() {
+
         return Mono.fromCallable(() ->
                 client
                         .filters(f -> f.setBehavior(LogicalDeletedBehavior.IGNORED))
