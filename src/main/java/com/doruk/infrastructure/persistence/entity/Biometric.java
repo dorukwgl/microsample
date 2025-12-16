@@ -1,5 +1,6 @@
 package com.doruk.infrastructure.persistence.entity;
 
+import com.doruk.infrastructure.util.V7Generator;
 import jakarta.annotation.Nullable;
 import org.babyfish.jimmer.sql.*;
 
@@ -9,9 +10,8 @@ import java.util.UUID;
 @Entity
 @Table(name = "biometrics")
 public interface Biometric {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(generatorType = V7Generator.class)
     UUID id();
 
     @ManyToOne

@@ -34,6 +34,7 @@ public class UserSeeder {
                 .setPhoneVerified(true)
                 .setPhone("9829293466")
                 .setRoles(List.of(RoleDraft.$.produce(r -> r.setName("DICTATOR"))))
+                .setMultiFactorAuth(MultiAuthType.NONE)
                 .setPassword(hasher.encode("dorukwgl@ihbibicdff"))
         );
 
@@ -43,6 +44,7 @@ public class UserSeeder {
                 .setPhoneVerified(true)
                 .setPhone("9829293466")
                 .setRoles(List.of(RoleDraft.$.produce(r -> r.setName("SYS_ADMIN"))))
+                .setMultiFactorAuth(MultiAuthType.NONE)
                 .setPassword(hasher.encode("doruk@ihbibicdff"))
         );
 
@@ -51,6 +53,7 @@ public class UserSeeder {
                 .setPhoneVerified(true)
                 .setPhoneVerified(true)
                 .setPhone("9829293466")
+                .setMultiFactorAuth(MultiAuthType.NONE)
                 .setRoles(List.of(RoleDraft.$.produce(r -> r.setName("USER"))))
                 .setPassword(hasher.encode("password"))
         );

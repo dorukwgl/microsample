@@ -1,21 +1,22 @@
 package com.doruk.infrastructure.persistence.entity;
 
-import java.lang.String;
+import com.doruk.domain.shared.enums.MultiAuthType;
+import com.doruk.domain.shared.enums.UserAccountStatus;
+import com.doruk.infrastructure.util.V7Generator;
+import org.babyfish.jimmer.sql.*;
+import org.babyfish.jimmer.sql.meta.UUIDIdGenerator;
+import org.babyfish.jimmer.sql.meta.UserIdGenerator;
+import org.jetbrains.annotations.Nullable;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-import com.doruk.domain.shared.enums.MultiAuthType;
-import com.doruk.domain.shared.enums.UserAccountStatus;
-import org.babyfish.jimmer.sql.*;
-import org.jetbrains.annotations.Nullable;
-
 @Entity
 @Table(name = "users")
 public interface User {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(generatorType = V7Generator.class)
     UUID id();
 
     @Key

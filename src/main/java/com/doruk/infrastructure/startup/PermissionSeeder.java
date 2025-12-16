@@ -5,6 +5,7 @@ import io.micronaut.context.annotation.Requires;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import org.babyfish.jimmer.sql.JSqlClient;
+import org.babyfish.jimmer.sql.meta.UUIDIdGenerator;
 
 import java.time.LocalDateTime;
 import java.util.List;

@@ -9,7 +9,6 @@ import java.util.List;
 @Entity
 @Table(name = "roles")
 public interface Role {
-
     @Id
     String name();
 

@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 public interface Session {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     long id();
 
     @ManyToOne
