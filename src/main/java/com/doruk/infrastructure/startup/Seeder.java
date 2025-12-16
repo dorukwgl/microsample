@@ -14,6 +14,7 @@ public class Seeder {
     private final GrantsSeeder grantsSeeder;
     private final PermissionSeeder permissionSeeder;
     private final AllPermissionSeeder allPermissionSeeder;
+    private final UserSeeder userSeeder;
 
     @EventListener
     public void seed(StartupEvent e) {
@@ -21,6 +22,7 @@ public class Seeder {
         rolesSeeder.seedRoles();
         permissionSeeder.seedPermissions();
         grantsSeeder.seedGrants();
+        userSeeder.seedUsers();
 
         System.out.println("Seeding Completed...");
     }

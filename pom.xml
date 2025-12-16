@@ -146,6 +146,12 @@
             <artifactId>micronaut-security-jwt</artifactId>
         </dependency>
         <dependency>
+            <groupId>de.mkammerer</groupId>
+            <artifactId>argon2-jvm</artifactId>
+            <version>2.12</version>
+        </dependency>
+
+        <dependency>
             <groupId>io.micronaut.validation</groupId>
             <artifactId>micronaut-validation-processor</artifactId>
             <scope>provided</scope>

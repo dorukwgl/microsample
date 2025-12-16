@@ -7,9 +7,18 @@ import com.doruk.infrastructure.security.annotation.RequiresPermission;
 import jakarta.inject.Singleton;
 
 import java.util.Arrays;
+import java.util.EnumMap;
+import java.util.Map;
 
 @Singleton
 public class RbacPermissionEvaluator implements PermissionEvaluator {
+    private final Map<Permissions, Integer> roleDynamics = new EnumMap<>(Permissions.class);
+
+    public RbacPermissionEvaluator () {
+        roleDynamics.put(Permissions.GHOST_PERMISSION, 0);
+        roleDynamics.put(Permissions.DICTATOR_PERMISSION, 1);
+    }
+
     @Override
     public boolean evaluate(
             UserScope scope,
@@ -44,32 +53,35 @@ public class RbacPermissionEvaluator implements PermissionEvaluator {
     }
 
     private boolean hasAll(UserScope scope, Permissions[] required) {
-        if (isGhostRequired(required) && isGhost(scope))
+        if (isGhost(scope))
             return true;
 
-        if (isDictatorRequired(required) && isDictator(scope))
+        if (isGhostRequired(required))
+            return false;
+
+        if (isDictator(scope))
             return true;
 
-        for (Permissions p : required) {
-            if (!scope.permissions().contains(p)) {
-                return false;
-            }
-        }
-        return true;
+        if (isDictatorRequired(required))
+            return false;
+
+        return scope.permissions().containsAll(Arrays.stream(required).toList());
     }
 
     private boolean hasAny(UserScope scope, Permissions[] required) {
-        if (isGhostRequired(required) && isGhost(scope))
+        if (isGhost(scope))
             return true;
 
-        if (isDictatorRequired(required) && isDictator(scope))
+        if (isDictator(scope))
             return true;
 
-        for (Permissions p : required) {
-            if (scope.permissions().contains(p)) {
-                return true;
-            }
-        }
-        return false;
+        if (isGhostRequired(required))
+            return false;
+
+        if (isDictatorRequired(required))
+            return true;
+
+        return Arrays.stream(required)
+                .anyMatch(scope.permissions()::contains);
     }
 }

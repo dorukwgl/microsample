@@ -17,7 +17,6 @@ micronaut:
         claims-validators:
           audience: ${APP_ID}
           issuer: com.doruk.jwks
-
     authentication: bearer
   executors:
     cpu:
