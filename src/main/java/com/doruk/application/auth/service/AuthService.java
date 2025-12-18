@@ -2,6 +2,7 @@ package com.doruk.application.auth.service;
 
 import com.doruk.application.auth.dto.JwtResponse;
 import com.doruk.domain.shared.enums.Permissions;
+import com.doruk.infrastructure.config.AppConfig;
 import com.doruk.infrastructure.config.AppExecutors;
 import com.doruk.infrastructure.security.JwtIssuer;
 import com.doruk.application.auth.dto.JwtRequest;
@@ -16,9 +17,10 @@ import java.util.List;
 public class AuthService {
     private final AppExecutors executor;
     private final JwtIssuer issuer;
+    private final AppConfig appConfig;
 
     public Mono<String> performLogin() {
-        return issuer.issueToken(new JwtRequest("doruk", "name", List.of(Permissions.UPDATE_OWN_PROFILE)))
+        return issuer.issueToken(new JwtRequest("doruk", appConfig.appId(), List.of(Permissions.UPDATE_OWN_PROFILE)))
                 .map(JwtResponse::accessToken);
     }
 }
