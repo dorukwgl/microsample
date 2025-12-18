@@ -3,9 +3,12 @@ micronaut:
     name: microsample
     publicUploadPath: "/var/www/microsample/public"
     privateUploadPath: "/var/www/microsample/private"
+    app-id: ${APP_ID}
   security:
     enabled: true
     reject-not-found: false
+    redirect:
+      enabled: false
     token:
       jwt:
         enabled: true
@@ -13,13 +16,13 @@ micronaut:
           jwks:
             local-signer:
               url: http://localhost:41518/.well-known/jwks.json
-              cache-expiration: 600s
+              cache-expiration: 3600
         claims-validators:
           audience: ${APP_ID}
           issuer: com.doruk.jwks
     authentication: bearer
   executors:
-    cpu:
+    cpu-executor:
       type: fixed
       n-threads: 4
 
@@ -43,6 +46,10 @@ micronaut:
       default-bootstrap:
       event-loop-shutdown-quiet-period: 0ms
       event-loop-shutdown-timeout: 0ms
+  http:
+    services:
+      jwks:
+        url: http://localhost:41518
   router:
     static-resources:
       swagger:

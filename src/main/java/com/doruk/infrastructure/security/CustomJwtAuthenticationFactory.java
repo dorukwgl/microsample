@@ -3,13 +3,17 @@ package com.doruk.infrastructure.security;
 import com.doruk.application.security.UserScope;
 import com.doruk.domain.shared.enums.Permissions;
 import com.nimbusds.jwt.JWT;
+import io.micronaut.context.annotation.Primary;
+import io.micronaut.context.annotation.Replaces;
 import io.micronaut.security.authentication.Authentication;
+import io.micronaut.security.token.jwt.validator.DefaultJwtAuthenticationFactory;
 import io.micronaut.security.token.jwt.validator.JwtAuthenticationFactory;
 import jakarta.inject.Singleton;
 
 import java.util.*;
 
 @Singleton
+@Replaces(DefaultJwtAuthenticationFactory.class)
 public class CustomJwtAuthenticationFactory implements JwtAuthenticationFactory {
 
     @Override

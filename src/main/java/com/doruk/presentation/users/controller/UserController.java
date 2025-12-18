@@ -6,6 +6,9 @@ import com.doruk.infrastructure.persistence.entity.PermissionTable;
 import com.doruk.presentation.users.dto.TestDto;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
+import io.micronaut.security.annotation.Secured;
+import io.micronaut.security.authentication.Authentication;
+import io.micronaut.security.rules.SecurityRule;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
 import org.babyfish.jimmer.sql.JSqlClient;
@@ -20,10 +23,12 @@ import java.util.UUID;
 
 @Tag(name = "User Management, Registrations & Profiles")
 @Controller("users")
+@Secured(SecurityRule.IS_AUTHENTICATED)
 public class UserController {
     @Inject
     public JSqlClient client;
 
+    @Secured(SecurityRule.IS_ANONYMOUS)
     @Get("test")
     Mono<Map<String, String>> getUuid() {
         return Mono.from(Mono.just(Map.of("uuid", UUID.randomUUID().toString())));

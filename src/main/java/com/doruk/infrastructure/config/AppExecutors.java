@@ -1,11 +1,32 @@
 package com.doruk.infrastructure.config;
 
+import io.micronaut.context.annotation.Context;
 import io.micronaut.scheduling.TaskExecutors;
+import jakarta.inject.Named;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Scheduler;
+import reactor.core.scheduler.Schedulers;
 
+import java.util.concurrent.ExecutorService;
+
+@Context
 public final class AppExecutors {
-    public static final String BLOCKING = TaskExecutors.BLOCKING;
+    public final Scheduler CPU;
+    public final Scheduler BLOCKING;
 
-    public static final String CPU = "cpu";
+    public AppExecutors(
+            @Named(TaskExecutors.BLOCKING) ExecutorService blocking,
+            @Named("cpu-executor") ExecutorService cpu
+    ) {
+        this.CPU = Schedulers.fromExecutor(cpu);
+        this.BLOCKING = Schedulers.fromExecutor(blocking);
+    }
 
-    private AppExecutors() {}
+    public Mono<?> onCpu(Mono<?> mono) {
+        return mono.subscribeOn(this.CPU);
+    }
+
+    public Mono<?> onVirtual(Mono<?> mono) {
+        return mono.subscribeOn(this.BLOCKING);
+    }
 }
