@@ -17,10 +17,6 @@ public interface Permission {
     @ManyToMany(mappedBy = "permissions")
     List<Role> roles();
 
-    // Inverse of the special UserPermission entity
-    @OneToMany(mappedBy = "permission")
-    List<UserPermission> elevatedGrants();
-
     @LogicalDeleted("now")
     @Nullable
     @Column(name = "deleted_at")

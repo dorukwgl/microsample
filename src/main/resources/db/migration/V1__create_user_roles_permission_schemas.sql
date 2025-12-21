@@ -66,16 +66,6 @@ CREATE TABLE user_roles
     PRIMARY KEY (user_id, name)
 );
 
--- optional: additional permissions ( temporary )
-CREATE TABLE user_permissions
-(
-    id bigserial primary key,
-    user_id uuid NOT NULL REFERENCES users (id) ON DELETE CASCADE,
-    permission_name VARCHAR(200) NOT NULL REFERENCES permissions (name) ON DELETE CASCADE,
-    created_at    TIMESTAMP WITH TIME ZONE DEFAULT now(),
-    expires_at    TIMESTAMP not null
-);
-
 -- SESSIONS AND BIOMETRICS --
 create table sessions
 (

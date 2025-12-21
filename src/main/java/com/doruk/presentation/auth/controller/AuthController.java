@@ -1,5 +1,6 @@
 package com.doruk.presentation.auth.controller;
 
+import com.doruk.application.auth.dto.LoginResponse;
 import com.doruk.application.auth.service.AuthService;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
@@ -14,8 +15,22 @@ import reactor.core.publisher.Mono;
 public class AuthController {
     private final AuthService service;
 
+    @Get("/hello")
+    Mono<String> hello() {
+        return Mono.fromCallable(() -> {
+            System.out.println(Thread.currentThread().getName());
+            return "world...";
+        });
+    }
+
+    @Get("/test")
+    String tests() {
+        System.out.println(Thread.currentThread().getName());
+        return service.test();
+    }
+
     @Get("/login")
-    Mono<String> test() {
+    LoginResponse test() {
         return service.performLogin();
     }
 }

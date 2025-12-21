@@ -3,6 +3,7 @@ package com.doruk.infrastructure.persistence.entity;
 import com.doruk.domain.shared.enums.MultiAuthType;
 import com.doruk.domain.shared.enums.UserAccountStatus;
 import com.doruk.infrastructure.util.V7Generator;
+import io.micronaut.core.annotation.Introspected;
 import org.babyfish.jimmer.sql.*;
 import org.babyfish.jimmer.sql.meta.UUIDIdGenerator;
 import org.babyfish.jimmer.sql.meta.UserIdGenerator;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+@Introspected
 @Entity
 @Table(name = "users")
 public interface User {
@@ -35,10 +37,10 @@ public interface User {
     MultiAuthType multiFactorAuth();
 
     @Column(name = "is_email_verified")
-    boolean isEmailVerified();
+    boolean emailVerified();
 
     @Column(name = "is_phone_verified")
-    boolean isPhoneVerified();
+    boolean phoneVerified();
 
     @Column(name = "status")
     UserAccountStatus status();
@@ -69,9 +71,6 @@ public interface User {
             inverseJoinColumnName = "name"
     )
     List<Role> roles();
-
-    @OneToMany(mappedBy = "user")
-    List<UserPermission> elevatedPermissions();
 
     @OneToMany(mappedBy = "user")
     List<Session> sessions();

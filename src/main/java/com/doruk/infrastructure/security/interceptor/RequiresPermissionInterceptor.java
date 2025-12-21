@@ -44,7 +44,7 @@ public class RequiresPermissionInterceptor
         );
 
         if (!allowed)
-            throw new ForbiddenException();
+            throw new ForbiddenException("You are not allowed to perform this action.");
 
         return context.proceed();
     }

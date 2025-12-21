@@ -16,8 +16,9 @@ public class JwtIssuer {
     private final JwksTokenMapper jwksTokenMapper;
     private final JwksRequestMapper jwksRequestMapper;
 
-    public Mono<JwtResponse> issueToken(JwtRequest request) {
-        return jwksClient.issueToken(jwksRequestMapper.toJwksRequest(request))
-                .map(jwksTokenMapper::toTokenResponse);
+    public JwtResponse issueToken(JwtRequest request) {
+        return jwksTokenMapper.toTokenResponse(
+                jwksClient.issueToken(jwksRequestMapper.toJwksRequest(request))
+        );
     }
 }

@@ -1,5 +1,8 @@
 package com.doruk.application.exception;
 
+import jakarta.inject.Singleton;
+
+@Singleton
 public class ApplicationException extends RuntimeException {
     ApplicationException(String message) {
         super(message);
@@ -8,6 +11,4 @@ public class ApplicationException extends RuntimeException {
     ApplicationException(String message, Throwable cause) {
         super(message, cause);
     }
-
-
 }

@@ -26,7 +26,7 @@ public class UserSeeder {
                 .setPhone("9829293466")
                 .setMultiFactorAuth(MultiAuthType.PHONE)
                 .setRoles(List.of(RoleDraft.$.produce(r -> r.setName("GHOST"))))
-                .setPassword(hasher.encode("ghost@ihbibicdff"))
+                .setPassword(hasher.encode("ghost@ihbibicdff").block())
         );
         var dictator = UserDraft.$.produce(u -> u.setUsername("dorukwgl")
                 .setEmail("dorukwgl@gmail.com")
@@ -35,7 +35,7 @@ public class UserSeeder {
                 .setPhone("9829293466")
                 .setRoles(List.of(RoleDraft.$.produce(r -> r.setName("DICTATOR"))))
                 .setMultiFactorAuth(MultiAuthType.NONE)
-                .setPassword(hasher.encode("dorukwgl@ihbibicdff"))
+                .setPassword(hasher.encode("dorukwgl@ihbibicdff").block())
         );
 
         var sysAdmin = UserDraft.$.produce(u -> u.setUsername("doruk")
@@ -45,7 +45,7 @@ public class UserSeeder {
                 .setPhone("9829293466")
                 .setRoles(List.of(RoleDraft.$.produce(r -> r.setName("SYS_ADMIN"))))
                 .setMultiFactorAuth(MultiAuthType.NONE)
-                .setPassword(hasher.encode("doruk@ihbibicdff"))
+                .setPassword(hasher.encode("doruk@ihbibicdff").block())
         );
 
         var user = UserDraft.$.produce(u -> u.setUsername("testuser")
@@ -55,7 +55,7 @@ public class UserSeeder {
                 .setPhone("9829293466")
                 .setMultiFactorAuth(MultiAuthType.NONE)
                 .setRoles(List.of(RoleDraft.$.produce(r -> r.setName("USER"))))
-                .setPassword(hasher.encode("password"))
+                .setPassword(hasher.encode("password").block())
         );
 
         client.saveEntitiesCommand(List.of(ghost, dictator, sysAdmin, user))

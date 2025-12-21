@@ -25,6 +25,6 @@ public enum Permissions {
                 return permission;
             }
         }
-        throw new DomainException(400, "Invalid permission id: " + id);
+        throw new DomainException("Invalid permission id: " + id);
     }
 }

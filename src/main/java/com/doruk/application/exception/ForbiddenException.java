@@ -1,4 +1,7 @@
 package com.doruk.application.exception;
 
-public class ForbiddenException extends RuntimeException {
+public class ForbiddenException extends ApplicationException {
+    public ForbiddenException(String message) {
+        super(message);
+    }
 }

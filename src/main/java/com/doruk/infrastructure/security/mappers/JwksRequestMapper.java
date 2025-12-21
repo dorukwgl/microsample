@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 public interface JwksRequestMapper {
     @Mapping(
         to = "sub",
-        from = "#{jwtRequest.username}"
+        from = "#{jwtRequest.id}"
     )
     @Mapping(
         to = "aud",

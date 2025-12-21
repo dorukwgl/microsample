@@ -6,5 +6,5 @@ import io.micronaut.core.annotation.Introspected;
 import java.util.List;
 
 @Introspected
-public record JwtRequest(String username, String audience, List<Permissions> permissions) {
+public record JwtRequest(String id, String audience, List<Permissions> permissions) {
 }
