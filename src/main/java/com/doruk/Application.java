@@ -24,27 +24,5 @@ public class Application {
         var ctx = Micronaut.run(Application.class, args);
         var client = ctx.getBean(AuthRepository.class);
         var executor = ctx.getBean(AppExecutors.class);
-
-        var testBlocking = Mono.fromCallable(() -> {
-            System.out.println(Thread.currentThread().getName());
-            return "";
-        }).subscribeOn(executor.BLOCKING);
-
-        var testCpu = Mono.fromCallable(() -> {
-            System.out.println(Thread.currentThread().getName());
-            return "";
-        }).subscribeOn(executor.CPU);
-
-        Mono.fromCallable(() -> {
-            System.out.println(Thread.currentThread().getName());
-            return "";
-        }).flatMap(a -> testCpu)
-                .publishOn(executor.BLOCKING)
-                .flatMap(a -> Mono.fromCallable(() -> {
-                    System.out.println(Thread.currentThread().getName());
-                    return "";
-                }))
-                .flatMap(a -> testBlocking)
-                .subscribeOn(executor.BLOCKING).block();
     }
 }
