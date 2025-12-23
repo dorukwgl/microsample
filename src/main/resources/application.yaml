@@ -4,6 +4,7 @@ micronaut:
     publicUploadPath: "/var/www/microsample/public"
     privateUploadPath: "/var/www/microsample/private"
     app-id: ${APP_ID}
+    session-expiration: ${SESSION_EXPIRATION:7} # days
   security:
     enabled: true
     reject-not-found: false
@@ -50,6 +51,7 @@ micronaut:
       event-loop-shutdown-quiet-period: 0ms
       event-loop-shutdown-timeout: 0ms
     thread-selection: blocking # for loom carrier
+    context-path: /app
   http:
     client:
       event-loop-group: default # for loom carrier

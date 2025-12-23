@@ -4,6 +4,9 @@ import jakarta.inject.Singleton;
 
 @Singleton
 public class ApplicationException extends RuntimeException {
+    ApplicationException() {
+        super();
+    }
     ApplicationException(String message) {
         super(message);
     }

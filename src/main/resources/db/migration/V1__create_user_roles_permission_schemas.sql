@@ -72,8 +72,9 @@ create table sessions
     id bigserial primary key,
     user_id uuid not null references users (id) on delete cascade,
     session_id varchar(255) not null unique,
-    device_info varchar(255) not null,
+    device_info varchar(255),
     device_id varchar(255) unique,
+    expires_at timestamp with time zone not null,
     permissions integer[] not null
 );
 
@@ -89,5 +90,3 @@ create table biometrics
 -- index all foreign keys
 create index idx_sessions_user_id on sessions (user_id);
 create index idx_biometrics_user_id on biometrics (user_id);
-create index idx_user_permissions_user_id on user_permissions (user_id);
-create index idx_user_permissions_permission_name on user_permissions (permission_name);

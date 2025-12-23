@@ -4,6 +4,7 @@ import jakarta.annotation.Nullable;
 import org.babyfish.jimmer.sql.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "sessions")
@@ -20,11 +21,15 @@ public interface Session {
     @Key
     String sessionId();
 
+    @Nullable
     String deviceInfo();
 
     @Nullable
     @Key
     String deviceId();
+
+    @Column(name = "expires_at")
+    LocalDateTime expiresAt();
 
     // Jimmer maps Postgres Arrays to Java Arrays/Lists
     // Warning: SQL said "integer[]", but Role PK is String.
@@ -33,5 +38,5 @@ public interface Session {
     Integer[] cachedRoles();
 
     @Column(name = "permissions")
-    Integer[] cachedPermissions();
+    List<Integer> cachedPermissions();
 }

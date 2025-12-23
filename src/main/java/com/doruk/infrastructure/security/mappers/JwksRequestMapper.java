@@ -6,6 +6,7 @@ import com.doruk.application.auth.dto.JwtRequest;
 import io.micronaut.context.annotation.Mapper.Mapping;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public interface JwksRequestMapper {
@@ -23,7 +24,7 @@ public interface JwksRequestMapper {
     )
     JwksRequest toJwksRequest(JwtRequest jwtRequest);
 
-    default List<Integer> toScopes(List<Permissions> permissions) {
+    default List<Integer> toScopes(Set<Permissions> permissions) {
         return permissions.stream()
                 .map(Permissions::id)
                 .collect(Collectors.toList());

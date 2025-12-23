@@ -10,14 +10,14 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class PrivateFilesController {
 
     @Get("/{filename:.*}")
-    public HttpResponse<?> download(String filename) {
+    public HttpResponse<?> stream(String filename) {
 
         // 1. Authenticate user, check database permissions, etc.
-        boolean isUserAllowed = true; // Replace with actual logic
-
-        if (!isUserAllowed) {
-            return HttpResponse.unauthorized();
-        }
+//        boolean isUserAllowed = true; // Replace with actual logic
+//
+//        if (!isUserAllowed) {
+//            return HttpResponse.unauthorized();
+//        }
 
         // 2. Instead of reading the file in Java, send the instruction to Nginx
         // The path must match the Nginx 'location' block (without the alias)

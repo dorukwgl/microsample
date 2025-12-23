@@ -3,8 +3,8 @@ package com.doruk.infrastructure.persistence.auth;
 import com.doruk.application.auth.dto.AuthDto;
 import com.doruk.domain.shared.enums.MultiAuthType;
 import com.doruk.domain.shared.enums.Permissions;
-import com.doruk.infrastructure.config.AppExecutors;
 import com.doruk.infrastructure.persistence.entity.Permission;
+import com.doruk.infrastructure.persistence.entity.SessionDraft;
 import com.doruk.infrastructure.persistence.entity.UserTable;
 import com.doruk.infrastructure.persistence.entity.UserTableEx;
 import jakarta.inject.Singleton;
@@ -15,6 +15,7 @@ import org.babyfish.jimmer.sql.ast.Predicate;
 import org.babyfish.jimmer.sql.ast.tuple.Tuple8;
 import org.babyfish.jimmer.sql.runtime.LogicalDeletedBehavior;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Singleton
@@ -45,12 +46,29 @@ public class AuthRepository {
         return Optional.of(toAuthDto(dt));
     }
 
+    public void createSession(String userId,
+                              String sessionId,
+                              Set<Permissions> permissions,
+                              LocalDateTime expiration,
+                              Optional<String> deviceId,
+                              Optional<String> deviceInfo) {
+
+        sqlClient.saveCommand(SessionDraft.$.produce(s ->
+                s.setUserId(UUID.fromString(userId))
+                        .setSessionId(sessionId)
+                        .setCachedPermissions(permissions.stream().map(Permissions::id).toList())
+                        .setExpiresAt(expiration)
+                        .setDeviceId(deviceId.orElse(null))
+                        .setDeviceInfo(deviceInfo.orElse(null)))
+        );
+    }
+
     private static AuthDto toAuthDto(List<Tuple8<UUID, String, String, String, Boolean, Boolean, MultiAuthType, Permission>> dt) {
         var commons = dt.getFirst();
         Set<Permissions> permissions = new HashSet<>();
-
-        dt.forEach(tup ->
-                permissions.add(Permissions.valueOf(tup.get_8().name())));
+        if (commons.get_8() != null) // null check if permissions is empty
+            dt.forEach(tup ->
+                    permissions.add(Permissions.valueOf(tup.get_8().name())));
 
         return AuthDto.builder()
                 .id(commons.get_1().toString())

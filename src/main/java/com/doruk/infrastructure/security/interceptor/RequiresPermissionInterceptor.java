@@ -1,7 +1,6 @@
 package com.doruk.infrastructure.security.interceptor;
 
 import com.doruk.application.exception.ForbiddenException;
-import com.doruk.application.exception.UnauthorizedException;
 import com.doruk.application.security.PermissionEvaluator;
 import com.doruk.application.security.UserScope;
 import com.doruk.domain.shared.enums.Permissions;
@@ -34,7 +33,7 @@ public class RequiresPermissionInterceptor
                         .orElseThrow(() -> new IllegalArgumentException("Missing @RequiresPermission annotation"));
 
         Authentication auth = securityService.getAuthentication()
-                .orElseThrow(UnauthorizedException::new);
+                .orElseThrow(ForbiddenException::new);
 
         UserScope scope = extractScope(auth);
         boolean allowed = evaluator.evaluate(
@@ -44,7 +43,7 @@ public class RequiresPermissionInterceptor
         );
 
         if (!allowed)
-            throw new ForbiddenException("You are not allowed to perform this action.");
+            throw new ForbiddenException();
 
         return context.proceed();
     }
