@@ -12,6 +12,7 @@ import io.micronaut.serde.ObjectMapper;
 import jakarta.inject.Singleton;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Optional;
 
@@ -56,6 +57,16 @@ public class RedisMemoryStorage implements MemoryStorage {
     @Override
     public <V> void saveEx(String key, V value, Duration ttl) {
         this.client.setex(getKey(key), ttl.getSeconds(), serialize(value));
+    }
+
+    @Override
+    public void save(String key, Number value) {
+        this.client.set(getKey(key), value.toString().getBytes(StandardCharsets.UTF_8));
+    }
+
+    @Override
+    public void saveEx(String key, Number value, Duration ttl) {
+        this.client.setex(getKey(key), ttl.getSeconds(), value.toString().getBytes(StandardCharsets.UTF_8));
     }
 
     @Override

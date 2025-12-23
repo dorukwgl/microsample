@@ -34,6 +34,7 @@ public class AuthService {
     private final AppConfig appConfig;
     private final AuthRepository authRepository;
     private final PasswordEncoder hasher;
+    private final String mfaAttempt = ":attempt";
 
     private final Map<MultiAuthType, Function<AuthDto, LoginResponse>> authInitializers = Map.of(
             MultiAuthType.PHONE, this::initPhoneFactorAuth,
