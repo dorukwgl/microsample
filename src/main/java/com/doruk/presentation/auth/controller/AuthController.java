@@ -10,6 +10,7 @@ import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.Post;
 import io.micronaut.security.annotation.Secured;
 import io.micronaut.security.rules.SecurityRule;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
@@ -33,6 +34,7 @@ public class AuthController {
         });
     }
 
+    @Operation
     @ApiResponse(responseCode = "201", description = "Login successful")
     @ApiResponse(responseCode = "202", description = "Multi factor authentication required")
     @Post("/login")

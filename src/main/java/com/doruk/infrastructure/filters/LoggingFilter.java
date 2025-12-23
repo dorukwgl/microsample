@@ -9,6 +9,7 @@ import io.micronaut.http.MutableHttpResponse;
 import io.micronaut.http.annotation.Filter;
 import io.micronaut.http.filter.HttpServerFilter;
 import io.micronaut.http.filter.ServerFilterChain;
+import io.micronaut.http.server.types.files.SystemFile;
 import io.micronaut.serde.ObjectMapper;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
@@ -67,7 +68,8 @@ public class LoggingFilter implements HttpServerFilter {
                     if (respBody != null) {
                         var bodyColor = status.getCode() > 400 ? RED_BOLD : CYAN_DIM;
                         try {
-                            System.out.printf("%s: %s%s", bodyColor, objectMapper.writeValueAsString(respBody), RESET);
+                            if (!(respBody instanceof SystemFile))
+                                System.out.printf("%s: %s%s", bodyColor, objectMapper.writeValueAsString(respBody), RESET);
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
