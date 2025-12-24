@@ -5,6 +5,7 @@ import com.doruk.application.auth.dto.JwtRequest;
 import com.doruk.application.auth.dto.JwtResponse;
 import com.doruk.application.auth.dto.LoginResponse;
 import com.doruk.application.exception.InvalidCredentialException;
+import com.doruk.application.interfaces.MemoryStorage;
 import com.doruk.application.security.PasswordEncoder;
 import com.doruk.domain.shared.enums.MultiAuthType;
 import com.doruk.domain.shared.enums.Permissions;
@@ -13,11 +14,13 @@ import com.doruk.infrastructure.config.AppExecutors;
 import com.doruk.infrastructure.persistence.auth.AuthRepository;
 import com.doruk.infrastructure.security.JwtIssuer;
 import com.doruk.infrastructure.util.Constants;
-import com.doruk.infrastructure.util.RandomUUID;
+import com.doruk.infrastructure.util.GenerateRandom;
 import io.micronaut.context.annotation.Context;
 import javafx.util.Pair;
 import lombok.AllArgsConstructor;
+import org.jspecify.annotations.NonNull;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Optional;
@@ -35,6 +38,7 @@ public class AuthService {
     private final AuthRepository authRepository;
     private final PasswordEncoder hasher;
     private final String mfaAttempt = ":attempt";
+    private final MemoryStorage memoryStorage;
 
     private final Map<MultiAuthType, Function<AuthDto, LoginResponse>> authInitializers = Map.of(
             MultiAuthType.PHONE, this::initPhoneFactorAuth,
@@ -42,7 +46,7 @@ public class AuthService {
     );
 
     private LoginResponse createMfaResponse(AuthDto user) {
-        String mfaToken = RandomUUID.generateMfaToken();
+        String mfaToken = GenerateRandom.generateMfaToken();
 
         return LoginResponse.builder()
                 .isEmailVerified(user.emailVerified())
@@ -69,7 +73,7 @@ public class AuthService {
     }
 
     private Pair<String, JwtResponse> createSessionTokens(String userId, Set<Permissions> permissions, Optional<String> deviceId, Optional<String> deviceInfo) {
-        var sessionId = RandomUUID.generateSessionId();
+        var sessionId = GenerateRandom.generateSessionId();
         var sessionExpiration = LocalDateTime.now().plusDays(appConfig.sessionExpiration());
 
         try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
@@ -85,16 +89,23 @@ public class AuthService {
         }
     }
 
+    private LoginResponse createMfaTransaction(AuthDto user) {
+        var response = createMfaResponse(user);
+        var mfaToken = response.mfaToken();
+        var otp = GenerateRandom.generateOtp();
+        var duration = Duration.ofSeconds(Constants.MFA_VALIDITY_SECONDS);
+        memoryStorage.saveEx(mfaToken, otp, duration);
+        memoryStorage.saveEx(mfaToken + mfaAttempt, 0, duration);
+        return response;
+    }
+
     private LoginResponse initPhoneFactorAuth(AuthDto user) {
         // generate a random otp
         // create redis entry for the otp, mfa token, expires in, attempt count
         // send it to the user
         // return the response
-        var response = createMfaResponse(user);
-        var mfaToken = response.mfaToken();
-
-        var mfaExpiration = LocalDateTime.now().plusSeconds(Constants.MFA_VALIDITY_SECONDS);
-
+        var response = createMfaTransaction(user);
+        // extract method, createMfaTransaction
         return response;
     }
 
@@ -103,10 +114,7 @@ public class AuthService {
         // create redis entry for the otp, mfa token, expires in, attempt count
         // send it to the user
         // return the response
-        var response = createMfaResponse(user);
-        var mfaToken = response.mfaToken();
-
-        var mfaExpiration = LocalDateTime.now().plusSeconds(Constants.MFA_VALIDITY_SECONDS);
+        var response = createMfaTransaction(user);
 
         return response;
     }
