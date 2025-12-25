@@ -3,6 +3,7 @@ micronaut:
     name: microsample
     publicUploadPath: "/var/www/microsample/public"
     privateUploadPath: "/var/www/microsample/private"
+    sociairApiKey: ${SOCIAIR_KEY}
     app-id: ${APP_ID}
     session-expiration: ${SESSION_EXPIRATION:7} # days
   security:
@@ -62,6 +63,9 @@ micronaut:
         url: http://localhost:41518
       brevo:
         url: ${brevo.url}
+      sociair:
+        url: https://sms.sociair.com
+
   router:
     static-resources:
       swagger:

@@ -41,6 +41,4 @@ public class BrevoMailService implements MailService {
 
         client.sendEmail(brevoConfig.apiKey(), request);
     }
-
-
 }
