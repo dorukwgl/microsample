@@ -102,9 +102,12 @@ jimmer:
   dialect: postgres
 
 nats:
-  default:
-    addresses:
-      - "nats://localhost:4222"
+  microsample123:
+    default:
+      addresses:
+        - "nats://localhost:4222"
+      username: microsample123
+      password: ${NATS_PASSWORD}
 
 redis:
   uri: "redis://localhost"

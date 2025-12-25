@@ -1,0 +1,149 @@
+micronaut:
+  application:
+    name: microsample
+    publicUploadPath: "/var/www/microsample/public"
+    privateUploadPath: "/var/www/microsample/private"
+    sociairApiKey: ${SOCIAIR_KEY}
+    app-id: ${APP_ID}
+    session-expiration: ${SESSION_EXPIRATION:7} # days
+  security:
+    enabled: true
+    reject-not-found: false
+    redirect:
+      enabled: false
+    token:
+      jwt:
+        enabled: true
+        signatures:
+          jwks:
+            local-signer:
+              url: http://localhost:41518/.well-known/jwks.json
+              cache-expiration: 3600
+        claims-validators:
+          audience: ${APP_ID}
+          issuer: com.doruk.jwks
+    authentication: bearer
+  executors:
+    cpu-executor:
+      type: fixed
+      n-threads: 4
+
+  server:
+    cors:
+      enabled: true
+      configurations:
+        web:
+          allowedOrigins: "http://localhost:3000"
+    dispatch-options-requests: true
+    netty:
+      use-native-transport: true
+      user-forwarded-headers: true
+
+      listeners:
+        http2Listener:
+          port: ${MICROSAMPLE_PORT}
+      event-loops:
+        default:
+          prefer-native-transport: true
+          transport: io_uring
+          loom-carrier: true  # for loom carrier
+
+      default-bootstrap:
+      event-loop-shutdown-quiet-period: 0ms
+      event-loop-shutdown-timeout: 0ms
+    thread-selection: blocking # for loom carrier
+    context-path: /app
+  http:
+    client:
+      event-loop-group: default # for loom carrier
+      pool:
+        connection-locality: enforced_always # for loom carrier
+    services:
+      jwks:
+        url: http://localhost:41518
+      brevo:
+        url: ${brevo.url}
+      sociair:
+        url: https://sms.sociair.com
+
+  router:
+    static-resources:
+      swagger:
+        paths: classpath:META-INF/swagger
+        mapping: /swagger/**
+      swagger-ui:
+        paths: classpath:META-INF/swagger/views/swagger-ui
+        mapping: /api-docs/**
+      swagger-ui-default:
+        paths: classpath:META-INF/swagger/views/swagger-ui
+        mapping: /swagger-ui/**
+
+
+
+# ==========================
+# Database Configuration
+# ==========================
+datasources:
+  default:
+    url: jdbc:${DATASOURCE_URL}
+    username: ${DATASOURCE_USERNAME}
+    password: ${DATASOURCE_PASSWORD}
+    driverClassName: org.postgresql.Driver
+    dialect: POSTGRES
+    schema: sample
+
+    hikari:
+      maximum-pool-size: 30
+      minimum-idle: 5
+      auto-commit: true
+
+jimmer:
+  show-sql: true
+  dialect: postgres
+
+nats:
+  default:
+    addresses:
+      - "nats://localhost:4222"
+    username: ${APP_ID}
+    password: ${NATS_PASSWORD}
+
+redis:
+  uri: "redis://localhost"
+
+brevo:
+  url: https://api.brevo.com
+  apiKey: ${BREVO_API_KEY}
+  senderEmail: ${BREVO_SENDER_EMAIL}
+  senderName: ${BREVO_SENDER_NAME}
+
+# ==========================
+# Flyway Migration Settings
+# ==========================
+
+flyway:
+  datasources:
+    default:
+      enabled: true
+      validate-on-migrate: true
+      baseline-on-migrate: true
+      baseline-description: "Initial migration"
+      out-of-order: false
+      locations: classpath:db/migration
+      schemas: sample
+
+# ==========================
+# Logging
+# ==========================
+logger:
+  levels:
+    ROOT: TRACE
+    io.micronaut: INFO
+    io.netty: TRACE
+    io.micronaut.http.server.netty: DEBUG
+    io.micronaut.context: WARN
+
+    org.flywaydb: INFO
+    io.micronaut.flyway: INFO
+
+    org.babyfish.jimmer.sql: TRACE
