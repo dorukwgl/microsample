@@ -60,6 +60,8 @@ micronaut:
     services:
       jwks:
         url: http://localhost:41518
+      brevo:
+        url: ${brevo.url}
   router:
     static-resources:
       swagger:
@@ -102,6 +104,12 @@ nats:
 
 redis:
   uri: "redis://localhost"
+
+brevo:
+  url: https://api.brevo.com
+  apiKey: ${BREVO_API_KEY}
+  senderEmail: ${BREVO_SENDER_EMAIL}
+  senderName: ${BREVO_SENDER_NAME}
 
 # ==========================
 # Flyway Migration Settings
