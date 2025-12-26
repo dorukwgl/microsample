@@ -1,0 +1,12 @@
+package com.doruk.application.auth.dto;
+
+import com.doruk.application.interfaces.EventDto;
+import io.micronaut.serde.annotation.Serdeable;
+
+@Serdeable
+public record SmsOtpDto() implements EventDto {
+    @Override
+    public String eventSubject() {
+        return "auth.mfa.sms-otp";
+    }
+}

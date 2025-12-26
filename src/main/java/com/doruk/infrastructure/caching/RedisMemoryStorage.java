@@ -8,7 +8,7 @@ import io.lettuce.core.codec.ByteArrayCodec;
 import io.lettuce.core.codec.RedisCodec;
 import io.lettuce.core.codec.StringCodec;
 import io.micronaut.context.annotation.Bean;
-import io.micronaut.serde.ObjectMapper;
+import io.micronaut.json.JsonMapper;
 import jakarta.inject.Singleton;
 
 import java.io.IOException;
@@ -20,10 +20,10 @@ import java.util.Optional;
 @Bean(typed = MemoryStorage.class)
 public class RedisMemoryStorage implements MemoryStorage {
     private final RedisCommands<String, byte[]> client;
-    private final ObjectMapper serde;
+    private final JsonMapper serde;
     private final AppConfig appConfig;
 
-    public RedisMemoryStorage(RedisClient redisClient, ObjectMapper mapper, AppConfig appConfig) {
+    public RedisMemoryStorage(RedisClient redisClient, JsonMapper mapper, AppConfig appConfig) {
         this.client = redisClient.connect(RedisCodec.of(StringCodec.UTF8, ByteArrayCodec.INSTANCE)).sync();
         this.serde = mapper;
         this.appConfig = appConfig;

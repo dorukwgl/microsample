@@ -1,10 +1,8 @@
 package com.doruk.application.auth.service;
 
-import com.doruk.application.auth.dto.AuthDto;
-import com.doruk.application.auth.dto.JwtRequest;
-import com.doruk.application.auth.dto.JwtResponse;
-import com.doruk.application.auth.dto.LoginResponse;
+import com.doruk.application.auth.dto.*;
 import com.doruk.application.exception.InvalidCredentialException;
+import com.doruk.application.interfaces.EventPublisher;
 import com.doruk.application.interfaces.MemoryStorage;
 import com.doruk.application.security.PasswordEncoder;
 import com.doruk.domain.shared.enums.MultiAuthType;
@@ -18,7 +16,6 @@ import com.doruk.infrastructure.util.GenerateRandom;
 import io.micronaut.context.annotation.Context;
 import javafx.util.Pair;
 import lombok.AllArgsConstructor;
-import org.jspecify.annotations.NonNull;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -39,6 +36,7 @@ public class AuthService {
     private final PasswordEncoder hasher;
     private final String mfaAttempt = ":attempt";
     private final MemoryStorage memoryStorage;
+    private final EventPublisher eventPublisher;
 
     private final Map<MultiAuthType, Function<AuthDto, LoginResponse>> authInitializers = Map.of(
             MultiAuthType.PHONE, this::initPhoneFactorAuth,
@@ -94,8 +92,8 @@ public class AuthService {
         var mfaToken = response.mfaToken();
         var otp = GenerateRandom.generateOtp();
         var duration = Duration.ofSeconds(Constants.MFA_VALIDITY_SECONDS);
-        memoryStorage.saveEx(mfaToken, otp, duration);
-        memoryStorage.saveEx(mfaToken + mfaAttempt, 0, duration);
+//        memoryStorage.saveEx(mfaToken, otp, duration);
+//        memoryStorage.saveEx(mfaToken + mfaAttempt, 0, duration);
         return response;
     }
 
@@ -106,6 +104,7 @@ public class AuthService {
         // return the response
         var response = createMfaTransaction(user);
         // extract method, createMfaTransaction
+        eventPublisher.publish(new SmsOtpDto());
         return response;
     }
 
@@ -115,7 +114,7 @@ public class AuthService {
         // send it to the user
         // return the response
         var response = createMfaTransaction(user);
-
+        eventPublisher.publish(new EmailOtpDto());
         return response;
     }
 

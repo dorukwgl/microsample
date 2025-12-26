@@ -102,12 +102,11 @@ jimmer:
   dialect: postgres
 
 nats:
-  microsample123:
-    default:
-      addresses:
-        - "nats://localhost:4222"
-      username: microsample123
-      password: ${NATS_PASSWORD}
+  default:
+    addresses:
+      - "nats://localhost:4222"
+    username: microsample123
+    password: ${NATS_PASSWORD}
 
 redis:
   uri: "redis://localhost"
@@ -140,8 +139,8 @@ logger:
   levels:
     ROOT: TRACE
     io.micronaut: INFO
-    io.netty: TRACE
-    io.micronaut.http.server.netty: DEBUG
+    io.netty: ALL
+    io.micronaut.http.server.netty: ALL
     io.micronaut.context: WARN
 
     org.flywaydb: INFO

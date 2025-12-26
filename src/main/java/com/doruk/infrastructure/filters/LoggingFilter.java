@@ -10,7 +10,7 @@ import io.micronaut.http.annotation.Filter;
 import io.micronaut.http.filter.HttpServerFilter;
 import io.micronaut.http.filter.ServerFilterChain;
 import io.micronaut.http.server.types.files.SystemFile;
-import io.micronaut.serde.ObjectMapper;
+import io.micronaut.json.JsonMapper;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import org.reactivestreams.Publisher;
@@ -31,7 +31,7 @@ public class LoggingFilter implements HttpServerFilter {
     private static final String RED_BOLD = "\u001B[31;1m";
     private static final String RESET = "\u001B[0m";
 
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
 
     @Override
     public Publisher<MutableHttpResponse<?>> doFilter(HttpRequest<?> request, ServerFilterChain chain) {
@@ -69,7 +69,7 @@ public class LoggingFilter implements HttpServerFilter {
                         var bodyColor = status.getCode() > 400 ? RED_BOLD : CYAN_DIM;
                         try {
                             if (!(respBody instanceof SystemFile))
-                                System.out.printf("%s: %s%s", bodyColor, objectMapper.writeValueAsString(respBody), RESET);
+                                System.out.printf("%s: %s%s", bodyColor, jsonMapper.writeValueAsString(respBody), RESET);
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
