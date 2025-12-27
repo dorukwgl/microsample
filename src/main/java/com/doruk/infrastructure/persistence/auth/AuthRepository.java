@@ -82,7 +82,7 @@ public class AuthRepository {
         Set<Permissions> permissions = new HashSet<>();
         if (commons.get_9() != null) // null check if permissions is empty
             dt.forEach(tup ->
-                    permissions.add(Permissions.valueOf(tup.get_8().name())));
+                    permissions.add(Permissions.valueOf(tup.get_9().name())));
 
         return AuthDto.builder()
                 .id(commons.get_1().toString())

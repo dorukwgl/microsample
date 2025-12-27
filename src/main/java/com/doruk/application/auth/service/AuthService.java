@@ -144,7 +144,7 @@ public class AuthService {
 
     public LoginResponse performMfa(String mfaToken, int otp, Optional<String> deviceId, Optional<String> deviceInfo) {
         var mfaTransaction = memoryStorage.get(mfaToken, MfaTransaction.class)
-                .orElseThrow(() -> new InvalidCredentialException("Invalid or expired MFS session."));
+                .orElseThrow(() -> new InvalidCredentialException("Invalid or expired MFA session."));
 
         // increment the attempt
         var attempt = memoryStorage.increment(mfaToken + mfaAttempt);

@@ -50,9 +50,12 @@ public class AuthController {
         return HttpResponse.created(response);
     }
 
-    @Post("/mfa/verify-mfa/{mfaToken}/{otp}")
-    LoginResponse verifyMfa(@Valid @RequestBean MfaRequest dto) {
-        return service.performMfa(dto.mfaToken(), dto.otp(),
+    @Post("/mfa/verify/{mfaToken}")
+    LoginResponse verifyMfa(
+            @Valid @RequestBean MfaRequest dto,
+            String mfaToken
+            ) {
+        return service.performMfa(mfaToken, dto.otp(),
                 Optional.ofNullable(dto.deviceId()), Optional.ofNullable(dto.deviceInfo()));
     }
 }
