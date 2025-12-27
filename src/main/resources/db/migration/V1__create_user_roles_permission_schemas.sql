@@ -14,7 +14,6 @@ CREATE TABLE users
     is_email_verified boolean DEFAULT false,
     is_phone_verified boolean DEFAULT false,
     status       USER_STATUS DEFAULT 'ACTIVE',
-    elevated_until TIMESTAMP,
     updated_at    TIMESTAMP,
     deleted_at    TIMESTAMP
 );

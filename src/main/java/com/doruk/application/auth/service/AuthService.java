@@ -1,6 +1,7 @@
 package com.doruk.application.auth.service;
 
 import com.doruk.application.auth.dto.*;
+import com.doruk.application.enums.TemplateType;
 import com.doruk.application.exception.InvalidCredentialException;
 import com.doruk.application.interfaces.EventPublisher;
 import com.doruk.application.interfaces.MemoryStorage;
@@ -87,35 +88,37 @@ public class AuthService {
         }
     }
 
-    private LoginResponse createMfaTransaction(AuthDto user) {
+    private Pair<Integer, LoginResponse> createMfaTransaction(AuthDto user) {
         var response = createMfaResponse(user);
         var mfaToken = response.mfaToken();
         var otp = GenerateRandom.generateOtp();
         var duration = Duration.ofSeconds(Constants.MFA_VALIDITY_SECONDS);
-//        memoryStorage.saveEx(mfaToken, otp, duration);
-//        memoryStorage.saveEx(mfaToken + mfaAttempt, 0, duration);
-        return response;
+        memoryStorage.saveEx(mfaToken, otp, duration);
+        memoryStorage.saveEx(mfaToken + mfaAttempt, 0, duration);
+        return new Pair<>(otp, response);
     }
 
     private LoginResponse initPhoneFactorAuth(AuthDto user) {
-        // generate a random otp
-        // create redis entry for the otp, mfa token, expires in, attempt count
-        // send it to the user
-        // return the response
         var response = createMfaTransaction(user);
-        // extract method, createMfaTransaction
-        eventPublisher.publish(new SmsOtpDto());
-        return response;
+
+        eventPublisher.publish(new SmsOtpDto(
+                user.phone(),
+                response.getKey(),
+                TemplateType.MFA
+        ));
+        return response.getValue();
     }
 
     private LoginResponse initEmailFactorAuth(AuthDto user) {
-        // generate a random otp
-        // create redis entry for the otp, mfa token, expires in, attempt count
-        // send it to the user
-        // return the response
         var response = createMfaTransaction(user);
-        eventPublisher.publish(new EmailOtpDto());
-        return response;
+
+        eventPublisher.publish(new EmailOtpDto(
+                user.id(),
+                null,
+                response.getKey(),
+                TemplateType.MFA
+        ));
+        return response.getValue();
     }
 
     public LoginResponse performLogin(String identifier, String password, Optional<String> deviceId, Optional<String> deviceInfo) {

@@ -8,6 +8,7 @@ import com.doruk.infrastructure.persistence.entity.SessionDraft;
 import com.doruk.infrastructure.persistence.entity.UserTable;
 import com.doruk.infrastructure.persistence.entity.UserTableEx;
 import jakarta.inject.Singleton;
+import javafx.util.Pair;
 import lombok.RequiredArgsConstructor;
 import org.babyfish.jimmer.sql.JSqlClient;
 import org.babyfish.jimmer.sql.JoinType;
@@ -61,6 +62,17 @@ public class AuthRepository {
                         .setDeviceId(deviceId.orElse(null))
                         .setDeviceInfo(deviceInfo.orElse(null)))
         );
+    }
+
+    public Pair<String, String> getMailAddress(String id) {
+        var t = UserTable.$;
+        var user = sqlClient.createQuery(t)
+                .where(t.id().eq(UUID.fromString(id)))
+                .select(t.username(), t.email())
+                .execute();
+
+        return user.isEmpty() ? null :
+                new Pair<>(user.getFirst().get_1(), user.getFirst().get_2());
     }
 
     private static AuthDto toAuthDto(List<Tuple8<UUID, String, String, String, Boolean, Boolean, MultiAuthType, Permission>> dt) {

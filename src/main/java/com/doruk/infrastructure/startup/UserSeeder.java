@@ -29,23 +29,23 @@ public class UserSeeder {
                 .setPassword(hasher.encode("ghost@ihbibicdff"))
         );
         var dictator = UserDraft.$.produce(u -> u.setUsername("dorukwgl")
-                .setEmail("dorukwgl@gmail.com")
+                .setEmail("dorukwagle@gmail.com")
                 .setEmailVerified(true)
                 .setPhoneVerified(true)
                 .setPhone("9829293466")
                 .setRoles(List.of(RoleDraft.$.produce(r -> r.setName("DICTATOR"))))
-                .setMultiFactorAuth(MultiAuthType.NONE)
+                .setMultiFactorAuth(MultiAuthType.EMAIL)
                 .setPassword(hasher.encode("dorukwgl@ihbibicdff"))
         );
 
         var sysAdmin = UserDraft.$.produce(u -> u.setUsername("doruk")
-                .setEmail("doruk@gmail.com")
+                .setEmail("chrishdev.chd@gmail.com")
                 .setEmailVerified(true)
                 .setPhoneVerified(true)
                 .setPhone("9829293466")
                 .setRoles(List.of(RoleDraft.$.produce(r -> r.setName("SYS_ADMIN"))))
                 .setMultiFactorAuth(MultiAuthType.NONE)
-                .setPassword(hasher.encode("doruk@ihbibicdff"))
+                .setPassword(hasher.encode("chd@ihbibicdff"))
         );
 
         var user = UserDraft.$.produce(u -> u.setUsername("testuser")

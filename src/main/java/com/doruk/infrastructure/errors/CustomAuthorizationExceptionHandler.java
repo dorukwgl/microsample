@@ -6,7 +6,6 @@ import io.micronaut.core.annotation.Nullable;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MutableHttpResponse;
-import io.micronaut.http.server.exceptions.response.ErrorContext;
 import io.micronaut.http.server.exceptions.response.ErrorResponseProcessor;
 import io.micronaut.security.authentication.AuthorizationException;
 import io.micronaut.security.authentication.DefaultAuthorizationExceptionHandler;
@@ -17,7 +16,6 @@ import io.micronaut.security.errors.PriorToLoginPersistence;
 import jakarta.inject.Singleton;
 
 import java.util.List;
-import java.util.Map;
 
 @Singleton
 @Replaces(DefaultAuthorizationExceptionHandler.class)

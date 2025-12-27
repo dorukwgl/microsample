@@ -44,20 +44,20 @@ public class Templates {
                         <div class="header"><h1>YakshaSoft</h1></div>
                         <div class="content">
                             <h2>Verify your email address</h2>
-                            <p class="text-main">Hi {{name}},<br>Welcome to the community! To finalize your account setup and start exploring, please verify your email address using the code below:</p>
+                            <p class="text-main">Hi {{params.name}},<br>Welcome to the community! To finalize your account setup and start exploring, please verify your email address using the code below:</p>
 
                             <div class="otp-label">Verification Code</div>
                             <div class="otp-box">
-                                <p class="otp-code">{{otp}}</p>
+                                <p class="otp-code">{{params.otp}}</p>
                             </div>
 
                             <div class="btn-wrapper">
-                                <a href="{{url}}" class="btn">Verify Account</a>
+                                <a href="{{params.url}}" class="btn">Verify Account</a>
                             </div>
 
                             <div class="fallback-section">
                                 <p class="fallback-text">Having trouble with the button? Copy and paste this link into your browser:</p>
-                                <a href="{{url}}" class="fallback-link">{{url}}</a>
+                                <a href="{{params.url}}" class="fallback-link">{{params.url}}</a>
                             </div>
 
                             <p class="text-main" style="margin-top:30px;">Welcome aboard,<br><strong>The YakshaSoft Team</strong></p>
@@ -85,20 +85,20 @@ public class Templates {
                         <div class="header"><h1>YakshaSoft</h1></div>
                         <div class="content">
                             <h2>Password Reset Request</h2>
-                            <p class="text-main">Hi {{name}},<br>We received a request to reset your password. If this was you, please enter the code below in the app or click the button to continue:</p>
+                            <p class="text-main">Hi {{params.name}},<br>We received a request to reset your password. If this was you, please enter the code below in the app or click the button to continue:</p>
 
                             <div class="otp-label">Password Reset Code</div>
                             <div class="otp-box">
-                                <p class="otp-code">{{otp}}</p>
+                                <p class="otp-code">{{params.otp}}</p>
                             </div>
 
                             <div class="btn-wrapper">
-                                <a href="{{url}}" class="btn">Reset Password</a>
+                                <a href="{{params.url}}" class="btn">Reset Password</a>
                             </div>
 
                             <div class="fallback-section">
                                 <p class="fallback-text">If the button above does not work, use the following secure link:</p>
-                                <a href="{{url}}" class="fallback-link">{{url}}</a>
+                                <a href="{{params.url}}" class="fallback-link">{{params.url}}</a>
                             </div>
 
                             <p class="text-main" style="margin-top:30px; font-size: 13px; color: #9ca3af;">
@@ -127,11 +127,11 @@ public class Templates {
                         <div class="header"><h1>YakshaSoft</h1></div>
                         <div class="content" style="text-align: center;">
                             <h2>Identity Verification</h2>
-                            <p class="text-main">Hi {{name}},<br>Use the code below to complete your sign-in process. This code will expire shortly.</p>
+                            <p class="text-main">Hi {{params.name}},<br>Use the code below to complete your sign-in process. This code will expire shortly.</p>
 
                             <div class="otp-label">MFA Code</div>
                             <div class="otp-box">
-                                <p class="otp-code">{{otp}}</p>
+                                <p class="otp-code">{{params.otp}}</p>
                             </div>
 
                             <p style="color: #ef4444; font-size: 14px; font-weight: 600;">Never share this code with anyone.</p>

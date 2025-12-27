@@ -35,10 +35,12 @@ public class BrevoMailService implements MailService {
                 Map.of(
                         "otp", mailParams.otp(), "name",
                         mailParams.toName(),
-                        "url", mailParams.tempUrl()
+                        "url", type == TemplateType.PASSWORD_RESET ?
+                                mailParams.tempUrl() : ""
                 )
         );
 
-        client.sendEmail(brevoConfig.apiKey(), request);
+        var res = client.sendEmail(brevoConfig.apiKey(), request);
+        IO.println(res);
     }
 }

@@ -2,13 +2,13 @@ package com.doruk.infrastructure.errors;
 
 import com.doruk.infrastructure.util.ErrorBuilder;
 import io.micronaut.context.annotation.Replaces;
-import io.micronaut.http.*;
-import io.micronaut.http.server.exceptions.response.*;
+import io.micronaut.http.HttpRequest;
+import io.micronaut.http.MediaType;
+import io.micronaut.http.MutableHttpResponse;
 import io.micronaut.http.server.exceptions.response.ErrorContext;
+import io.micronaut.http.server.exceptions.response.ErrorResponseProcessor;
 import jakarta.inject.Singleton;
 
-import java.time.Instant;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -20,7 +20,7 @@ public class CustomErrorResponseProcessor implements ErrorResponseProcessor<Map<
 
     @Override
     public MutableHttpResponse processResponse(ErrorContext errorContext,
-                                                  MutableHttpResponse response) {
+                                               MutableHttpResponse response) {
 
         HttpRequest<?> request = errorContext.getRequest();
 
