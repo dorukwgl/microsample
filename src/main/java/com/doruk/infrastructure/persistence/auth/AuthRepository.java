@@ -14,6 +14,7 @@ import org.babyfish.jimmer.sql.JSqlClient;
 import org.babyfish.jimmer.sql.JoinType;
 import org.babyfish.jimmer.sql.ast.Predicate;
 import org.babyfish.jimmer.sql.ast.tuple.Tuple8;
+import org.babyfish.jimmer.sql.ast.tuple.Tuple9;
 import org.babyfish.jimmer.sql.runtime.LogicalDeletedBehavior;
 
 import java.time.LocalDateTime;
@@ -31,6 +32,7 @@ public class AuthRepository {
                 .where(Predicate.or(UserTable.$.username().eq(field), UserTable.$.email().eq(field)))
                 .select(
                         t.id(),
+                        t.username(),
                         t.password(),
                         t.phone(),
                         t.email(),
@@ -75,21 +77,22 @@ public class AuthRepository {
                 new Pair<>(user.getFirst().get_1(), user.getFirst().get_2());
     }
 
-    private static AuthDto toAuthDto(List<Tuple8<UUID, String, String, String, Boolean, Boolean, MultiAuthType, Permission>> dt) {
+    private static AuthDto toAuthDto(List<Tuple9<UUID, String, String, String, String, Boolean, Boolean, MultiAuthType, Permission>> dt) {
         var commons = dt.getFirst();
         Set<Permissions> permissions = new HashSet<>();
-        if (commons.get_8() != null) // null check if permissions is empty
+        if (commons.get_9() != null) // null check if permissions is empty
             dt.forEach(tup ->
                     permissions.add(Permissions.valueOf(tup.get_8().name())));
 
         return AuthDto.builder()
                 .id(commons.get_1().toString())
-                .password(commons.get_2())
-                .phone(commons.get_3())
-                .email(commons.get_4())
-                .emailVerified(commons.get_5())
-                .phoneVerified(commons.get_6())
-                .multiFactorAuth(commons.get_7())
+                .username(commons.get_2())
+                .password(commons.get_3())
+                .phone(commons.get_4())
+                .email(commons.get_5())
+                .emailVerified(commons.get_6())
+                .phoneVerified(commons.get_7())
+                .multiFactorAuth(commons.get_8())
                 .permissions(permissions)
                 .build();
     }

@@ -3,11 +3,9 @@ package com.doruk.presentation.auth.controller;
 import com.doruk.application.auth.dto.LoginResponse;
 import com.doruk.application.auth.service.AuthService;
 import com.doruk.presentation.auth.dto.LoginRequest;
+import com.doruk.presentation.auth.dto.MfaRequest;
 import io.micronaut.http.HttpResponse;
-import io.micronaut.http.annotation.Body;
-import io.micronaut.http.annotation.Controller;
-import io.micronaut.http.annotation.Get;
-import io.micronaut.http.annotation.Post;
+import io.micronaut.http.annotation.*;
 import io.micronaut.scheduling.TaskExecutors;
 import io.micronaut.scheduling.annotation.ExecuteOn;
 import io.micronaut.security.annotation.Secured;
@@ -53,12 +51,8 @@ public class AuthController {
     }
 
     @Post("/mfa/verify-mfa/{mfaToken}/{otp}")
-    LoginResponse verifyMfa(
-            String mfaToken,
-            @Min(value = 100000, message = "OTP must be 6 digits")
-            @Max(value = 999999, message = "OTP must be 6 digits")
-            int otp) {
-        IO.println("hello: " + otp);
-        return null;
+    LoginResponse verifyMfa(@Valid @RequestBean MfaRequest dto) {
+        return service.performMfa(dto.mfaToken(), dto.otp(),
+                Optional.ofNullable(dto.deviceId()), Optional.ofNullable(dto.deviceInfo()));
     }
 }

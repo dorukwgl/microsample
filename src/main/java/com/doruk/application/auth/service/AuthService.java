@@ -93,9 +93,14 @@ public class AuthService {
         var mfaToken = response.mfaToken();
         var otp = GenerateRandom.generateOtp();
         var duration = Duration.ofSeconds(Constants.MFA_VALIDITY_SECONDS);
-        memoryStorage.saveEx(mfaToken, otp, duration);
+        memoryStorage.saveEx(mfaToken, new MfaTransaction(otp, user.username()), duration);
         memoryStorage.saveEx(mfaToken + mfaAttempt, 0, duration);
         return new Pair<>(otp, response);
+    }
+
+    private void removeMfaTransaction(String mfaToken) {
+        memoryStorage.delete(mfaToken);
+        memoryStorage.delete(mfaToken + mfaAttempt);
     }
 
     private LoginResponse initPhoneFactorAuth(AuthDto user) {
@@ -137,4 +142,26 @@ public class AuthService {
         return createLoginResponse(deviceId, deviceInfo, user);
     }
 
+    public LoginResponse performMfa(String mfaToken, int otp, Optional<String> deviceId, Optional<String> deviceInfo) {
+        var mfaTransaction = memoryStorage.get(mfaToken, MfaTransaction.class)
+                .orElseThrow(() -> new InvalidCredentialException("Invalid or expired MFS session."));
+
+        // increment the attempt
+        var attempt = memoryStorage.increment(mfaToken + mfaAttempt);
+        if (attempt > Constants.MFA_ATTEMPT_LIMIT) {
+            this.removeMfaTransaction(mfaToken);
+            throw new InvalidCredentialException("Too many attempts");
+        }
+
+        if (mfaTransaction.otp() != otp)
+            throw new InvalidCredentialException("Invalid otp code");
+
+        // create session
+        var response = this.createLoginResponse(deviceId, deviceInfo,
+                authRepository.findByUsernameOrEmail(mfaTransaction.username()).orElseThrow());
+
+        // remove the mfa transaction
+        this.removeMfaTransaction(mfaToken);
+        return response;
+    }
 }

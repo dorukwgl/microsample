@@ -39,8 +39,6 @@ public class BrevoMailService implements MailService {
                                 mailParams.tempUrl() : ""
                 )
         );
-
-        var res = client.sendEmail(brevoConfig.apiKey(), request);
-        IO.println(res);
+        client.sendEmail(brevoConfig.apiKey(), request);
     }
 }

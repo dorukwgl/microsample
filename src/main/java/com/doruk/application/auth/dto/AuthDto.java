@@ -11,6 +11,7 @@ import java.util.Set;
 @Builder
 public record AuthDto(
         String id,
+        String username,
         String password,
         String email,
         String phone,
