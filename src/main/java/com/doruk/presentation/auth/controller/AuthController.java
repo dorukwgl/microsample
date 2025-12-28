@@ -2,12 +2,11 @@ package com.doruk.presentation.auth.controller;
 
 import com.doruk.application.auth.dto.LoginResponse;
 import com.doruk.application.auth.service.AuthService;
+import com.doruk.presentation.auth.dto.DeviceInfoRequest;
 import com.doruk.presentation.auth.dto.LoginRequest;
-import com.doruk.presentation.auth.dto.MfaRequest;
+import com.doruk.presentation.auth.mappers.DeviceInfoMapper;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.annotation.*;
-import io.micronaut.scheduling.TaskExecutors;
-import io.micronaut.scheduling.annotation.ExecuteOn;
 import io.micronaut.security.annotation.Secured;
 import io.micronaut.security.rules.SecurityRule;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,13 +17,12 @@ import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
 
-import java.util.Optional;
-
 @Secured(SecurityRule.IS_ANONYMOUS)
 @Controller("auth")
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthService service;
+    private final DeviceInfoMapper infoMapper;
 
     @Get("/hello")
     Mono<String> hello() {
@@ -38,11 +36,12 @@ public class AuthController {
     @ApiResponse(responseCode = "201", description = "Login successful")
     @ApiResponse(responseCode = "202", description = "Multi factor authentication required")
     @Post("/login")
-    HttpResponse<LoginResponse> login(@Valid @Body LoginRequest request) {
+    HttpResponse<LoginResponse> login(
+            @Valid @Body LoginRequest request,
+            @Valid @Body DeviceInfoRequest info) {
         var response = service.performLogin(request.identifier(),
                 request.password(),
-                Optional.ofNullable(request.deviceId()),
-                Optional.ofNullable(request.deviceInfo())
+                infoMapper.toDeviceInfo(info)
         );
 
         if (response.mfaRequired())
@@ -52,10 +51,12 @@ public class AuthController {
 
     @Post("/mfa/verify/{mfaToken}")
     LoginResponse verifyMfa(
-            @Valid @RequestBean MfaRequest dto,
-            String mfaToken
-            ) {
-        return service.performMfa(mfaToken, dto.otp(),
-                Optional.ofNullable(dto.deviceId()), Optional.ofNullable(dto.deviceInfo()));
+            @Valid @RequestBean DeviceInfoRequest info,
+            String mfaToken,
+            @Max(value = 999999, message = "OTP must be 6 digits")
+            @Min(value = 100000, message = "OTP must be 6 digits")
+            int otp
+    ) {
+        return service.performMfa(mfaToken, otp, infoMapper.toDeviceInfo(info));
     }
 }

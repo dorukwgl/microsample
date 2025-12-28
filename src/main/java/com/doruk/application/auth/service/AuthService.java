@@ -126,7 +126,7 @@ public class AuthService {
         return response.getValue();
     }
 
-    public LoginResponse performLogin(String identifier, String password, Optional<String> deviceId, Optional<String> deviceInfo) {
+    public LoginResponse performLogin(String identifier, String password, DeviceInfo deviceInfo) {
         var invalidCredentials = new InvalidCredentialException("Incorrect username/email or password.");
 
         var user = authRepository.findByUsernameOrEmail(identifier)
@@ -139,10 +139,10 @@ public class AuthService {
         if (user.multiFactorAuth() != MultiAuthType.NONE)
             return this.authInitializers.get(user.multiFactorAuth()).apply(user);
 
-        return createLoginResponse(deviceId, deviceInfo, user);
+        return createLoginResponse(deviceInfo.deviceId(), deviceInfo.deviceInfo(), user);
     }
 
-    public LoginResponse performMfa(String mfaToken, int otp, Optional<String> deviceId, Optional<String> deviceInfo) {
+    public LoginResponse performMfa(String mfaToken, int otp, DeviceInfo deviceInfo) {
         var mfaTransaction = memoryStorage.get(mfaToken, MfaTransaction.class)
                 .orElseThrow(() -> new InvalidCredentialException("Invalid or expired MFA session."));
 
@@ -157,7 +157,7 @@ public class AuthService {
             throw new InvalidCredentialException("Invalid otp code");
 
         // create session
-        var response = this.createLoginResponse(deviceId, deviceInfo,
+        var response = this.createLoginResponse(deviceInfo.deviceId(), deviceInfo.deviceInfo(),
                 authRepository.findByUsernameOrEmail(mfaTransaction.username()).orElseThrow());
 
         // remove the mfa transaction
