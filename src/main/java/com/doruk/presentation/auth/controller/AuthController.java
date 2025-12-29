@@ -6,17 +6,22 @@ import com.doruk.presentation.auth.dto.DeviceInfoRequest;
 import com.doruk.presentation.auth.dto.LoginRequest;
 import com.doruk.presentation.auth.mappers.DeviceInfoMapper;
 import io.micronaut.http.HttpResponse;
+import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.*;
 import io.micronaut.security.annotation.Secured;
 import io.micronaut.security.rules.SecurityRule;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
 
+import java.util.Map;
+
+@Tag(name = "Authentications")
 @Secured(SecurityRule.IS_ANONYMOUS)
 @Controller("auth")
 @RequiredArgsConstructor
@@ -24,12 +29,11 @@ public class AuthController {
     private final AuthService service;
     private final DeviceInfoMapper infoMapper;
 
+
     @Get("/hello")
-    Mono<String> hello() {
-        return Mono.fromCallable(() -> {
-            IO.println(Thread.currentThread().getName());
-            return "world...";
-        });
+    HttpResponse<Map<String, String>> hello(@Valid @RequestBean DeviceInfoRequest info) {
+        IO.println(info.userAgent());
+        return HttpResponse.status(666, "hello world").body(Map.of("message", "hello world"));
     }
 
     @Operation
@@ -38,7 +42,7 @@ public class AuthController {
     @Post("/login")
     HttpResponse<LoginResponse> login(
             @Valid @Body LoginRequest request,
-            @Valid @Body DeviceInfoRequest info) {
+            @Valid @RequestBean DeviceInfoRequest info) {
         var response = service.performLogin(request.identifier(),
                 request.password(),
                 infoMapper.toDeviceInfo(info)

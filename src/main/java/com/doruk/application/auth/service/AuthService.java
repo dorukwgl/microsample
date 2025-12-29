@@ -17,6 +17,7 @@ import com.doruk.infrastructure.util.GenerateRandom;
 import io.micronaut.context.annotation.Context;
 import javafx.util.Pair;
 import lombok.AllArgsConstructor;
+import nl.basjes.parse.useragent.UserAgentAnalyzer;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -38,6 +39,7 @@ public class AuthService {
     private final String mfaAttempt = ":attempt";
     private final MemoryStorage memoryStorage;
     private final EventPublisher eventPublisher;
+    private final UserAgentAnalyzer uaa;
 
     private final Map<MultiAuthType, Function<AuthDto, LoginResponse>> authInitializers = Map.of(
             MultiAuthType.PHONE, this::initPhoneFactorAuth,
@@ -126,7 +128,7 @@ public class AuthService {
         return response.getValue();
     }
 
-    public LoginResponse performLogin(String identifier, String password, DeviceInfo deviceInfo) {
+    public LoginResponse performLogin(String identifier, String password, DeviceInfoObject deviceInfoObject) {
         var invalidCredentials = new InvalidCredentialException("Incorrect username/email or password.");
 
         var user = authRepository.findByUsernameOrEmail(identifier)
@@ -139,10 +141,10 @@ public class AuthService {
         if (user.multiFactorAuth() != MultiAuthType.NONE)
             return this.authInitializers.get(user.multiFactorAuth()).apply(user);
 
-        return createLoginResponse(deviceInfo.deviceId(), deviceInfo.deviceInfo(), user);
+        return createLoginResponse(deviceInfoObject.deviceId(), deviceInfoObject.deviceInfo(uaa), user);
     }
 
-    public LoginResponse performMfa(String mfaToken, int otp, DeviceInfo deviceInfo) {
+    public LoginResponse performMfa(String mfaToken, int otp, DeviceInfoObject deviceInfoObject) {
         var mfaTransaction = memoryStorage.get(mfaToken, MfaTransaction.class)
                 .orElseThrow(() -> new InvalidCredentialException("Invalid or expired MFA session."));
 
@@ -157,7 +159,7 @@ public class AuthService {
             throw new InvalidCredentialException("Invalid otp code");
 
         // create session
-        var response = this.createLoginResponse(deviceInfo.deviceId(), deviceInfo.deviceInfo(),
+        var response = this.createLoginResponse(deviceInfoObject.deviceId(), deviceInfoObject.deviceInfo(uaa),
                 authRepository.findByUsernameOrEmail(mfaTransaction.username()).orElseThrow());
 
         // remove the mfa transaction

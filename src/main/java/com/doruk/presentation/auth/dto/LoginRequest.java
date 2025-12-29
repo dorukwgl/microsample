@@ -14,23 +14,6 @@ public record LoginRequest(
 
         @NotBlank
         @Size(max = 150, min = 1)
-        String password,
-
-        @Nullable
-        @Size(max = 200, min = 32)
-        @Pattern(regexp = "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$")
-        String deviceId,
-
-        @Nullable
-        @Size(min = 3, max = 50)
-        String platform,
-
-        @Nullable
-        @Size(min = 3, max = 50)
-        String brand1,
-
-        @Nullable
-        @Size(min = 3, max = 50)
-        String brand2
+        String password
 ) {
 }

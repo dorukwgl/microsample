@@ -58,15 +58,15 @@ public class LoggingFilter implements HttpServerFilter {
         return Flux.from(chain.proceed(request))
                 .map(response -> {
                     // Log response status and body
-                    HttpStatus status = response.getStatus();
+                    int status = response.code();
                     Object respBody = response.getBody().orElse(null);
 
-                    var lineColor = status.getCode() > 400 ? RED_BOLD : CYAN_BOLD;
+                    var lineColor = status > 400 ? RED_BOLD : CYAN_BOLD;
                     long duration = System.currentTimeMillis() - startTime;
-                    System.out.printf("%s[%d~> %dms]:%s", lineColor, status.getCode(), duration, RESET);
+                    System.out.printf("%s[%d~> %dms]:%s", lineColor, status, duration, RESET);
 
                     if (respBody != null) {
-                        var bodyColor = status.getCode() > 400 ? RED_BOLD : CYAN_DIM;
+                        var bodyColor = status > 400 ? RED_BOLD : CYAN_DIM;
                         try {
                             if (!(respBody instanceof SystemFile))
                                 System.out.printf("%s: %s%s", bodyColor, jsonMapper.writeValueAsString(respBody), RESET);
