@@ -32,7 +32,6 @@ public class OtpEventHandler {
 
     @Subject(value = "auth.mfa.email-otp", queue = "otp-workers")
     public void handleEmailOtp(EmailOtpDto dto) {
-        IO.println("reached here...");
         CompletableFuture.runAsync(() -> {
                     var user = authRepository.getMailAddress(dto.id());
                     mailService.sendOtp(new MailService.MailParams(

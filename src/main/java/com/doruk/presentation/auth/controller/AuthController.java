@@ -6,7 +6,6 @@ import com.doruk.presentation.auth.dto.DeviceInfoRequest;
 import com.doruk.presentation.auth.dto.LoginRequest;
 import com.doruk.presentation.auth.mappers.DeviceInfoMapper;
 import io.micronaut.http.HttpResponse;
-import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.*;
 import io.micronaut.security.annotation.Secured;
 import io.micronaut.security.rules.SecurityRule;
@@ -17,7 +16,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
-import reactor.core.publisher.Mono;
 
 import java.util.Map;
 

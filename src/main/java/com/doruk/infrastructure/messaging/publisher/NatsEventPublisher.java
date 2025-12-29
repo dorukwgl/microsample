@@ -17,6 +17,7 @@ public class NatsEventPublisher implements EventPublisher {
     private final Connection natsConnection;
     private final JsonMapper jsonMapper;
 
+
     @Override
     public void publish(EventDto eventDto) {
         try {

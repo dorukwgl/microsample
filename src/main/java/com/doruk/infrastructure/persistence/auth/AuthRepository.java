@@ -63,7 +63,7 @@ public class AuthRepository {
                         .setExpiresAt(expiration)
                         .setDeviceId(deviceId.orElse(null))
                         .setDeviceInfo(deviceInfo.orElse(null)))
-        );
+        ).execute();
     }
 
     public Pair<String, String> getMailAddress(String id) {

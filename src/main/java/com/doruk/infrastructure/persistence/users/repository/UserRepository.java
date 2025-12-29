@@ -24,6 +24,4 @@ public class UserRepository {
 //                    .fetchFirst())
 //                .subscribeOn(executors.BLOCKING);
 //    }
-
-
 }

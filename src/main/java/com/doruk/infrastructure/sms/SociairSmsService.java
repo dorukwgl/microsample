@@ -24,6 +24,5 @@ public class SociairSmsService implements SmsService {
         String template = SmsTemplates.getSmsTemplate(otp, type);
         client.sendSms(phone, template);
     }
-
     // phone can be comma separated multiple list of values, to send to multiple clients
 }

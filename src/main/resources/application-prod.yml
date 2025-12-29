@@ -102,12 +102,11 @@ jimmer:
   dialect: postgres
 
 nats:
-  microsample123:
-    default:
-      addresses:
-        - "nats://localhost:4222"
-      username: microsample123
-      password: ${NATS_PASSWORD}
+  default:
+    addresses:
+      - "nats://localhost:4222"
+    username: microsample123
+    password: ${NATS_PASSWORD}
 
 redis:
   uri: "redis://localhost"
@@ -132,6 +131,7 @@ flyway:
       out-of-order: false
       locations: classpath:db/migration
       schemas: sample
+
 
 # ==========================
 # Logging

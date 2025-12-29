@@ -29,9 +29,12 @@ public class UserAgentValidationFactory {
 
             // Check if it confidently identified key parts
             return !"Unknown".equalsIgnoreCase(browser) &&
+                    !"??".equalsIgnoreCase(browser) &&
                     !"Unknown".equalsIgnoreCase(os) &&
+                    !"??".equalsIgnoreCase(os) &&
                     browserVersion != null && // Has some version
-                    !"Unknown".equalsIgnoreCase(browserVersion);
+                    !"Unknown".equalsIgnoreCase(browserVersion) &&
+                    !"??".equalsIgnoreCase(browserVersion);
         };
     }
 }
