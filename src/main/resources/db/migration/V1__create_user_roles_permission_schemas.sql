@@ -14,7 +14,8 @@ CREATE TABLE users
     is_email_verified boolean DEFAULT false,
     is_phone_verified boolean DEFAULT false,
     status       USER_STATUS DEFAULT 'ACTIVE',
-    updated_at    TIMESTAMP,
+    created_at timestamp with time zone default now(),
+    updated_at    TIMESTAMP with time zone default now(),
     deleted_at    TIMESTAMP
 );
 
@@ -82,7 +83,8 @@ create table biometrics
     id uuid primary key default uuidv7(),
     user_id uuid not null references users (id) on delete cascade,
     public_key varchar(255) not null unique,
-    device_id varchar(255) not null unique
+    device_id varchar(255) not null unique,
+    created_at timestamp with time zone default now()
 );
 
 

@@ -45,10 +45,6 @@ public interface User {
     @Column(name = "status")
     UserAccountStatus status();
 
-    @Column(name = "elevated_until")
-    @Nullable
-    LocalDateTime elevatedUntil();
-
     @Nullable
     @Column(name = "updated_at")
     LocalDateTime updatedAt();
@@ -57,6 +53,9 @@ public interface User {
     @LogicalDeleted("now")
     @Column(name = "deleted_at")
     LocalDateTime deletedAt();
+
+    @Nullable
+    LocalDateTime createdAt();
 
     // --- Relationships ---
 

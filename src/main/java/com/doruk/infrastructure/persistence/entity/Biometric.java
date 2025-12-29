@@ -25,5 +25,8 @@ public interface Biometric {
     String deviceId();
 
     @Nullable
+    LocalDateTime createdAt();
+
+    @Nullable
     LocalDateTime deletedAt();
 }

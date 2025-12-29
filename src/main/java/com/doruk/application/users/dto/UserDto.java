@@ -1,4 +1,4 @@
-package com.doruk.application.dto;
+package com.doruk.application.users.dto;
 
 import com.doruk.domain.shared.enums.MultiAuthType;
 import com.doruk.domain.shared.enums.UserAccountStatus;
@@ -17,6 +17,6 @@ public record UserDto(
         boolean isEmailVerified,
         boolean isPhoneVerified,
         MultiAuthType multiFactorAuth,
-        LocalDateTime elevatedUntil
+        LocalDateTime createdAt
 ) {
 }

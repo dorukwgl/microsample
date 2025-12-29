@@ -1,12 +1,8 @@
 package com.doruk.infrastructure.persistence.users.repository;
 
-import com.doruk.application.dto.UserDto;
 import com.doruk.infrastructure.config.AppExecutors;
-import com.doruk.infrastructure.persistence.entity.UserTable;
 import lombok.RequiredArgsConstructor;
 import org.babyfish.jimmer.sql.JSqlClient;
-import org.babyfish.jimmer.sql.ast.Predicate;
-import reactor.core.publisher.Mono;
 
 @RequiredArgsConstructor
 public class UserRepository {
@@ -24,4 +20,6 @@ public class UserRepository {
 //                    .fetchFirst())
 //                .subscribeOn(executors.BLOCKING);
 //    }
+
+
 }
