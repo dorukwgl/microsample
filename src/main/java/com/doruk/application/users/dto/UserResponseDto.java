@@ -8,14 +8,14 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Serdeable
-public record UserDto(
+public record UserResponseDto(
         UUID id,
         String username,
         String email,
         String phone,
         UserAccountStatus status,
-        boolean isEmailVerified,
-        boolean isPhoneVerified,
+        boolean emailVerified,
+        boolean phoneVerified,
         MultiAuthType multiFactorAuth,
         LocalDateTime createdAt
 ) {

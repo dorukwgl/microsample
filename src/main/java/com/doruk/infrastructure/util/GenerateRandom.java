@@ -15,4 +15,8 @@ public class GenerateRandom {
     public static int generateOtp() {
         return ThreadLocalRandom.current().nextInt(100000, 999999);
     }
+
+    public static String generateTransactionId() {
+        return generateMfaToken();
+    }
 }

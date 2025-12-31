@@ -3,6 +3,7 @@ package com.doruk.application.auth.service;
 import com.doruk.application.auth.dto.*;
 import com.doruk.application.enums.TemplateType;
 import com.doruk.application.exception.InvalidCredentialException;
+import com.doruk.application.exception.TooManyAttemptsException;
 import com.doruk.application.interfaces.EventPublisher;
 import com.doruk.application.interfaces.MemoryStorage;
 import com.doruk.application.security.PasswordEncoder;
@@ -14,6 +15,7 @@ import com.doruk.infrastructure.persistence.auth.AuthRepository;
 import com.doruk.infrastructure.security.JwtIssuer;
 import com.doruk.infrastructure.util.Constants;
 import com.doruk.infrastructure.util.GenerateRandom;
+import com.doruk.infrastructure.util.KeyNamespace;
 import io.micronaut.context.annotation.Context;
 import javafx.util.Pair;
 import lombok.AllArgsConstructor;
@@ -36,7 +38,6 @@ public class AuthService {
     private final AppConfig appConfig;
     private final AuthRepository authRepository;
     private final PasswordEncoder hasher;
-    private final String mfaAttempt = ":attempt";
     private final MemoryStorage memoryStorage;
     private final EventPublisher eventPublisher;
     private final UserAgentAnalyzer uaa;
@@ -95,14 +96,14 @@ public class AuthService {
         var mfaToken = response.mfaToken();
         var otp = GenerateRandom.generateOtp();
         var duration = Duration.ofSeconds(Constants.MFA_VALIDITY_SECONDS);
-        memoryStorage.saveEx(mfaToken, new MfaTransaction(otp, user.username()), duration);
-        memoryStorage.saveEx(mfaToken + mfaAttempt, 0, duration);
+        memoryStorage.saveEx(KeyNamespace.mfaTransactionId(mfaToken), new MfaTransaction(otp, user.username()), duration);
+        memoryStorage.saveEx(KeyNamespace.mfaOtpAttempt(mfaToken), 0, duration);
         return new Pair<>(otp, response);
     }
 
     private void removeMfaTransaction(String mfaToken) {
-        memoryStorage.delete(mfaToken);
-        memoryStorage.delete(mfaToken + mfaAttempt);
+        memoryStorage.delete(KeyNamespace.mfaTransactionId(mfaToken));
+        memoryStorage.delete(KeyNamespace.mfaOtpAttempt(mfaToken));
     }
 
     private LoginResponse initPhoneFactorAuth(AuthDto user) {
@@ -149,10 +150,10 @@ public class AuthService {
                 .orElseThrow(() -> new InvalidCredentialException("Invalid or expired MFA session."));
 
         // increment the attempt
-        var attempt = memoryStorage.increment(mfaToken + mfaAttempt);
+        var attempt = memoryStorage.increment(KeyNamespace.mfaOtpAttempt(mfaToken));
         if (attempt > Constants.MFA_ATTEMPT_LIMIT) {
             this.removeMfaTransaction(mfaToken);
-            throw new InvalidCredentialException("Too many attempts");
+            throw new TooManyAttemptsException("Too many attempts");
         }
 
         if (mfaTransaction.otp() != otp)

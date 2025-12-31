@@ -1,9 +1,6 @@
 package com.doruk.infrastructure.exceptionhandlers;
 
-import com.doruk.application.exception.ApplicationException;
-import com.doruk.application.exception.ForbiddenException;
-import com.doruk.application.exception.InvalidCredentialException;
-import com.doruk.application.exception.SuspiciousIntrusionException;
+import com.doruk.application.exception.*;
 import com.doruk.infrastructure.dto.ErrorResponse;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.http.HttpRequest;
@@ -41,6 +38,7 @@ public class ApplicationExceptionHandler implements ExceptionHandler<Application
             case InvalidCredentialException _ -> new Pair<>(401, "Highly Unauthorized");
             case ForbiddenException _ -> new Pair<>(403, "Interdicted"); // interdicted
             case SuspiciousIntrusionException _ -> new Pair<>(666, "Intrusive Anomaly Detected");
+            case ConflictingArgumentException _ -> new Pair<>(409, "Conflict");
             default -> throw exception; // let the global exception handler handle the server error
         };
     }
@@ -58,7 +56,7 @@ public class ApplicationExceptionHandler implements ExceptionHandler<Application
             case ForbiddenException _ -> msg == null || msg.isBlank() ?
                     "You are not supposed to perform this action." : msg;
             case SuspiciousIntrusionException _ -> getSuspiciousMessage();
-            default -> "Invalid Action";
+            default -> msg;
         };
     }
 

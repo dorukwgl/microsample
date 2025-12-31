@@ -3,8 +3,10 @@ package com.doruk.application.auth.dto;
 import com.doruk.application.enums.TemplateType;
 import com.doruk.application.interfaces.EventDto;
 import io.micronaut.serde.annotation.Serdeable;
+import lombok.Builder;
 
 @Serdeable
+@Builder
 public record EmailOtpDto(
         String id,
         String tempUrl,

@@ -5,7 +5,7 @@ import com.doruk.application.interfaces.EventDto;
 import io.micronaut.serde.annotation.Serdeable;
 
 @Serdeable
-public record SmsOtpDto(String phone, int otp, TemplateType templateType) implements EventDto {
+public record SmsOtpDto(String id, String phone, int otp, TemplateType templateType) implements EventDto {
     @Override
     public String eventSubject() {
         return "auth.mfa.sms-otp";

@@ -98,7 +98,7 @@ datasources:
       auto-commit: true
 
 jimmer:
-  show-sql: true
+  show-sql: false
   dialect: postgres
 
 nats:

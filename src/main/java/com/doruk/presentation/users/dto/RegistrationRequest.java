@@ -4,17 +4,20 @@ import io.micronaut.core.annotation.Nullable;
 import io.micronaut.serde.annotation.Serdeable;
 import jakarta.validation.constraints.*;
 
+import java.util.Locale;
+
 @Serdeable
 public record RegistrationRequest(
         @NotBlank
+        @Size(min = 3, max = 30, message = "Username must be between 3 to 30 letters")
         String username,
 
         @NotBlank
-        @Size(min = 8, max = 50, message = "Password must be 8 to 50 characters.")
+        @Size(min = 8, max = 50, message = "Password must be 8 to 50 letters")
         String password,
 
         @NotBlank
-        @Email(message = "Invalid email format")
+        @Email(message = "Unidentifiable email format")
         String email,
 
         @Nullable
@@ -24,4 +27,8 @@ public record RegistrationRequest(
         )
         String phone
 ) {
+        public RegistrationRequest {
+                username = username.toLowerCase(Locale.ROOT);
+                email = email.toLowerCase(Locale.ROOT);
+        }
 }
