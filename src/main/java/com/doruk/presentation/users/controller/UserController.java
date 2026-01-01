@@ -1,125 +1,91 @@
 package com.doruk.presentation.users.controller;
 
+import com.doruk.application.security.UserScope;
+import com.doruk.application.users.dto.UserResponseDto;
+import com.doruk.application.users.service.UserService;
 import com.doruk.infrastructure.dto.InfoResponse;
-import com.doruk.infrastructure.persistence.entity.PermissionFetcher;
-import com.doruk.infrastructure.persistence.entity.PermissionTable;
-import com.doruk.presentation.users.dto.TestDto;
-import io.micronaut.http.annotation.Controller;
-import io.micronaut.http.annotation.Get;
+import com.doruk.presentation.users.dto.RegistrationRequest;
+import com.doruk.presentation.users.mapper.RegistrationMapper;
+import io.micronaut.http.HttpStatus;
+import io.micronaut.http.annotation.*;
 import io.micronaut.security.annotation.Secured;
 import io.micronaut.security.authentication.Authentication;
 import io.micronaut.security.rules.SecurityRule;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.inject.Inject;
-import org.babyfish.jimmer.sql.JSqlClient;
-import org.babyfish.jimmer.sql.ast.mutation.DeleteMode;
-import org.babyfish.jimmer.sql.runtime.LogicalDeletedBehavior;
-import reactor.core.publisher.Mono;
-
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import lombok.RequiredArgsConstructor;
 
 @Tag(name = "User Management, Registrations & Profiles")
+@RequiredArgsConstructor
 @Controller("users")
 @Secured(SecurityRule.IS_AUTHENTICATED)
 public class UserController {
-    @Inject
-    public JSqlClient client;
+    private final UserService service;
+    private final RegistrationMapper registrationMapper;
 
     @Secured(SecurityRule.IS_ANONYMOUS)
-    @Get("test")
-    Mono<Map<String, String>> getUuid() {
-        return Mono.from(Mono.just(Map.of("uuid", UUID.randomUUID().toString())));
+    @Status(HttpStatus.CREATED)
+    @Post("/register")
+    public UserResponseDto registerUser(@Valid @Body RegistrationRequest req) {
+        return service.registerUser(registrationMapper.toUserCmdDto(req));
     }
 
-    @Get("testjson")
-    InfoResponse getMessage() {
-        return new InfoResponse("got your message");
+
+    @Get("/test")
+    public Authentication test(Authentication auth) {
+        IO.println(auth.getName());
+        IO.println(auth.getAttributes());
+        IO.println(auth.getAttributes().get(UserScope.KEY));
+        IO.println(auth.getRoles());
+        return auth;
     }
 
-    @Get("permissions")
-    Mono<List<TestDto>> getPermissions() {
-        return Mono.fromCallable(() ->
-                client.createQuery(PermissionTable.$)
-                        .select(PermissionTable.$.fetch(
-                                PermissionFetcher.$.allScalarFields()
-                        ))
-                        .execute()
-                        .stream()
-                        .map(TestDto::new)
-                        .toList()
-        );
+    @Status(HttpStatus.ACCEPTED)
+    @Post("/email/init-verification")
+    public InfoResponse initEmailVerification(Authentication auth) {
+        service.initEmailVerification(auth.getName());
+        return new InfoResponse("OTP is sent to your email address");
     }
 
-    @Get("permissions/deleted")
-    Mono<List<TestDto>> getDeletedPermissions() {
-        return Mono.fromCallable(() ->
-                client
-                        .filters(f -> f.setBehavior(LogicalDeletedBehavior.REVERSED))
-                        .createQuery(PermissionTable.$)
-                        .select(PermissionTable.$)
-                        .execute()
-                        .stream()
-                        .map(TestDto::new)
-                        .toList()
-        );
+    @Post("/email/verify-otp/{transactionId}")
+    public InfoResponse verifyEmailOtp(Authentication auth,
+                                       String transactionId,
+                                       @Body
+                                       @NotBlank
+                                       @Min(value = 100000)
+                                       @Max(value = 999999)
+                                       int otp) {
+
+        service.verifyEmail(auth.getName(), transactionId, otp);
+        return new InfoResponse("Email verified successfully");
     }
 
-    @Get("permissions/all")
-    Mono<List<TestDto>> getAllPermissions() {
-
-        return Mono.fromCallable(() ->
-                client
-                        .filters(f -> f.setBehavior(LogicalDeletedBehavior.IGNORED))
-                        .createQuery(PermissionTable.$)
-                        .select(PermissionTable.$)
-                        .execute()
-                        .stream()
-                        .map(TestDto::new)
-                        .toList()
-        );
+    @Secured(SecurityRule.IS_ANONYMOUS)
+    @Get("/email/verify-magic/{magicLink}")
+    public InfoResponse verifyEmailViaMagicLink(String magicLink) {
+        service.verifyEmail(magicLink);
+        return new InfoResponse("Email verified successfully");
     }
 
-    @Get("permissions/delete-safe")
-    Mono<Integer> deleteSafePermissions() {
-        return Mono.fromCallable(() ->
-                client
-                        .createDelete(PermissionTable.$)
-                        .where(PermissionTable.$.name().eq("test-permissions"))
-                        .execute());
+    @Status(HttpStatus.ACCEPTED)
+    @Post("/phone/init-verification")
+    public InfoResponse initPhoneVerification(Authentication auth) {
+        service.initPhoneVerification(auth.getName());
+        return new InfoResponse("OTP sent to your phone number");
     }
 
-    @Get("permissions/delete-all")
-    Mono<Integer> deletePermissions() {
-        return Mono.fromCallable(() ->
-                client
-                        .filters(f -> f.setBehavior(LogicalDeletedBehavior.IGNORED))
-                        .createDelete(PermissionTable.$)
-                        .setMode(DeleteMode.PHYSICAL)
-                        .disableDissociation()
-                        .where(PermissionTable.$.name().eq("test-ignore"))
-                        .execute()
-        );
-    }
-
-    @Get("ntest")
-    Mono<Map<?, ?>> getNTest() {
-        return Mono.fromCallable(() -> Map.of("user", "david"));
-    }
-
-    @Get("date")
-    Mono<LocalDateTime> getDate() {
-        return Mono.just(LocalDateTime.now());
-    }
-
-    @Get("except")
-    Mono<String> getTest() {
-//        throw new IllegalArgumentException();
-//        return Mono.just("hello");
-        return Mono.defer(() -> {
-            return Mono.just("");
-        });
+    @Post("/phone/verify-otp/{transactionId}")
+    public InfoResponse verifyPhoneNumber(
+            String transactionId,
+            @Body
+            @NotBlank
+            @Min(value = 100000)
+            @Max(value = 999999)
+            int otp) {
+        service.verifyPhone(transactionId, otp);
+        return new InfoResponse("Phone number verified successfully");
     }
 }

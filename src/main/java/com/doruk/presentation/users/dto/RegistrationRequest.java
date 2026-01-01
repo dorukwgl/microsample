@@ -27,8 +27,4 @@ public record RegistrationRequest(
         )
         String phone
 ) {
-        public RegistrationRequest {
-                username = username.toLowerCase(Locale.ROOT);
-                email = email.toLowerCase(Locale.ROOT);
-        }
 }

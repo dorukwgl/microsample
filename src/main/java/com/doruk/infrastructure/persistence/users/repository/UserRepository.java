@@ -4,7 +4,8 @@ import com.doruk.application.security.PasswordEncoder;
 import com.doruk.application.users.dto.CreateUserCmd;
 import com.doruk.application.users.dto.UserResponseDto;
 import com.doruk.application.users.dto.UserUniqueFields;
-import com.doruk.infrastructure.config.AppExecutors;
+import com.doruk.infrastructure.persistence.entity.RoleDraft;
+import com.doruk.infrastructure.persistence.entity.User;
 import com.doruk.infrastructure.persistence.entity.UserDraft;
 import com.doruk.infrastructure.persistence.entity.UserTable;
 import com.doruk.infrastructure.persistence.users.mapper.UserMapper;
@@ -13,18 +14,14 @@ import lombok.RequiredArgsConstructor;
 import org.babyfish.jimmer.sql.JSqlClient;
 import org.babyfish.jimmer.sql.ast.Predicate;
 
-import java.time.LocalDateTime;
-import java.util.Locale;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Singleton
 @RequiredArgsConstructor
 public class UserRepository {
     private final JSqlClient sqlClient;
-    private final AppExecutors executors;
     private final PasswordEncoder passwordEncoder;
-    private UserMapper userMapper;
+    private final UserMapper userMapper;
 
 //    public Mono<UserDto> findByEmailOrUsername(String field) {
 //        var table = UserTable.$;
@@ -53,28 +50,29 @@ public class UserRepository {
         return Optional.of(new UserUniqueFields(user.get_1(), user.get_2()));
     }
 
+
     public UserResponseDto createUser(CreateUserCmd dto) {
         var draft = UserDraft.$.produce(u ->
                 u.setUsername(dto.username().toLowerCase(Locale.ROOT))
                         .setEmail(dto.email().toLowerCase(Locale.ROOT))
                         .setPhone(dto.phone())
                         .setPassword(passwordEncoder.encode(dto.password()))
+                        .setRoles(List.of(RoleDraft.$.produce(r -> r.setName("USER"))))
         );
 
-        var user = sqlClient.saveCommand(draft).execute();
-        return userMapper.toResponseDto(user.getModifiedEntity());
+        var id = sqlClient.transaction(() -> sqlClient.saveCommand(draft).execute()
+                .getModifiedEntity().id());
+        var user = sqlClient.findById(User.class, id);
+
+        return userMapper.toResponseDto(Objects.requireNonNull(user));
     }
 
     public void verifyUserEmail(String userId) {
-//        var t = UserTable.$;
-//        sqlClient.createUpdate(t)
-//                .where(t.id().eq(UUID.fromString(userId)))
-//                .set(t.emailVerified(), true)
-//                .execute();
-
-        var draft = UserDraft.$.produce(u -> u.setId(UUID.fromString(userId))
-                .setEmailVerified(true));
-        sqlClient.saveCommand(draft).execute();
+        var t = UserTable.$;
+        sqlClient.createUpdate(t)
+                .where(t.id().eq(UUID.fromString(userId)))
+                .set(t.emailVerified(), true)
+                .execute();
     }
 
     public void verifyUserPhone(String userId) {

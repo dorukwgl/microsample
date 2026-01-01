@@ -110,6 +110,7 @@ public class AuthService {
         var response = createMfaTransaction(user);
 
         eventPublisher.publish(new SmsOtpDto(
+                user.id(),
                 user.phone(),
                 response.getKey(),
                 TemplateType.MFA

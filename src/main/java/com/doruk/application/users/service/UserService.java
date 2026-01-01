@@ -28,7 +28,6 @@ import java.time.Duration;
 public class UserService {
     private final UserRepository userRepo;
     private final EventPublisher event;
-    private final String attempt = ":Attempt";
     private final MemoryStorage storage;
     private final AppConfig config;
 

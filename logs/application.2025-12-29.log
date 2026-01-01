@@ -1,20 +1,20 @@
-2026-01-01 15:01:17.119 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
-2026-01-01 15:01:17.209 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@7923f5b3
-2026-01-01 15:01:17.211 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
-2026-01-01 15:01:18.089 [main] INFO  n.b.p.useragent.utils.YauaaVersion - 
-2026-01-01 15:01:18.091 [main] INFO  n.b.p.useragent.utils.YauaaVersion - /-----------------------------------------------------------\
-2026-01-01 15:01:18.091 [main] INFO  n.b.p.useragent.utils.YauaaVersion - | Yauaa 7.32.0 (v7.32.0 @ 2025-10-11T16:29:46Z)             |
-2026-01-01 15:01:18.091 [main] INFO  n.b.p.useragent.utils.YauaaVersion - +-----------------------------------------------------------+
-2026-01-01 15:01:18.091 [main] INFO  n.b.p.useragent.utils.YauaaVersion - | For more information: https://yauaa.basjes.nl             |
-2026-01-01 15:01:18.091 [main] INFO  n.b.p.useragent.utils.YauaaVersion - | Copyright (C) 2013-2025 Niels Basjes - License Apache 2.0 |
-2026-01-01 15:01:18.092 [main] INFO  n.b.p.useragent.utils.YauaaVersion - \-----------------------------------------------------------/
-2026-01-01 15:01:18.092 [main] INFO  n.b.p.useragent.utils.YauaaVersion - 
-2026-01-01 15:01:18.182 [main] INFO  n.b.p.useragent.config.ConfigLoader - - Loaded 119 files in   86 ms using expression: classpath*:UserAgents/**/*.yaml
-2026-01-01 15:01:18.969 [main] INFO  n.b.p.u.a.UserAgentStringMatchMaker - Building all needed matchers for the requested 9 fields.
-2026-01-01 15:01:19.031 [main] INFO  i.m.l.PropertiesLoggingLevelsConfigurer - Setting log level 'TRACE' for logger: 'root'
-2026-01-01 15:01:19.031 [main] INFO  i.m.l.PropertiesLoggingLevelsConfigurer - Setting log level 'ALL' for logger: 'io.micronaut.http.server.netty'
-2026-01-01 15:01:19.031 [main] INFO  i.m.l.PropertiesLoggingLevelsConfigurer - Setting log level 'INFO' for logger: 'io.micronaut.flyway'
-2026-01-01 15:01:19.208 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@7116f350
+2025-12-29 15:00:30.224 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2025-12-29 15:00:30.310 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@267517e4
+2025-12-29 15:00:30.312 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2025-12-29 15:00:31.159 [main] INFO  n.b.p.useragent.utils.YauaaVersion - 
+2025-12-29 15:00:31.161 [main] INFO  n.b.p.useragent.utils.YauaaVersion - /-----------------------------------------------------------\
+2025-12-29 15:00:31.162 [main] INFO  n.b.p.useragent.utils.YauaaVersion - | Yauaa 7.32.0 (v7.32.0 @ 2025-10-11T16:29:46Z)             |
+2025-12-29 15:00:31.162 [main] INFO  n.b.p.useragent.utils.YauaaVersion - +-----------------------------------------------------------+
+2025-12-29 15:00:31.162 [main] INFO  n.b.p.useragent.utils.YauaaVersion - | For more information: https://yauaa.basjes.nl             |
+2025-12-29 15:00:31.162 [main] INFO  n.b.p.useragent.utils.YauaaVersion - | Copyright (C) 2013-2025 Niels Basjes - License Apache 2.0 |
+2025-12-29 15:00:31.162 [main] INFO  n.b.p.useragent.utils.YauaaVersion - \-----------------------------------------------------------/
+2025-12-29 15:00:31.162 [main] INFO  n.b.p.useragent.utils.YauaaVersion - 
+2025-12-29 15:00:31.254 [main] INFO  n.b.p.useragent.config.ConfigLoader - - Loaded 119 files in   88 ms using expression: classpath*:UserAgents/**/*.yaml
+2025-12-29 15:00:31.986 [main] INFO  n.b.p.u.a.UserAgentStringMatchMaker - Building all needed matchers for the requested 9 fields.
+2025-12-29 15:00:32.054 [main] INFO  i.m.l.PropertiesLoggingLevelsConfigurer - Setting log level 'TRACE' for logger: 'root'
+2025-12-29 15:00:32.054 [main] INFO  i.m.l.PropertiesLoggingLevelsConfigurer - Setting log level 'ALL' for logger: 'io.micronaut.http.server.netty'
+2025-12-29 15:00:32.054 [main] INFO  i.m.l.PropertiesLoggingLevelsConfigurer - Setting log level 'INFO' for logger: 'io.micronaut.flyway'
+2025-12-29 15:00:32.229 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@4022a256
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -50,8 +50,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:01:19.210 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@20f4849c
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:00:32.231 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@b234301
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -87,8 +87,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:01:19.210 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@7892045f
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:00:32.232 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@6c88026b
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -124,8 +124,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:01:19.211 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@34dcad0d
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:00:32.232 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@aa9b6a8
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -161,8 +161,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:01:19.211 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@3269e790
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:00:32.233 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@3a94d716
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -198,8 +198,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:01:19.212 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@138bd003
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:00:32.233 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@78e547aa
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -235,8 +235,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:01:19.212 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@394642e5
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:00:32.233 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@6a5f05f5
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -272,8 +272,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:01:19.213 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@4395bc43
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:00:32.234 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@72f18fbd
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -309,8 +309,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:01:19.213 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@7f52aba0
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:00:32.234 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@6cf2b638
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -346,8 +346,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:01:19.213 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@47fa54d
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:00:32.235 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@68212585
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -383,8 +383,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:01:19.214 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@5e57149f
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:00:32.235 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@6c53ce34
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -420,8 +420,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:01:19.214 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@7e1b750e
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:00:32.235 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@5008c5a
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -457,8 +457,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:01:19.214 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@39ad5a7d
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:00:32.235 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@2dadadd9
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -494,8 +494,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:01:19.214 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@24df8abf
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:00:32.236 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@2ca08575
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -531,8 +531,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:01:19.215 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@6aa09c35
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:00:32.236 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@5c3d91bc
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -568,8 +568,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:01:19.215 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@7a9794bd
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:00:32.236 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@449be249
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -605,8 +605,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:01:19.218 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@e8fabad
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:00:32.239 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@1cc20796
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -634,8 +634,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:01:19.219 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@1a44d89b
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:00:32.239 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@1205d422
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -663,8 +663,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:01:19.219 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@26664caa
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:00:32.239 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@2d8b8469
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -692,8 +692,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:01:19.220 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@3a0f6b1a
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:00:32.240 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@55456711
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -721,8 +721,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:01:19.220 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@418b3215
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:00:32.240 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@4bc15d49
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -750,8 +750,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:01:19.220 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@19ed779e
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:00:32.240 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@34c83eb0
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -779,8 +779,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:01:19.221 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@357e6334
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:00:32.240 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@e343477
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -808,8 +808,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:01:19.221 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@43a34f02
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:00:32.241 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@6c884b0d
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -837,8 +837,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:01:19.221 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@4785f176
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:00:32.241 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@7ccf845a
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -866,8 +866,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:01:19.221 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@2b4bcd6e
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:00:32.241 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@4db7fe2c
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -895,8 +895,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:01:19.221 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@6087f264
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:00:32.241 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@22ecee76
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -924,8 +924,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:01:19.221 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@2d980dc3
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:00:32.241 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@7b31281b
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -953,8 +953,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:01:19.222 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@77d50cde
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:00:32.241 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@16db679e
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -982,8 +982,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:01:19.222 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@2eef2fd6
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:00:32.242 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@42775280
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -1011,8 +1011,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:01:19.222 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@2f3809cf
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:00:32.242 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@51645204
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -1040,8 +1040,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:01:19.222 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@1d4cf8ea
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:00:32.242 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@3f36d387
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -1069,8 +1069,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:01:19.222 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@2094869b
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:00:32.242 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@211e1b51
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -1098,8 +1098,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:01:19.222 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@470dbce9
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:00:32.242 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@4694dfd
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -1127,8 +1127,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:01:19.223 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@604125bd
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:00:32.242 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@4bc01cab
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -1156,8 +1156,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:01:19.223 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@13e4a4a0
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:00:32.243 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@58f6dab9
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -1185,8 +1185,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:01:19.223 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@30f1a181
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:00:32.243 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@23bc69a1
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -1214,8 +1214,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:01:19.223 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@1ad27a73
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:00:32.243 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@28736857
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -1243,8 +1243,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:01:19.223 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@5e4168dd
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:00:32.243 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@10c23a76
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -1272,8 +1272,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:01:19.223 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@53bf7b33
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:00:32.243 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@17c373d3
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -1301,8 +1301,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:01:19.223 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@6c82ecbe
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:00:32.243 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@5be86750
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -1330,8 +1330,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:01:19.224 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@2202eee0
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:00:32.244 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@7f66d549
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -1359,8 +1359,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:01:19.224 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@6392107e
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:00:32.244 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@7af65b49
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -1388,8 +1388,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:01:19.224 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@3fa43b05
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:00:32.244 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@7b6419dd
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -1417,8 +1417,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:01:19.224 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@23618fa2
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:00:32.244 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@3228b5a1
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -1446,8 +1446,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:01:19.224 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@12c21282
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:00:32.244 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@51729c2b
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -1475,8 +1475,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:01:19.225 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@76982efa
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:00:32.244 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@387f53cf
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -1504,8 +1504,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:01:19.225 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@7b83476f
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:00:32.245 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@698cc99d
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -1533,119 +1533,61 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:01:19.227 [main] TRACE i.m.h.server.netty.NettyHttpServer - Binding microsample server to *:9096
-2026-01-01 15:01:19.243 [main] INFO  io.micronaut.runtime.Micronaut - Startup completed in 2934ms. Server Running: http://localhost:9096/app
-2026-01-01 15:01:47.311 [HikariPool-1:housekeeper] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=10/10, idle=10/10, active=0, waiting=0)
-2026-01-01 15:01:47.312 [HikariPool-1:housekeeper] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Fill pool skipped, pool has sufficient level or currently being filled.
-2026-01-01 15:02:17.312 [HikariPool-1:housekeeper] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=10/10, idle=10/10, active=0, waiting=0)
-2026-01-01 15:02:17.312 [HikariPool-1:housekeeper] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Fill pool skipped, pool has sufficient level or currently being filled.
-2026-01-01 15:02:47.312 [HikariPool-1:housekeeper] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=10/10, idle=10/10, active=0, waiting=0)
-2026-01-01 15:02:47.313 [HikariPool-1:housekeeper] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Fill pool skipped, pool has sufficient level or currently being filled.
-2026-01-01 15:02:53.458 [HikariPool-1:housekeeper] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - keepalive: connection org.postgresql.jdbc.PgConnection@2a1844fd is alive
-2026-01-01 15:02:54.426 [HikariPool-1:housekeeper] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - keepalive: connection org.postgresql.jdbc.PgConnection@2adb10e7 is alive
-2026-01-01 15:02:58.122 [HikariPool-1:housekeeper] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - keepalive: connection org.postgresql.jdbc.PgConnection@3dcd29b7 is alive
-2026-01-01 15:03:01.778 [HikariPool-1:housekeeper] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - keepalive: connection org.postgresql.jdbc.PgConnection@100c4b3 is alive
-2026-01-01 15:03:05.232 [HikariPool-1:housekeeper] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - keepalive: connection org.postgresql.jdbc.PgConnection@7923f5b3 is alive
-2026-01-01 15:03:08.209 [HikariPool-1:housekeeper] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - keepalive: connection org.postgresql.jdbc.PgConnection@69d757c2 is alive
-2026-01-01 15:03:09.450 [HikariPool-1:housekeeper] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - keepalive: connection org.postgresql.jdbc.PgConnection@1b793e37 is alive
-2026-01-01 15:03:09.610 [HikariPool-1:housekeeper] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - keepalive: connection org.postgresql.jdbc.PgConnection@4f2d2c7e is alive
-2026-01-01 15:03:11.557 [HikariPool-1:housekeeper] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - keepalive: connection org.postgresql.jdbc.PgConnection@480f4c74 is alive
-2026-01-01 15:03:13.808 [HikariPool-1:housekeeper] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - keepalive: connection org.postgresql.jdbc.PgConnection@1b357bf0 is alive
-2026-01-01 15:03:17.313 [HikariPool-1:housekeeper] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=10/10, idle=10/10, active=0, waiting=0)
-2026-01-01 15:03:17.313 [HikariPool-1:housekeeper] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Fill pool skipped, pool has sufficient level or currently being filled.
-2026-01-01 15:03:47.313 [HikariPool-1:housekeeper] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=10/10, idle=10/10, active=0, waiting=0)
-2026-01-01 15:03:47.314 [HikariPool-1:housekeeper] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Fill pool skipped, pool has sufficient level or currently being filled.
-2026-01-01 15:04:17.314 [HikariPool-1:housekeeper] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=10/10, idle=10/10, active=0, waiting=0)
-2026-01-01 15:04:17.314 [HikariPool-1:housekeeper] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Fill pool skipped, pool has sufficient level or currently being filled.
-2026-01-01 15:04:29.601 [HikariPool-1:housekeeper] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - keepalive: connection org.postgresql.jdbc.PgConnection@2a1844fd is alive
-2026-01-01 15:04:31.331 [HikariPool-1:housekeeper] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - keepalive: connection org.postgresql.jdbc.PgConnection@2adb10e7 is alive
-2026-01-01 15:04:33.831 [default-eventLoopGroup-5-1] DEBUG i.n.h.c.compression.ZlibCodecFactory - -Dio.netty.noJdkZlibDecoder: false
-2026-01-01 15:04:33.832 [default-eventLoopGroup-5-1] DEBUG i.n.h.c.compression.ZlibCodecFactory - -Dio.netty.noJdkZlibEncoder: false
-2026-01-01 15:04:33.832 [default-eventLoopGroup-5-1] DEBUG i.n.h.c.compression.ZlibCodecFactory - JZlib not in the classpath; the only window bits supported value will be 15
-2026-01-01 15:04:33.837 [default-eventLoopGroup-5-1] DEBUG i.n.handler.codec.compression.Brotli - brotli4j not in the classpath; Brotli support will be unavailable.
-2026-01-01 15:04:33.838 [default-eventLoopGroup-5-1] DEBUG i.n.handler.codec.compression.Zstd - zstd-jni not in the classpath; Zstd support will be unavailable.
-2026-01-01 15:04:33.873 [default-eventLoopGroup-5-1] DEBUG i.m.h.s.netty.NettyRequestLifecycle - Request POST /app/users/register
-2026-01-01 15:04:34.101 [virtual-executor-667792863] INFO  c.d.i.logging.LoggingService - select tb_1_.USERNAME, tb_1_.EMAIL from users tb_1_ where (tb_1_.USERNAME = ? or tb_1_.EMAIL = ?) and tb_1_.deleted_at is null | time=2026-01-01T09:19:34.101449134Z
-2026-01-01 15:04:34.396 [virtual-executor-667792863] INFO  c.d.i.logging.LoggingService - select tb_1_.ID, tb_1_.USERNAME, tb_1_.EMAIL from users tb_1_ where (tb_1_.USERNAME, tb_1_.EMAIL) = (?, ?) and tb_1_.deleted_at is null | time=2026-01-01T09:19:34.396469019Z
-2026-01-01 15:04:34.410 [virtual-executor-667792863] INFO  c.d.i.logging.LoggingService - insert into users(ID, USERNAME, EMAIL, PHONE, PASSWORD, deleted_at) values(?, ?, ?, ?, ?, ?) | time=2026-01-01T09:19:34.410817552Z
-2026-01-01 15:04:44.281 [HikariPool-1:housekeeper] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - keepalive: connection org.postgresql.jdbc.PgConnection@3dcd29b7 is alive
-2026-01-01 15:04:44.293 [virtual-executor-667792863] INFO  c.d.i.logging.LoggingService - select tb_1_.ID, tb_1_.USERNAME, tb_1_.EMAIL, tb_1_.PHONE, tb_1_.PASSWORD, tb_1_.multi_factor_auth, tb_1_.is_email_verified, tb_1_.is_phone_verified, tb_1_.status, tb_1_.updated_at, tb_1_.deleted_at, tb_1_.CREATED_AT from users tb_1_ where tb_1_.ID = ? and tb_1_.deleted_at is null | time=2026-01-01T09:19:44.293069262Z
-2026-01-01 15:06:57.683 [HikariPool-1:housekeeper] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - keepalive: connection org.postgresql.jdbc.PgConnection@100c4b3 is alive
-2026-01-01 15:07:04.100 [HikariPool-1:housekeeper] WARN  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=2m46s786ms288µs525ns).
-2026-01-01 15:07:04.101 [HikariPool-1:housekeeper] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=10/10, idle=10/10, active=0, waiting=0)
-2026-01-01 15:07:05.554 [HikariPool-1:housekeeper] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Fill pool skipped, pool has sufficient level or currently being filled.
-2026-01-01 15:07:11.931 [HikariPool-1:housekeeper] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - keepalive: connection org.postgresql.jdbc.PgConnection@7923f5b3 is alive
-2026-01-01 15:07:11.932 [HikariPool-1:housekeeper] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - keepalive: connection org.postgresql.jdbc.PgConnection@69d757c2 is alive
-2026-01-01 15:07:11.932 [HikariPool-1:housekeeper] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - keepalive: connection org.postgresql.jdbc.PgConnection@1b793e37 is alive
-2026-01-01 15:07:11.933 [HikariPool-1:housekeeper] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - keepalive: connection org.postgresql.jdbc.PgConnection@4f2d2c7e is alive
-2026-01-01 15:07:11.933 [HikariPool-1:housekeeper] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - keepalive: connection org.postgresql.jdbc.PgConnection@480f4c74 is alive
-2026-01-01 15:07:11.934 [HikariPool-1:housekeeper] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - keepalive: connection org.postgresql.jdbc.PgConnection@1b357bf0 is alive
-2026-01-01 15:07:11.934 [HikariPool-1:housekeeper] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - keepalive: connection org.postgresql.jdbc.PgConnection@2a1844fd is alive
-2026-01-01 15:07:11.934 [HikariPool-1:housekeeper] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - keepalive: connection org.postgresql.jdbc.PgConnection@2adb10e7 is alive
-2026-01-01 15:07:11.934 [HikariPool-1:housekeeper] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - keepalive: connection org.postgresql.jdbc.PgConnection@3dcd29b7 is alive
-2026-01-01 15:08:05.338 [HikariPool-1:housekeeper] WARN  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1m1s237ms773µs597ns).
-2026-01-01 15:08:05.338 [HikariPool-1:housekeeper] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=10/10, idle=10/10, active=0, waiting=0)
-2026-01-01 15:08:05.338 [HikariPool-1:housekeeper] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Fill pool skipped, pool has sufficient level or currently being filled.
-2026-01-01 15:08:05.348 [virtual-executor--1273456358] ERROR c.d.i.logging.LoggingService - Cannot invoke "java.util.UUID.toString()" because the return value of "com.doruk.application.users.dto.UserResponseDto.id()" is null | time=2026-01-01T09:23:05.348317445Z
-java.lang.NullPointerException: Cannot invoke "java.util.UUID.toString()" because the return value of "com.doruk.application.users.dto.UserResponseDto.id()" is null
-	at com.doruk.application.users.service.UserService.registerUser(UserService.java:97)
-	at com.doruk.presentation.users.controller.UserController.registerUser(UserController.java:27)
-	at com.doruk.presentation.users.controller.$UserController$Definition$Intercepted.$$access$$registerUser(Unknown Source)
-	at com.doruk.presentation.users.controller.$UserController$Definition$Exec.dispatch(Unknown Source)
-	at io.micronaut.context.AbstractExecutableMethodsDefinition$DispatchedExecutableMethod.invoke(AbstractExecutableMethodsDefinition.java:456)
-	at io.micronaut.aop.chain.MethodInterceptorChain.proceed(MethodInterceptorChain.java:134)
-	at io.micronaut.validation.ValidatingInterceptor.validateReturnMicronautValidator(ValidatingInterceptor.java:159)
-	at io.micronaut.validation.ValidatingInterceptor.intercept(ValidatingInterceptor.java:145)
-	at io.micronaut.aop.chain.MethodInterceptorChain.proceed(MethodInterceptorChain.java:143)
-	at com.doruk.presentation.users.controller.$UserController$Definition$Intercepted.registerUser(Unknown Source)
-	at com.doruk.presentation.users.controller.$UserController$Definition$Exec.dispatch(Unknown Source)
-	at io.micronaut.context.AbstractExecutableMethodsDefinition$DispatchedExecutableMethod.invokeUnsafe(AbstractExecutableMethodsDefinition.java:461)
-	at io.micronaut.context.DefaultBeanContext$BeanContextUnsafeExecutionHandle.invokeUnsafe(DefaultBeanContext.java:4454)
-	at io.micronaut.web.router.AbstractRouteMatch.execute(AbstractRouteMatch.java:272)
-	at io.micronaut.web.router.DefaultUriRouteMatch.execute(DefaultUriRouteMatch.java:38)
-	at io.micronaut.http.server.RouteExecutor.executeRouteAndConvertBody(RouteExecutor.java:466)
-	at io.micronaut.http.server.RouteExecutor.lambda$callRoute$5(RouteExecutor.java:443)
-	at io.micronaut.core.execution.ExecutionFlow.lambda$async$0(ExecutionFlow.java:92)
-	at java.base/java.util.concurrent.ThreadPerTaskExecutor$TaskRunner.run(ThreadPerTaskExecutor.java:291)
-	at java.base/java.lang.VirtualThread.run(VirtualThread.java:456)
-2026-01-01 15:08:05.365 [virtual-executor--1273456358] DEBUG i.m.h.s.netty.RoutingInBoundHandler - Response 500 - POST /app/users/register
-2026-01-01 15:08:05.366 [Thread-0] INFO  io.micronaut.runtime.Micronaut - Embedded Application shutting down
-2026-01-01 15:08:05.396 [Thread-0] DEBUG io.lettuce.core.AbstractRedisClient - Initiate shutdown (0, 2, SECONDS)
-2026-01-01 15:08:05.399 [Thread-0] DEBUG i.l.c.r.DefaultEventLoopGroupProvider - Release executor io.netty.channel.nio.NioEventLoopGroup@494c8f29
-2026-01-01 15:08:05.402 [lettuce-nioEventLoop-4-1] DEBUG i.l.core.protocol.ConnectionWatchdog - [channel=0xa807d5cd, /127.0.0.1:47936 -> localhost/127.0.0.1:6379, last known addr=localhost/127.0.0.1:6379] channelInactive()
-2026-01-01 15:08:05.402 [lettuce-nioEventLoop-4-1] DEBUG i.l.core.protocol.ConnectionWatchdog - [channel=0xa807d5cd, /127.0.0.1:47936 -> localhost/127.0.0.1:6379, last known addr=localhost/127.0.0.1:6379] Reconnect scheduling disabled
-2026-01-01 15:08:05.405 [Thread-0] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
-2026-01-01 15:08:05.405 [Thread-0] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Before shutdown stats (total=10/10, idle=10/10, active=0, waiting=0)
-2026-01-01 15:08:05.406 [HikariPool-1:connection-closer] DEBUG com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection org.postgresql.jdbc.PgConnection@7923f5b3: (connection evicted)
-2026-01-01 15:08:05.407 [HikariPool-1:connection-closer] DEBUG com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection org.postgresql.jdbc.PgConnection@2a1844fd: (connection evicted)
-2026-01-01 15:08:05.407 [HikariPool-1:connection-closer] DEBUG com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection org.postgresql.jdbc.PgConnection@1b793e37: (connection evicted)
-2026-01-01 15:08:05.407 [HikariPool-1:connection-closer] DEBUG com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection org.postgresql.jdbc.PgConnection@3dcd29b7: (connection evicted)
-2026-01-01 15:08:05.407 [HikariPool-1:connection-closer] DEBUG com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection org.postgresql.jdbc.PgConnection@4f2d2c7e: (connection evicted)
-2026-01-01 15:08:05.407 [HikariPool-1:connection-closer] DEBUG com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection org.postgresql.jdbc.PgConnection@480f4c74: (connection evicted)
-2026-01-01 15:08:05.408 [HikariPool-1:connection-closer] DEBUG com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection org.postgresql.jdbc.PgConnection@69d757c2: (connection evicted)
-2026-01-01 15:08:05.408 [HikariPool-1:connection-closer] DEBUG com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection org.postgresql.jdbc.PgConnection@2adb10e7: (connection evicted)
-2026-01-01 15:08:05.408 [HikariPool-1:connection-closer] DEBUG com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection org.postgresql.jdbc.PgConnection@1b357bf0: (connection evicted)
-2026-01-01 15:08:05.408 [HikariPool-1:connection-closer] DEBUG com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection org.postgresql.jdbc.PgConnection@100c4b3: (connection evicted)
-2026-01-01 15:08:05.410 [Thread-0] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - After  shutdown stats (total=0/10, idle=0/10, active=0, waiting=0)
-2026-01-01 15:08:05.410 [Thread-0] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
-2026-01-01 15:09:09.752 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
-2026-01-01 15:09:09.832 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@6ceb7b5e
-2026-01-01 15:09:09.833 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
-2026-01-01 15:09:10.662 [main] INFO  n.b.p.useragent.utils.YauaaVersion - 
-2026-01-01 15:09:10.664 [main] INFO  n.b.p.useragent.utils.YauaaVersion - /-----------------------------------------------------------\
-2026-01-01 15:09:10.664 [main] INFO  n.b.p.useragent.utils.YauaaVersion - | Yauaa 7.32.0 (v7.32.0 @ 2025-10-11T16:29:46Z)             |
-2026-01-01 15:09:10.665 [main] INFO  n.b.p.useragent.utils.YauaaVersion - +-----------------------------------------------------------+
-2026-01-01 15:09:10.665 [main] INFO  n.b.p.useragent.utils.YauaaVersion - | For more information: https://yauaa.basjes.nl             |
-2026-01-01 15:09:10.665 [main] INFO  n.b.p.useragent.utils.YauaaVersion - | Copyright (C) 2013-2025 Niels Basjes - License Apache 2.0 |
-2026-01-01 15:09:10.665 [main] INFO  n.b.p.useragent.utils.YauaaVersion - \-----------------------------------------------------------/
-2026-01-01 15:09:10.665 [main] INFO  n.b.p.useragent.utils.YauaaVersion - 
-2026-01-01 15:09:10.799 [main] INFO  n.b.p.useragent.config.ConfigLoader - - Loaded 119 files in  130 ms using expression: classpath*:UserAgents/**/*.yaml
-2026-01-01 15:09:11.859 [main] INFO  n.b.p.u.a.UserAgentStringMatchMaker - Building all needed matchers for the requested 9 fields.
-2026-01-01 15:09:11.913 [main] INFO  i.m.l.PropertiesLoggingLevelsConfigurer - Setting log level 'TRACE' for logger: 'root'
-2026-01-01 15:09:11.913 [main] INFO  i.m.l.PropertiesLoggingLevelsConfigurer - Setting log level 'ALL' for logger: 'io.micronaut.http.server.netty'
-2026-01-01 15:09:11.913 [main] INFO  i.m.l.PropertiesLoggingLevelsConfigurer - Setting log level 'INFO' for logger: 'io.micronaut.flyway'
-2026-01-01 15:09:12.058 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@39a4bd89
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:00:32.246 [main] TRACE i.m.h.server.netty.NettyHttpServer - Binding microsample server to *:9096
+2025-12-29 15:00:32.262 [main] INFO  io.micronaut.runtime.Micronaut - Startup completed in 2871ms. Server Running: http://localhost:9096/app
+2025-12-29 15:00:37.008 [default-eventLoopGroup-5-1] DEBUG i.n.h.c.compression.ZlibCodecFactory - -Dio.netty.noJdkZlibDecoder: false
+2025-12-29 15:00:37.008 [default-eventLoopGroup-5-1] DEBUG i.n.h.c.compression.ZlibCodecFactory - -Dio.netty.noJdkZlibEncoder: false
+2025-12-29 15:00:37.008 [default-eventLoopGroup-5-1] DEBUG i.n.h.c.compression.ZlibCodecFactory - JZlib not in the classpath; the only window bits supported value will be 15
+2025-12-29 15:00:37.013 [default-eventLoopGroup-5-1] DEBUG i.n.handler.codec.compression.Brotli - brotli4j not in the classpath; Brotli support will be unavailable.
+2025-12-29 15:00:37.014 [default-eventLoopGroup-5-1] DEBUG i.n.handler.codec.compression.Zstd - zstd-jni not in the classpath; Zstd support will be unavailable.
+2025-12-29 15:00:37.045 [default-eventLoopGroup-5-1] DEBUG i.m.h.s.netty.NettyRequestLifecycle - Request POST /app/auth/login
+2025-12-29 15:00:37.194 [virtual-executor--1182141146] INFO  n.b.p.u.a.UserAgentStringMatchMaker - Initializing Analyzer data structures
+2025-12-29 15:00:38.031 [virtual-executor--1182141146] INFO  n.b.p.u.a.UserAgentStringMatchMaker - Built in 836 msec : Hashmap 197921, Ranges map:2964
+2025-12-29 15:00:38.190 [virtual-executor--1182141146] INFO  c.d.i.logging.LoggingService - select tb_1_.ID, tb_1_.USERNAME, tb_1_.PASSWORD, tb_1_.PHONE, tb_1_.EMAIL, tb_1_.is_email_verified, tb_1_.is_phone_verified, tb_1_.multi_factor_auth, tb_4_.permission_name, tb_5_.deleted_at from users tb_1_ left join user_roles tb_2_ on tb_1_.ID = tb_2_.user_id left join roles tb_3_ on tb_2_.name = tb_3_.NAME left join role_permissions tb_4_ on tb_3_.NAME = tb_4_.role_name left join permissions tb_5_ on tb_4_.permission_name = tb_5_.NAME where tb_1_.USERNAME = ? or tb_1_.EMAIL = ? | time=2025-12-29T09:15:38.190160198Z
+2025-12-29 15:01:04.237 [HikariPool-1:housekeeper] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=10/10, idle=10/10, active=0, waiting=0)
+2025-12-29 15:01:04.239 [HikariPool-1:housekeeper] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Fill pool skipped, pool has sufficient level or currently being filled.
+2025-12-29 15:01:10.949 [virtual-123] DEBUG io.netty.handler.ssl.OpenSsl - netty-tcnative not in the classpath; OpenSslEngine will be unavailable.
+2025-12-29 15:01:11.023 [virtual-123] DEBUG io.netty.handler.ssl.JdkSslContext - Default protocols (JDK): [TLSv1.3, TLSv1.2] 
+2025-12-29 15:01:11.024 [virtual-123] DEBUG io.netty.handler.ssl.JdkSslContext - Default cipher suites (JDK): [TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384, TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256, TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256, TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384, TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA, TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA, TLS_AES_128_GCM_SHA256, TLS_AES_256_GCM_SHA384]
+2025-12-29 15:01:11.068 [default-eventLoopGroup-5-3] DEBUG i.n.util.ResourceLeakDetectorFactory - Loaded default ResourceLeakDetector: io.netty.util.ResourceLeakDetector@3b46cc9f
+2025-12-29 15:01:20.323 [virtual-executor--1182141146] DEBUG i.m.h.s.netty.RoutingInBoundHandler - Response 201 - POST /app/auth/login
+2025-12-29 15:01:20.341 [Thread-0] INFO  io.micronaut.runtime.Micronaut - Embedded Application shutting down
+2025-12-29 15:01:20.369 [Thread-0] DEBUG io.lettuce.core.AbstractRedisClient - Initiate shutdown (0, 2, SECONDS)
+2025-12-29 15:01:20.372 [Thread-0] DEBUG i.l.c.r.DefaultEventLoopGroupProvider - Release executor io.netty.channel.nio.NioEventLoopGroup@5f366587
+2025-12-29 15:01:20.376 [lettuce-nioEventLoop-4-1] DEBUG i.l.core.protocol.ConnectionWatchdog - [channel=0x379eb0f1, /127.0.0.1:54374 -> localhost/127.0.0.1:6379, last known addr=localhost/127.0.0.1:6379] channelInactive()
+2025-12-29 15:01:20.376 [lettuce-nioEventLoop-4-1] DEBUG i.l.core.protocol.ConnectionWatchdog - [channel=0x379eb0f1, /127.0.0.1:54374 -> localhost/127.0.0.1:6379, last known addr=localhost/127.0.0.1:6379] Reconnect scheduling disabled
+2025-12-29 15:01:20.380 [Thread-0] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2025-12-29 15:01:20.380 [Thread-0] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Before shutdown stats (total=10/10, idle=10/10, active=0, waiting=0)
+2025-12-29 15:01:20.382 [HikariPool-1:connection-closer] DEBUG com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection org.postgresql.jdbc.PgConnection@267517e4: (connection evicted)
+2025-12-29 15:01:20.382 [HikariPool-1:connection-closer] DEBUG com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection org.postgresql.jdbc.PgConnection@5fa78e80: (connection evicted)
+2025-12-29 15:01:20.382 [HikariPool-1:connection-closer] DEBUG com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection org.postgresql.jdbc.PgConnection@51606b04: (connection evicted)
+2025-12-29 15:01:20.383 [HikariPool-1:connection-closer] DEBUG com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection org.postgresql.jdbc.PgConnection@555fe5f0: (connection evicted)
+2025-12-29 15:01:20.383 [HikariPool-1:connection-closer] DEBUG com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection org.postgresql.jdbc.PgConnection@105d613f: (connection evicted)
+2025-12-29 15:01:20.383 [HikariPool-1:connection-closer] DEBUG com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection org.postgresql.jdbc.PgConnection@736d3e3a: (connection evicted)
+2025-12-29 15:01:20.384 [HikariPool-1:connection-closer] DEBUG com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection org.postgresql.jdbc.PgConnection@21075318: (connection evicted)
+2025-12-29 15:01:20.384 [HikariPool-1:connection-closer] DEBUG com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection org.postgresql.jdbc.PgConnection@bdd52ad: (connection evicted)
+2025-12-29 15:01:20.384 [HikariPool-1:connection-closer] DEBUG com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection org.postgresql.jdbc.PgConnection@70729e70: (connection evicted)
+2025-12-29 15:01:20.384 [HikariPool-1:connection-closer] DEBUG com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection org.postgresql.jdbc.PgConnection@6a74f2aa: (connection evicted)
+2025-12-29 15:01:20.385 [Thread-0] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - After  shutdown stats (total=0/10, idle=0/10, active=0, waiting=0)
+2025-12-29 15:01:20.385 [Thread-0] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2025-12-29 15:01:37.543 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2025-12-29 15:01:37.632 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@5f14a673
+2025-12-29 15:01:37.634 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2025-12-29 15:01:38.528 [main] INFO  n.b.p.useragent.utils.YauaaVersion - 
+2025-12-29 15:01:38.531 [main] INFO  n.b.p.useragent.utils.YauaaVersion - /-----------------------------------------------------------\
+2025-12-29 15:01:38.531 [main] INFO  n.b.p.useragent.utils.YauaaVersion - | Yauaa 7.32.0 (v7.32.0 @ 2025-10-11T16:29:46Z)             |
+2025-12-29 15:01:38.531 [main] INFO  n.b.p.useragent.utils.YauaaVersion - +-----------------------------------------------------------+
+2025-12-29 15:01:38.531 [main] INFO  n.b.p.useragent.utils.YauaaVersion - | For more information: https://yauaa.basjes.nl             |
+2025-12-29 15:01:38.531 [main] INFO  n.b.p.useragent.utils.YauaaVersion - | Copyright (C) 2013-2025 Niels Basjes - License Apache 2.0 |
+2025-12-29 15:01:38.531 [main] INFO  n.b.p.useragent.utils.YauaaVersion - \-----------------------------------------------------------/
+2025-12-29 15:01:38.531 [main] INFO  n.b.p.useragent.utils.YauaaVersion - 
+2025-12-29 15:01:38.666 [main] INFO  n.b.p.useragent.config.ConfigLoader - - Loaded 119 files in  130 ms using expression: classpath*:UserAgents/**/*.yaml
+2025-12-29 15:01:39.537 [main] INFO  n.b.p.u.a.UserAgentStringMatchMaker - Building all needed matchers for the requested 9 fields.
+2025-12-29 15:01:39.606 [main] INFO  i.m.l.PropertiesLoggingLevelsConfigurer - Setting log level 'TRACE' for logger: 'root'
+2025-12-29 15:01:39.607 [main] INFO  i.m.l.PropertiesLoggingLevelsConfigurer - Setting log level 'ALL' for logger: 'io.micronaut.http.server.netty'
+2025-12-29 15:01:39.607 [main] INFO  i.m.l.PropertiesLoggingLevelsConfigurer - Setting log level 'INFO' for logger: 'io.micronaut.flyway'
+2025-12-29 15:01:39.854 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@138bd003
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -1681,8 +1623,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:09:12.059 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@acc6a69
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:01:39.856 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@7e1b750e
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -1718,8 +1660,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:09:12.060 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@180ee8dd
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:01:39.856 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@39ad5a7d
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -1755,8 +1697,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:09:12.060 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@a64a147
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:01:39.857 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@24df8abf
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -1792,8 +1734,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:09:12.060 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@5083642c
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:01:39.857 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@6aa09c35
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -1829,8 +1771,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:09:12.061 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@c207c10
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:01:39.857 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@7a9794bd
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -1866,8 +1808,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:09:12.061 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@59aba6f2
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:01:39.858 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@47585784
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -1903,8 +1845,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:09:12.061 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@79571cc5
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:01:39.858 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@82134e4
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -1940,8 +1882,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:09:12.061 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@7f1bf2db
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:01:39.859 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@1d9a80d8
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -1977,8 +1919,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:09:12.062 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@93370c5
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:01:39.859 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@79b24f79
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -2014,8 +1956,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:09:12.062 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@48c74c4f
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:01:39.859 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@70dd4172
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -2051,8 +1993,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:09:12.062 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@d95150c
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:01:39.860 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@4d089ef7
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -2088,8 +2030,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:09:12.062 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@4022a256
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:01:39.860 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@2a670af9
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -2125,8 +2067,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:09:12.062 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@6ddb5117
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:01:39.860 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@536d655f
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -2162,8 +2104,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:09:12.063 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@237b93f5
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:01:39.860 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@2956985b
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -2199,8 +2141,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:09:12.063 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@440f434f
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:01:39.860 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@168b28ef
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -2236,8 +2178,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:09:12.065 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@1653cc95
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:01:39.863 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@6087f264
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -2265,8 +2207,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:09:12.065 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@1569e9d7
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:01:39.864 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@2d980dc3
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -2294,8 +2236,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:09:12.065 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@64ec804f
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:01:39.864 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@77d50cde
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -2323,8 +2265,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:09:12.066 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@5ffdea7c
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:01:39.864 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@2eef2fd6
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -2352,8 +2294,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:09:12.066 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@2d43bedb
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:01:39.864 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@2f3809cf
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -2381,8 +2323,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:09:12.066 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@1cbe3497
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:01:39.865 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@1d4cf8ea
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -2410,8 +2352,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:09:12.066 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@6cb84986
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:01:39.865 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@2094869b
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -2439,8 +2381,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:09:12.067 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@296c6cc1
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:01:39.865 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@470dbce9
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -2468,8 +2410,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:09:12.067 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@373636f3
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:01:39.865 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@604125bd
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -2497,8 +2439,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:09:12.067 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@66e478c7
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:01:39.865 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@13e4a4a0
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -2526,8 +2468,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:09:12.067 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@1c32c581
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:01:39.866 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@30f1a181
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -2555,8 +2497,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:09:12.067 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@55623ed5
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:01:39.866 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@1ad27a73
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -2584,8 +2526,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:09:12.067 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@6a3a3b93
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:01:39.866 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@5e4168dd
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -2613,8 +2555,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:09:12.068 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@14270715
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:01:39.866 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@53bf7b33
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -2642,8 +2584,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:09:12.068 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@38657ca8
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:01:39.866 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@6c82ecbe
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -2671,8 +2613,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:09:12.068 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@7cb39309
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:01:39.867 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@2202eee0
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -2700,8 +2642,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:09:12.068 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@2d158175
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:01:39.867 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@6392107e
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -2729,8 +2671,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:09:12.068 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@1cc20796
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:01:39.867 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@3fa43b05
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -2758,8 +2700,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:09:12.068 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@1205d422
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:01:39.867 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@23618fa2
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -2787,8 +2729,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:09:12.069 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@2d8b8469
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:01:39.867 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@12c21282
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -2816,8 +2758,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:09:12.069 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@55456711
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:01:39.868 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@76982efa
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -2845,8 +2787,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:09:12.069 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@4bc15d49
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:01:39.868 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@7b83476f
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -2874,8 +2816,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:09:12.069 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@34c83eb0
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:01:39.868 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@4843fc3c
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -2903,8 +2845,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:09:12.069 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@e343477
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:01:39.868 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@686ae6b3
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -2932,8 +2874,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:09:12.069 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@6c884b0d
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:01:39.868 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@1f32fb77
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -2961,8 +2903,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:09:12.070 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@7ccf845a
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:01:39.868 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@32f53573
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -2990,8 +2932,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:09:12.070 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@4db7fe2c
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:01:39.869 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@48430066
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -3019,8 +2961,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:09:12.070 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@22ecee76
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:01:39.869 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@761eaf72
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -3048,8 +2990,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:09:12.070 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@7b31281b
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:01:39.869 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@73ebf7cc
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -3077,8 +3019,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:09:12.070 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@16db679e
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:01:39.869 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@47690183
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -3106,8 +3048,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:09:12.070 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@42775280
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:01:39.869 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@148b13e5
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -3135,8 +3077,8 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:09:12.070 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@51645204
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:01:39.870 [main] TRACE io.netty.channel.nio.NioIoHandler - failed to instrument a special java.util.Set into: sun.nio.ch.EPollSelectorImpl@25ca56de
 java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.netty.util.internal.ReflectionUtil.trySetAccessible(ReflectionUtil.java:36)
 	at io.netty.channel.nio.NioIoHandler$3.run(NioIoHandler.java:206)
@@ -3164,190 +3106,25 @@ java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
 	at io.micronaut.runtime.Micronaut.start(Micronaut.java:81)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:347)
 	at io.micronaut.runtime.Micronaut.run(Micronaut.java:333)
-	at com.doruk.Application.main(Application.java:20)
-2026-01-01 15:09:12.073 [main] TRACE i.m.h.server.netty.NettyHttpServer - Binding microsample server to *:9096
-2026-01-01 15:09:12.102 [main] INFO  io.micronaut.runtime.Micronaut - Startup completed in 3027ms. Server Running: http://localhost:9096/app
-2026-01-01 15:09:16.116 [default-eventLoopGroup-5-1] DEBUG i.n.h.c.compression.ZlibCodecFactory - -Dio.netty.noJdkZlibDecoder: false
-2026-01-01 15:09:16.117 [default-eventLoopGroup-5-1] DEBUG i.n.h.c.compression.ZlibCodecFactory - -Dio.netty.noJdkZlibEncoder: false
-2026-01-01 15:09:16.117 [default-eventLoopGroup-5-1] DEBUG i.n.h.c.compression.ZlibCodecFactory - JZlib not in the classpath; the only window bits supported value will be 15
-2026-01-01 15:09:16.121 [default-eventLoopGroup-5-1] DEBUG i.n.handler.codec.compression.Brotli - brotli4j not in the classpath; Brotli support will be unavailable.
-2026-01-01 15:09:16.122 [default-eventLoopGroup-5-1] DEBUG i.n.handler.codec.compression.Zstd - zstd-jni not in the classpath; Zstd support will be unavailable.
-2026-01-01 15:09:16.153 [default-eventLoopGroup-5-1] DEBUG i.m.h.s.netty.NettyRequestLifecycle - Request POST /app/users/register
-2026-01-01 15:09:16.360 [virtual-executor--872224829] INFO  c.d.i.logging.LoggingService - select tb_1_.USERNAME, tb_1_.EMAIL from users tb_1_ where (tb_1_.USERNAME = ? or tb_1_.EMAIL = ?) and tb_1_.deleted_at is null | time=2026-01-01T09:24:16.360346938Z
-2026-01-01 15:09:16.681 [virtual-executor--872224829] INFO  c.d.i.logging.LoggingService - select tb_1_.ID, tb_1_.USERNAME, tb_1_.EMAIL from users tb_1_ where (tb_1_.USERNAME, tb_1_.EMAIL) = (?, ?) and tb_1_.deleted_at is null | time=2026-01-01T09:24:16.681933935Z
-2026-01-01 15:09:16.696 [virtual-executor--872224829] INFO  c.d.i.logging.LoggingService - insert into users(ID, USERNAME, EMAIL, PHONE, PASSWORD, deleted_at) values(?, ?, ?, ?, ?, ?) | time=2026-01-01T09:24:16.696128746Z
-2026-01-01 15:09:33.385 [virtual-executor--872224829] INFO  c.d.i.logging.LoggingService - select tb_1_.ID, tb_1_.USERNAME, tb_1_.EMAIL, tb_1_.PHONE, tb_1_.PASSWORD, tb_1_.multi_factor_auth, tb_1_.is_email_verified, tb_1_.is_phone_verified, tb_1_.status, tb_1_.updated_at, tb_1_.deleted_at, tb_1_.CREATED_AT from users tb_1_ where tb_1_.ID = ? and tb_1_.deleted_at is null | time=2026-01-01T09:24:33.385055248Z
-2026-01-01 15:10:04.471 [HikariPool-1:housekeeper] WARN  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=54s537ms411µs23ns).
-2026-01-01 15:10:04.472 [HikariPool-1:housekeeper] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=10/10, idle=10/10, active=0, waiting=0)
-2026-01-01 15:10:07.785 [HikariPool-1:housekeeper] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Fill pool skipped, pool has sufficient level or currently being filled.
-2026-01-01 15:11:12.587 [HikariPool-1:housekeeper] WARN  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1m8s115ms733µs193ns).
-2026-01-01 15:11:12.587 [HikariPool-1:housekeeper] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=10/10, idle=10/10, active=0, waiting=0)
-2026-01-01 15:11:12.587 [HikariPool-1:housekeeper] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Fill pool skipped, pool has sufficient level or currently being filled.
-2026-01-01 15:12:45.361 [HikariPool-1:housekeeper] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - keepalive: connection org.postgresql.jdbc.PgConnection@2c617bba is alive
-2026-01-01 15:12:56.711 [HikariPool-1:housekeeper] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - keepalive: connection org.postgresql.jdbc.PgConnection@171bfd6c is alive
-2026-01-01 15:12:56.712 [HikariPool-1:housekeeper] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - keepalive: connection org.postgresql.jdbc.PgConnection@5306eb57 is alive
-2026-01-01 15:12:56.713 [HikariPool-1:housekeeper] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - keepalive: connection org.postgresql.jdbc.PgConnection@7483e912 is alive
-2026-01-01 15:12:56.713 [HikariPool-1:housekeeper] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - keepalive: connection org.postgresql.jdbc.PgConnection@5318e093 is alive
-2026-01-01 15:12:56.714 [HikariPool-1:housekeeper] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - keepalive: connection org.postgresql.jdbc.PgConnection@1b209701 is alive
-2026-01-01 15:12:56.715 [HikariPool-1:housekeeper] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - keepalive: connection org.postgresql.jdbc.PgConnection@7f189b61 is alive
-2026-01-01 15:12:56.716 [HikariPool-1:housekeeper] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - keepalive: connection org.postgresql.jdbc.PgConnection@6ceb7b5e is alive
-2026-01-01 15:12:56.716 [HikariPool-1:housekeeper] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - keepalive: connection org.postgresql.jdbc.PgConnection@143826e9 is alive
-2026-01-01 15:12:56.717 [HikariPool-1:housekeeper] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - keepalive: connection org.postgresql.jdbc.PgConnection@305085 is alive
-2026-01-01 15:12:56.717 [HikariPool-1:housekeeper] WARN  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1m44s130ms244µs222ns).
-2026-01-01 15:12:56.717 [HikariPool-1:housekeeper] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=10/10, idle=10/10, active=0, waiting=0)
-2026-01-01 15:12:56.717 [HikariPool-1:housekeeper] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Fill pool skipped, pool has sufficient level or currently being filled.
-2026-01-01 15:12:56.751 [virtual-executor--1317545985] INFO  c.d.i.logging.LoggingService - select tb_1_.USERNAME, tb_1_.EMAIL from users tb_1_ where tb_1_.ID = ? and tb_1_.deleted_at is null | time=2026-01-01T09:27:56.751926585Z
-2026-01-01 15:12:56.763 [virtual-executor--872224829] DEBUG i.m.h.s.netty.RoutingInBoundHandler - Response 200 - POST /app/users/register
-2026-01-01 15:12:56.916 [virtual-executor--1317545985] DEBUG io.netty.handler.ssl.OpenSsl - netty-tcnative not in the classpath; OpenSslEngine will be unavailable.
-2026-01-01 15:12:57.005 [virtual-executor--1317545985] DEBUG io.netty.handler.ssl.JdkSslContext - Default protocols (JDK): [TLSv1.3, TLSv1.2] 
-2026-01-01 15:12:57.006 [virtual-executor--1317545985] DEBUG io.netty.handler.ssl.JdkSslContext - Default cipher suites (JDK): [TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384, TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256, TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256, TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384, TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA, TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA, TLS_AES_128_GCM_SHA256, TLS_AES_256_GCM_SHA384]
-2026-01-01 15:12:57.271 [default-eventLoopGroup-5-3] DEBUG i.n.h.ssl.util.BouncyCastleUtil - Bouncy Castle provider available
-2026-01-01 15:12:57.271 [default-eventLoopGroup-5-3] DEBUG i.n.h.ssl.util.BouncyCastleUtil - Cannot load Bouncy Castle PKIX
-java.lang.ClassNotFoundException: org.bouncycastle.openssl.PEMParser
-	at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:580)
-	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:490)
-	at java.base/java.lang.Class.forName0(Native Method)
-	at java.base/java.lang.Class.forName(Class.java:547)
-	at io.netty.handler.ssl.util.BouncyCastleUtil.lambda$tryLoading$0(BouncyCastleUtil.java:204)
-	at java.base/java.security.AccessController.doPrivileged(AccessController.java:74)
-	at io.netty.handler.ssl.util.BouncyCastleUtil.tryLoading(BouncyCastleUtil.java:167)
-	at io.netty.handler.ssl.util.BouncyCastleUtil.ensureLoaded(BouncyCastleUtil.java:161)
-	at io.netty.handler.ssl.util.BouncyCastleUtil.isBcJsseInUse(BouncyCastleUtil.java:104)
-	at io.netty.handler.ssl.JdkAlpnApplicationProtocolNegotiator$AlpnWrapper.wrapSslEngine(JdkAlpnApplicationProtocolNegotiator.java:135)
-	at io.netty.handler.ssl.JdkSslContext.configureAndWrapEngine(JdkSslContext.java:386)
-	at io.netty.handler.ssl.JdkSslContext.newEngine(JdkSslContext.java:360)
-	at io.netty.handler.ssl.SslContext.newHandler(SslContext.java:1043)
-	at io.netty.handler.ssl.SslContext.newHandler(SslContext.java:1035)
-	at io.micronaut.http.client.netty.ConnectionManager$AdaptiveAlpnChannelInitializer.initChannel(ConnectionManager.java:924)
-	at io.netty.channel.ChannelInitializer.initChannel(ChannelInitializer.java:128)
-	at io.netty.channel.ChannelInitializer.handlerAdded(ChannelInitializer.java:111)
-	at io.netty.channel.AbstractChannelHandlerContext.callHandlerAdded(AbstractChannelHandlerContext.java:999)
-	at io.netty.channel.DefaultChannelPipeline.callHandlerAdded0(DefaultChannelPipeline.java:558)
-	at io.netty.channel.DefaultChannelPipeline.access$100(DefaultChannelPipeline.java:45)
-	at io.netty.channel.DefaultChannelPipeline$PendingHandlerAddedTask.execute(DefaultChannelPipeline.java:1482)
-	at io.netty.channel.DefaultChannelPipeline.callHandlerAddedForAllHandlers(DefaultChannelPipeline.java:1136)
-	at io.netty.channel.DefaultChannelPipeline.invokeHandlerAddedIfNeeded(DefaultChannelPipeline.java:599)
-	at io.netty.channel.AbstractChannel$AbstractUnsafe$2.operationComplete(AbstractChannel.java:383)
-	at io.netty.channel.AbstractChannel$AbstractUnsafe$2.operationComplete(AbstractChannel.java:374)
-	at io.netty.util.concurrent.DefaultPromise.notifyListener0(DefaultPromise.java:604)
-	at io.netty.util.concurrent.DefaultPromise.notifyListenersNow(DefaultPromise.java:571)
-	at io.netty.util.concurrent.DefaultPromise.notifyListeners(DefaultPromise.java:506)
-	at io.netty.util.concurrent.DefaultPromise.setValue0(DefaultPromise.java:650)
-	at io.netty.util.concurrent.DefaultPromise.setSuccess0(DefaultPromise.java:639)
-	at io.netty.util.concurrent.DefaultPromise.setSuccess(DefaultPromise.java:111)
-	at io.netty.channel.DefaultChannelPromise.setSuccess(DefaultChannelPromise.java:78)
-	at io.netty.channel.DefaultChannelPromise.setSuccess(DefaultChannelPromise.java:73)
-	at io.netty.channel.nio.AbstractNioChannel.lambda$doRegister$0(AbstractNioChannel.java:465)
-	at io.netty.util.concurrent.DefaultPromise.notifyListener0(DefaultPromise.java:604)
-	at io.netty.util.concurrent.DefaultPromise.notifyListenersNow(DefaultPromise.java:571)
-	at io.netty.util.concurrent.DefaultPromise.notifyListeners(DefaultPromise.java:506)
-	at io.netty.util.concurrent.DefaultPromise.addListener(DefaultPromise.java:199)
-	at io.netty.util.concurrent.DefaultPromise.addListener(DefaultPromise.java:37)
-	at io.netty.channel.nio.AbstractNioChannel.doRegister(AbstractNioChannel.java:462)
-	at io.netty.channel.AbstractChannel$AbstractUnsafe.register0(AbstractChannel.java:408)
-	at io.netty.channel.AbstractChannel$AbstractUnsafe.register(AbstractChannel.java:346)
-	at io.netty.channel.SingleThreadEventLoop.register(SingleThreadEventLoop.java:119)
-	at io.netty.channel.SingleThreadEventLoop.register(SingleThreadEventLoop.java:113)
-	at io.netty.bootstrap.AbstractBootstrap.initAndRegister(AbstractBootstrap.java:343)
-	at io.netty.bootstrap.Bootstrap.doResolveAndConnect(Bootstrap.java:164)
-	at io.netty.bootstrap.Bootstrap.connect(Bootstrap.java:125)
-	at io.micronaut.http.client.netty.ConnectionManager.doConnect(ConnectionManager.java:468)
-	at io.micronaut.http.client.netty.ConnectionManager$PoolHolder.openConnectionFuture(ConnectionManager.java:1315)
-	at io.micronaut.http.client.netty.ConnectionManager$PoolHolder.openNewConnection(ConnectionManager.java:1267)
-	at io.micronaut.http.client.netty.Pool49$LocalPoolPair.openConnectionStep3(Pool49.java:485)
-	at io.micronaut.http.client.netty.Pool49$PendingRequest.dispatchLocal(Pool49.java:1077)
-	at io.netty.util.concurrent.AbstractEventExecutor.runTask$$$capture(AbstractEventExecutor.java:148)
-	at io.netty.util.concurrent.AbstractEventExecutor.runTask(AbstractEventExecutor.java)
-	at io.netty.util.concurrent.AbstractEventExecutor.safeExecute$$$capture(AbstractEventExecutor.java:141)
-	at io.netty.util.concurrent.AbstractEventExecutor.safeExecute(AbstractEventExecutor.java)
-	at io.netty.util.concurrent.SingleThreadEventExecutor.runAllTasks(SingleThreadEventExecutor.java:535)
-	at io.netty.channel.SingleThreadIoEventLoop.run(SingleThreadIoEventLoop.java:201)
-	at io.netty.util.concurrent.SingleThreadEventExecutor$5.run(SingleThreadEventExecutor.java:1195)
-	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
-	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
-	at java.base/java.lang.Thread.run(Thread.java:1474)
-2026-01-01 15:12:57.272 [default-eventLoopGroup-5-3] DEBUG i.n.h.ssl.util.BouncyCastleUtil - Cannot load Bouncy Castle TLS
-java.lang.ClassNotFoundException: org.bouncycastle.jsse.provider.BouncyCastleJsseProvider
-	at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:580)
-	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:490)
-	at java.base/java.lang.Class.forName0(Native Method)
-	at java.base/java.lang.Class.forName(Class.java:547)
-	at io.netty.handler.ssl.util.BouncyCastleUtil.lambda$tryLoading$0(BouncyCastleUtil.java:219)
-	at java.base/java.security.AccessController.doPrivileged(AccessController.java:74)
-	at io.netty.handler.ssl.util.BouncyCastleUtil.tryLoading(BouncyCastleUtil.java:167)
-	at io.netty.handler.ssl.util.BouncyCastleUtil.ensureLoaded(BouncyCastleUtil.java:161)
-	at io.netty.handler.ssl.util.BouncyCastleUtil.isBcJsseInUse(BouncyCastleUtil.java:104)
-	at io.netty.handler.ssl.JdkAlpnApplicationProtocolNegotiator$AlpnWrapper.wrapSslEngine(JdkAlpnApplicationProtocolNegotiator.java:135)
-	at io.netty.handler.ssl.JdkSslContext.configureAndWrapEngine(JdkSslContext.java:386)
-	at io.netty.handler.ssl.JdkSslContext.newEngine(JdkSslContext.java:360)
-	at io.netty.handler.ssl.SslContext.newHandler(SslContext.java:1043)
-	at io.netty.handler.ssl.SslContext.newHandler(SslContext.java:1035)
-	at io.micronaut.http.client.netty.ConnectionManager$AdaptiveAlpnChannelInitializer.initChannel(ConnectionManager.java:924)
-	at io.netty.channel.ChannelInitializer.initChannel(ChannelInitializer.java:128)
-	at io.netty.channel.ChannelInitializer.handlerAdded(ChannelInitializer.java:111)
-	at io.netty.channel.AbstractChannelHandlerContext.callHandlerAdded(AbstractChannelHandlerContext.java:999)
-	at io.netty.channel.DefaultChannelPipeline.callHandlerAdded0(DefaultChannelPipeline.java:558)
-	at io.netty.channel.DefaultChannelPipeline.access$100(DefaultChannelPipeline.java:45)
-	at io.netty.channel.DefaultChannelPipeline$PendingHandlerAddedTask.execute(DefaultChannelPipeline.java:1482)
-	at io.netty.channel.DefaultChannelPipeline.callHandlerAddedForAllHandlers(DefaultChannelPipeline.java:1136)
-	at io.netty.channel.DefaultChannelPipeline.invokeHandlerAddedIfNeeded(DefaultChannelPipeline.java:599)
-	at io.netty.channel.AbstractChannel$AbstractUnsafe$2.operationComplete(AbstractChannel.java:383)
-	at io.netty.channel.AbstractChannel$AbstractUnsafe$2.operationComplete(AbstractChannel.java:374)
-	at io.netty.util.concurrent.DefaultPromise.notifyListener0(DefaultPromise.java:604)
-	at io.netty.util.concurrent.DefaultPromise.notifyListenersNow(DefaultPromise.java:571)
-	at io.netty.util.concurrent.DefaultPromise.notifyListeners(DefaultPromise.java:506)
-	at io.netty.util.concurrent.DefaultPromise.setValue0(DefaultPromise.java:650)
-	at io.netty.util.concurrent.DefaultPromise.setSuccess0(DefaultPromise.java:639)
-	at io.netty.util.concurrent.DefaultPromise.setSuccess(DefaultPromise.java:111)
-	at io.netty.channel.DefaultChannelPromise.setSuccess(DefaultChannelPromise.java:78)
-	at io.netty.channel.DefaultChannelPromise.setSuccess(DefaultChannelPromise.java:73)
-	at io.netty.channel.nio.AbstractNioChannel.lambda$doRegister$0(AbstractNioChannel.java:465)
-	at io.netty.util.concurrent.DefaultPromise.notifyListener0(DefaultPromise.java:604)
-	at io.netty.util.concurrent.DefaultPromise.notifyListenersNow(DefaultPromise.java:571)
-	at io.netty.util.concurrent.DefaultPromise.notifyListeners(DefaultPromise.java:506)
-	at io.netty.util.concurrent.DefaultPromise.addListener(DefaultPromise.java:199)
-	at io.netty.util.concurrent.DefaultPromise.addListener(DefaultPromise.java:37)
-	at io.netty.channel.nio.AbstractNioChannel.doRegister(AbstractNioChannel.java:462)
-	at io.netty.channel.AbstractChannel$AbstractUnsafe.register0(AbstractChannel.java:408)
-	at io.netty.channel.AbstractChannel$AbstractUnsafe.register(AbstractChannel.java:346)
-	at io.netty.channel.SingleThreadEventLoop.register(SingleThreadEventLoop.java:119)
-	at io.netty.channel.SingleThreadEventLoop.register(SingleThreadEventLoop.java:113)
-	at io.netty.bootstrap.AbstractBootstrap.initAndRegister(AbstractBootstrap.java:343)
-	at io.netty.bootstrap.Bootstrap.doResolveAndConnect(Bootstrap.java:164)
-	at io.netty.bootstrap.Bootstrap.connect(Bootstrap.java:125)
-	at io.micronaut.http.client.netty.ConnectionManager.doConnect(ConnectionManager.java:468)
-	at io.micronaut.http.client.netty.ConnectionManager$PoolHolder.openConnectionFuture(ConnectionManager.java:1315)
-	at io.micronaut.http.client.netty.ConnectionManager$PoolHolder.openNewConnection(ConnectionManager.java:1267)
-	at io.micronaut.http.client.netty.Pool49$LocalPoolPair.openConnectionStep3(Pool49.java:485)
-	at io.micronaut.http.client.netty.Pool49$PendingRequest.dispatchLocal(Pool49.java:1077)
-	at io.netty.util.concurrent.AbstractEventExecutor.runTask$$$capture(AbstractEventExecutor.java:148)
-	at io.netty.util.concurrent.AbstractEventExecutor.runTask(AbstractEventExecutor.java)
-	at io.netty.util.concurrent.AbstractEventExecutor.safeExecute$$$capture(AbstractEventExecutor.java:141)
-	at io.netty.util.concurrent.AbstractEventExecutor.safeExecute(AbstractEventExecutor.java)
-	at io.netty.util.concurrent.SingleThreadEventExecutor.runAllTasks(SingleThreadEventExecutor.java:535)
-	at io.netty.channel.SingleThreadIoEventLoop.run(SingleThreadIoEventLoop.java:201)
-	at io.netty.util.concurrent.SingleThreadEventExecutor$5.run(SingleThreadEventExecutor.java:1195)
-	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
-	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
-	at java.base/java.lang.Thread.run(Thread.java:1474)
-2026-01-01 15:13:02.764 [default-eventLoopGroup-5-3] DEBUG io.netty.handler.ssl.SslHandler - [id: 0x5315e9dc, L:/10.10.100.149:46898 - R:api.brevo.com/141.101.90.105:443] HANDSHAKEN: protocol:TLSv1.3 cipher suite:TLS_AES_128_GCM_SHA256
-2026-01-01 15:13:03.008 [default-eventLoopGroup-5-3] DEBUG i.n.util.ResourceLeakDetectorFactory - Loaded default ResourceLeakDetector: io.netty.util.ResourceLeakDetector@400e5e40
-2026-01-01 15:13:11.345 [Thread-0] INFO  io.micronaut.runtime.Micronaut - Embedded Application shutting down
-2026-01-01 15:13:11.371 [Thread-0] DEBUG io.lettuce.core.AbstractRedisClient - Initiate shutdown (0, 2, SECONDS)
-2026-01-01 15:13:11.374 [Thread-0] DEBUG i.l.c.r.DefaultEventLoopGroupProvider - Release executor io.netty.channel.nio.NioEventLoopGroup@5ae1c281
-2026-01-01 15:13:11.377 [lettuce-nioEventLoop-4-1] DEBUG i.l.core.protocol.ConnectionWatchdog - [channel=0x99799b21, /127.0.0.1:37614 -> localhost/127.0.0.1:6379, last known addr=localhost/127.0.0.1:6379] channelInactive()
-2026-01-01 15:13:11.377 [lettuce-nioEventLoop-4-1] DEBUG i.l.core.protocol.ConnectionWatchdog - [channel=0x99799b21, /127.0.0.1:37614 -> localhost/127.0.0.1:6379, last known addr=localhost/127.0.0.1:6379] Reconnect scheduling disabled
-2026-01-01 15:13:11.390 [Thread-0] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
-2026-01-01 15:13:11.390 [Thread-0] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Before shutdown stats (total=10/10, idle=10/10, active=0, waiting=0)
-2026-01-01 15:13:11.392 [HikariPool-1:connection-closer] DEBUG com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection org.postgresql.jdbc.PgConnection@6ceb7b5e: (connection evicted)
-2026-01-01 15:13:11.392 [HikariPool-1:connection-closer] DEBUG com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection org.postgresql.jdbc.PgConnection@7f189b61: (connection evicted)
-2026-01-01 15:13:11.392 [HikariPool-1:connection-closer] DEBUG com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection org.postgresql.jdbc.PgConnection@5318e093: (connection evicted)
-2026-01-01 15:13:11.392 [HikariPool-1:connection-closer] DEBUG com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection org.postgresql.jdbc.PgConnection@1b209701: (connection evicted)
-2026-01-01 15:13:11.393 [HikariPool-1:connection-closer] DEBUG com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection org.postgresql.jdbc.PgConnection@171bfd6c: (connection evicted)
-2026-01-01 15:13:11.393 [HikariPool-1:connection-closer] DEBUG com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection org.postgresql.jdbc.PgConnection@5306eb57: (connection evicted)
-2026-01-01 15:13:11.393 [HikariPool-1:connection-closer] DEBUG com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection org.postgresql.jdbc.PgConnection@2c617bba: (connection evicted)
-2026-01-01 15:13:11.395 [HikariPool-1:connection-closer] DEBUG com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection org.postgresql.jdbc.PgConnection@143826e9: (connection evicted)
-2026-01-01 15:13:11.396 [HikariPool-1:connection-closer] DEBUG com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection org.postgresql.jdbc.PgConnection@7483e912: (connection evicted)
-2026-01-01 15:13:11.396 [HikariPool-1:connection-closer] DEBUG com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection org.postgresql.jdbc.PgConnection@305085: (connection evicted)
-2026-01-01 15:13:11.396 [Thread-0] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - After  shutdown stats (total=0/10, idle=0/10, active=0, waiting=0)
-2026-01-01 15:13:11.396 [Thread-0] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+	at com.doruk.Application.main(Application.java:24)
+2025-12-29 15:01:39.871 [main] TRACE i.m.h.server.netty.NettyHttpServer - Binding microsample server to *:9096
+2025-12-29 15:01:39.887 [main] INFO  io.micronaut.runtime.Micronaut - Startup completed in 3155ms. Server Running: http://localhost:9096/app
+2025-12-29 15:01:54.803 [Thread-0] INFO  io.micronaut.runtime.Micronaut - Embedded Application shutting down
+2025-12-29 15:01:54.830 [Thread-0] DEBUG io.lettuce.core.AbstractRedisClient - Initiate shutdown (0, 2, SECONDS)
+2025-12-29 15:01:54.833 [Thread-0] DEBUG i.l.c.r.DefaultEventLoopGroupProvider - Release executor io.netty.channel.nio.NioEventLoopGroup@7061622
+2025-12-29 15:01:54.836 [lettuce-nioEventLoop-4-1] DEBUG i.l.core.protocol.ConnectionWatchdog - [channel=0x7ced97f3, /127.0.0.1:33028 -> localhost/127.0.0.1:6379, last known addr=localhost/127.0.0.1:6379] channelInactive()
+2025-12-29 15:01:54.836 [lettuce-nioEventLoop-4-1] DEBUG i.l.core.protocol.ConnectionWatchdog - [channel=0x7ced97f3, /127.0.0.1:33028 -> localhost/127.0.0.1:6379, last known addr=localhost/127.0.0.1:6379] Reconnect scheduling disabled
+2025-12-29 15:01:54.840 [Thread-0] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2025-12-29 15:01:54.840 [Thread-0] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Before shutdown stats (total=10/10, idle=10/10, active=0, waiting=0)
+2025-12-29 15:01:54.841 [HikariPool-1:connection-closer] DEBUG com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection org.postgresql.jdbc.PgConnection@5f14a673: (connection evicted)
+2025-12-29 15:01:54.842 [HikariPool-1:connection-closer] DEBUG com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection org.postgresql.jdbc.PgConnection@4cfb8511: (connection evicted)
+2025-12-29 15:01:54.842 [HikariPool-1:connection-closer] DEBUG com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection org.postgresql.jdbc.PgConnection@423c62fe: (connection evicted)
+2025-12-29 15:01:54.842 [HikariPool-1:connection-closer] DEBUG com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection org.postgresql.jdbc.PgConnection@4603ee61: (connection evicted)
+2025-12-29 15:01:54.842 [HikariPool-1:connection-closer] DEBUG com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection org.postgresql.jdbc.PgConnection@30168c5: (connection evicted)
+2025-12-29 15:01:54.842 [HikariPool-1:connection-closer] DEBUG com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection org.postgresql.jdbc.PgConnection@13c2b6b9: (connection evicted)
+2025-12-29 15:01:54.844 [HikariPool-1:connection-closer] DEBUG com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection org.postgresql.jdbc.PgConnection@32480dad: (connection evicted)
+2025-12-29 15:01:54.844 [HikariPool-1:connection-closer] DEBUG com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection org.postgresql.jdbc.PgConnection@6b618d63: (connection evicted)
+2025-12-29 15:01:54.844 [HikariPool-1:connection-closer] DEBUG com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection org.postgresql.jdbc.PgConnection@632e978a: (connection evicted)
+2025-12-29 15:01:54.845 [HikariPool-1:connection-closer] DEBUG com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection org.postgresql.jdbc.PgConnection@655f8228: (connection evicted)
+2025-12-29 15:01:54.845 [Thread-0] DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - After  shutdown stats (total=0/10, idle=0/10, active=0, waiting=0)
+2025-12-29 15:01:54.845 [Thread-0] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.

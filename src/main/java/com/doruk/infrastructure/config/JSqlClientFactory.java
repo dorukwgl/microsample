@@ -1,7 +1,6 @@
 package com.doruk.infrastructure.config;
 
 import com.doruk.infrastructure.logging.LoggingService;
-import io.micronaut.context.annotation.Context;
 import io.micronaut.context.annotation.Factory;
 import io.micronaut.context.annotation.Primary;
 import jakarta.inject.Singleton;
@@ -14,6 +13,8 @@ import org.babyfish.jimmer.sql.dialect.MySqlDialect;
 import org.babyfish.jimmer.sql.dialect.PostgresDialect;
 import org.babyfish.jimmer.sql.fetcher.ReferenceFetchType;
 import org.babyfish.jimmer.sql.runtime.*;
+import org.babyfish.jimmer.sql.transaction.Propagation;
+import org.babyfish.jimmer.sql.transaction.TxConnectionManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -21,6 +22,7 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.function.Function;
+
 
 @Factory
 public class JSqlClientFactory {
@@ -30,19 +32,7 @@ public class JSqlClientFactory {
 
         JSqlClient.Builder builder = JSqlClient.newBuilder();
 
-        builder.setConnectionManager(new ConnectionManager() {
-            @Override
-            public <R> R execute(@Nullable Connection con, Function<Connection, R> block) {
-                if (con != null)
-                    return block.apply(con);
-
-                try (Connection connection = dataSource.getConnection()) {
-                    return block.apply(connection);
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        });
+        builder.setConnectionManager(ConnectionManager.simpleConnectionManager(dataSource));
 
         builder.setDefaultEnumStrategy(EnumType.Strategy.NAME);
         builder.setDefaultReferenceFetchType(ReferenceFetchType.JOIN_IF_NO_CACHE);

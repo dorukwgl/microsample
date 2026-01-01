@@ -3,7 +3,6 @@ package com.doruk.infrastructure.security;
 import com.doruk.application.security.UserScope;
 import com.doruk.domain.shared.enums.Permissions;
 import com.nimbusds.jwt.JWT;
-import io.micronaut.context.annotation.Primary;
 import io.micronaut.context.annotation.Replaces;
 import io.micronaut.security.authentication.Authentication;
 import io.micronaut.security.token.jwt.validator.DefaultJwtAuthenticationFactory;
@@ -36,13 +35,13 @@ public class CustomJwtAuthenticationFactory implements JwtAuthenticationFactory 
                     );
                 }
             }
-            var scope = new UserScope(sub.toString(), permissions);
+
             return Optional.of(
                     Authentication.build(
                             sub.toString(),
                             Map.of(
                                     UserScope.KEY,
-                                    scope
+                                    permissions
                             )
                     )
             );
