@@ -1,7 +1,9 @@
 package com.doruk.presentation.auth.controller;
 
+import com.doruk.application.auth.dto.JwtResponse;
 import com.doruk.application.auth.dto.LoginResponse;
 import com.doruk.application.auth.service.AuthService;
+import com.doruk.infrastructure.util.Constants;
 import com.doruk.presentation.auth.dto.DeviceInfoRequest;
 import com.doruk.presentation.auth.dto.LoginRequest;
 import com.doruk.presentation.auth.mappers.DeviceInfoMapper;
@@ -60,5 +62,13 @@ public class AuthController {
             int otp
     ) {
         return service.performMfa(mfaToken, otp, infoMapper.toDeviceInfo(info));
+    }
+
+    @ApiResponse(responseCode = "200", description = "Access token refreshed successfully")
+    @ApiResponse(responseCode = "401", description = "Invalid or expired session. Please login again.")
+    @Secured(SecurityRule.IS_ANONYMOUS)
+    @Get("/refresh/token")
+    HttpResponse<JwtResponse> refreshAccessToken(@CookieValue(Constants.SESSION_COOKIE_HEADER) String info) {
+        return HttpResponse.ok().body(service.refreshAccessToken(info));
     }
 }

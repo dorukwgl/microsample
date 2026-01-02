@@ -31,12 +31,6 @@ public interface Session {
     @Column(name = "expires_at")
     LocalDateTime expiresAt();
 
-    // Jimmer maps Postgres Arrays to Java Arrays/Lists
-    // Warning: SQL said "integer[]", but Role PK is String.
-    // If SQL column stores strings, change this to String[]
-    @Column(name = "roles")
-    Integer[] cachedRoles();
-
     @Column(name = "permissions")
     List<Integer> cachedPermissions();
 }

@@ -170,4 +170,18 @@ public class AuthService {
         this.removeMfaTransaction(mfaToken);
         return response;
     }
+
+    public JwtResponse refreshAccessToken(String sessionId) {
+        var invalidException = new InvalidCredentialException("Invalid or expired session. Please login again.");
+        var session = authRepository.getSession(sessionId)
+                .orElseThrow(() -> invalidException);
+
+        if (session.expiresAt().isBefore(LocalDateTime.now()))
+            throw invalidException;
+
+        return issuer.issueToken(new JwtRequest(
+                session.userId(),
+                appConfig.appId(),
+                session.permissions()));
+    }
 }

@@ -1,12 +1,11 @@
 package com.doruk.infrastructure.persistence.auth;
 
 import com.doruk.application.auth.dto.AuthDto;
+import com.doruk.application.auth.dto.SessionDto;
 import com.doruk.domain.shared.enums.MultiAuthType;
 import com.doruk.domain.shared.enums.Permissions;
-import com.doruk.infrastructure.persistence.entity.Permission;
-import com.doruk.infrastructure.persistence.entity.SessionDraft;
-import com.doruk.infrastructure.persistence.entity.UserTable;
-import com.doruk.infrastructure.persistence.entity.UserTableEx;
+import com.doruk.infrastructure.persistence.auth.mapper.SessionMapper;
+import com.doruk.infrastructure.persistence.entity.*;
 import jakarta.inject.Singleton;
 import javafx.util.Pair;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +23,27 @@ import java.util.*;
 @RequiredArgsConstructor
 public class AuthRepository {
     private final JSqlClient sqlClient;
+    private final SessionMapper sessionMapper;
+
+    private static AuthDto toAuthDto(List<Tuple9<UUID, String, String, String, String, Boolean, Boolean, MultiAuthType, Permission>> dt) {
+        var commons = dt.getFirst();
+        Set<Permissions> permissions = new HashSet<>();
+        if (commons.get_9() != null) // null check if permissions is empty
+            dt.forEach(tup ->
+                    permissions.add(Permissions.valueOf(tup.get_9().name())));
+
+        return AuthDto.builder()
+                .id(commons.get_1().toString())
+                .username(commons.get_2())
+                .password(commons.get_3())
+                .phone(commons.get_4())
+                .email(commons.get_5())
+                .emailVerified(commons.get_6())
+                .phoneVerified(commons.get_7())
+                .multiFactorAuth(commons.get_8())
+                .permissions(permissions)
+                .build();
+    }
 
     public Optional<AuthDto> findByUsernameOrEmail(String field) {
         var t = UserTableEx.$;
@@ -77,23 +97,21 @@ public class AuthRepository {
                 new Pair<>(user.getFirst().get_1(), user.getFirst().get_2());
     }
 
-    private static AuthDto toAuthDto(List<Tuple9<UUID, String, String, String, String, Boolean, Boolean, MultiAuthType, Permission>> dt) {
-        var commons = dt.getFirst();
-        Set<Permissions> permissions = new HashSet<>();
-        if (commons.get_9() != null) // null check if permissions is empty
-            dt.forEach(tup ->
-                    permissions.add(Permissions.valueOf(tup.get_9().name())));
+    public Optional<SessionDto> getSession(String sessionId) {
+        var t = SessionTable.$;
+        var dt = sqlClient.createQuery(t)
+                .where(t.sessionId().eq(sessionId))
+                .select(t)
+                .execute();
 
-        return AuthDto.builder()
-                .id(commons.get_1().toString())
-                .username(commons.get_2())
-                .password(commons.get_3())
-                .phone(commons.get_4())
-                .email(commons.get_5())
-                .emailVerified(commons.get_6())
-                .phoneVerified(commons.get_7())
-                .multiFactorAuth(commons.get_8())
-                .permissions(permissions)
-                .build();
+        if (dt.isEmpty())
+            return Optional.empty();
+
+        var session = sessionMapper.toDto(dt.getFirst());
+        return Optional.of(session);
+    }
+
+    public List<SessionDto> getActiveDevices(String userId) {
+        return null;
     }
 }

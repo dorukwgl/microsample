@@ -1,7 +1,7 @@
 package com.doruk.application.auth.dto;
 
-import io.micronaut.core.annotation.Introspected;
+import io.micronaut.serde.annotation.Serdeable;
 
-@Introspected
+@Serdeable
 public record JwtResponse(String accessToken, String tokenType, int expiresIn) {
 }
