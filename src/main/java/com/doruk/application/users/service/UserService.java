@@ -1,7 +1,7 @@
 package com.doruk.application.users.service;
 
-import com.doruk.application.auth.dto.EmailOtpDto;
-import com.doruk.application.auth.dto.SmsOtpDto;
+import com.doruk.application.dto.EmailOtpDto;
+import com.doruk.application.dto.SmsOtpDto;
 import com.doruk.application.enums.TemplateType;
 import com.doruk.application.exception.ConflictingArgumentException;
 import com.doruk.application.exception.IncompleteStateException;

@@ -39,6 +39,8 @@ public class ApplicationExceptionHandler implements ExceptionHandler<Application
             case ForbiddenException _ -> new Pair<>(403, "Interdicted"); // interdicted
             case SuspiciousIntrusionException _ -> new Pair<>(666, "Intrusive Anomaly Detected");
             case ConflictingArgumentException _ -> new Pair<>(409, "Conflict");
+            case TooManyAttemptsException _ -> new Pair<>(429, "Too Many Attempts");
+            case IncompleteStateException _ -> new Pair<>(400, "Bad Request");
             default -> throw exception; // let the global exception handler handle the server error
         };
     }

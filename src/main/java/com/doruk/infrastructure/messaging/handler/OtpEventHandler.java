@@ -1,8 +1,8 @@
 package com.doruk.infrastructure.messaging.handler;
 
 
-import com.doruk.application.auth.dto.EmailOtpDto;
-import com.doruk.application.auth.dto.SmsOtpDto;
+import com.doruk.application.dto.EmailOtpDto;
+import com.doruk.application.dto.SmsOtpDto;
 import com.doruk.application.interfaces.MailService;
 import com.doruk.application.interfaces.SmsService;
 import com.doruk.infrastructure.config.AppExecutors;

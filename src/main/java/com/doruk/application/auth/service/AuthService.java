@@ -1,6 +1,8 @@
 package com.doruk.application.auth.service;
 
 import com.doruk.application.auth.dto.*;
+import com.doruk.application.dto.EmailOtpDto;
+import com.doruk.application.dto.SmsOtpDto;
 import com.doruk.application.enums.TemplateType;
 import com.doruk.application.exception.InvalidCredentialException;
 import com.doruk.application.exception.TooManyAttemptsException;

@@ -1,4 +1,4 @@
-package com.doruk.application.auth.dto;
+package com.doruk.application.dto;
 
 import com.doruk.application.enums.TemplateType;
 import com.doruk.application.interfaces.EventDto;
