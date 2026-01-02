@@ -10,6 +10,5 @@ public record AppConfig(String name,
                         String appId,
                         int sessionExpiration,
                         String appUrl,
-                        boolean cookieHttpOnly,
                         boolean cookieSecure) {
 }

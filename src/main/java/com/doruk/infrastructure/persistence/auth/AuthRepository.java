@@ -4,6 +4,7 @@ import com.doruk.application.auth.dto.AuthDto;
 import com.doruk.application.auth.dto.SessionDto;
 import com.doruk.domain.shared.enums.MultiAuthType;
 import com.doruk.domain.shared.enums.Permissions;
+import com.doruk.infrastructure.persistence.auth.mapper.AuthMapper;
 import com.doruk.infrastructure.persistence.auth.mapper.SessionMapper;
 import com.doruk.infrastructure.persistence.entity.*;
 import jakarta.inject.Singleton;
@@ -24,25 +25,14 @@ import java.util.*;
 public class AuthRepository {
     private final JSqlClient sqlClient;
     private final SessionMapper sessionMapper;
+    private final AuthMapper authMapper;
 
-    private static AuthDto toAuthDto(List<Tuple9<UUID, String, String, String, String, Boolean, Boolean, MultiAuthType, Permission>> dt) {
-        var commons = dt.getFirst();
-        Set<Permissions> permissions = new HashSet<>();
-        if (commons.get_9() != null) // null check if permissions is empty
-            dt.forEach(tup ->
-                    permissions.add(Permissions.valueOf(tup.get_9().name())));
-
-        return AuthDto.builder()
-                .id(commons.get_1().toString())
-                .username(commons.get_2())
-                .password(commons.get_3())
-                .phone(commons.get_4())
-                .email(commons.get_5())
-                .emailVerified(commons.get_6())
-                .phoneVerified(commons.get_7())
-                .multiFactorAuth(commons.get_8())
-                .permissions(permissions)
-                .build();
+    private String getDeviceId(String sessionId) {
+        return sqlClient.createQuery(SessionTable.$)
+                .where(SessionTable.$.sessionId().eq(sessionId))
+                .select(SessionTable.$.deviceId())
+                .execute()
+                .getFirst();
     }
 
     public Optional<AuthDto> findByUsernameOrEmail(String field) {
@@ -66,7 +56,7 @@ public class AuthRepository {
         if (dt.isEmpty())
             return Optional.empty();
 
-        return Optional.of(toAuthDto(dt));
+        return Optional.of(authMapper.toAuthDto(dt));
     }
 
     public void createSession(String userId,
@@ -112,6 +102,68 @@ public class AuthRepository {
     }
 
     public List<SessionDto> getActiveDevices(String userId) {
-        return null;
+        var t = SessionTable.$;
+        return sqlClient.createQuery(t)
+                .where(Predicate.and(
+                        t.userId().eq(UUID.fromString(userId))),
+                        t.expiresAt().gt(LocalDateTime.now())
+                )
+                .select(t.id(), t.deviceId(), t.deviceInfo(), t.createdAt())
+                .execute()
+                .stream()
+                .map(s -> SessionDto.builder()
+                        .id(s.get_1().toString())
+                        .deviceId(s.get_2())
+                        .deviceInfo(s.get_3())
+                        .createdAt(s.get_4())
+                        .build())
+                .toList();
+    }
+
+    public void deleteSession(String sessionId) {
+        var t = SessionTable.$;
+        sqlClient.createDelete(t)
+                .where(t.sessionId().eq(sessionId))
+                .execute();
+    }
+
+    public void deleteAllSessions(String userId, boolean deleteBiometrics) {
+        var t = SessionTable.$;
+        sqlClient.createDelete(t)
+                .where(t.userId().eq(UUID.fromString(userId)))
+                .execute();
+
+        if (!deleteBiometrics)
+            return;
+
+        var bt = BiometricTable.$;
+        sqlClient.createDelete(bt)
+                .where(bt.userId().eq(UUID.fromString(userId)))
+                .execute();
+    }
+
+    public void deleteOtherSessions(String userId, String sessionId, boolean deleteBiometrics) {
+        String deviceId = null;
+        if (deleteBiometrics)
+            deviceId = getDeviceId(sessionId);
+
+        var t = SessionTable.$;
+        sqlClient.createDelete(t)
+                .where(Predicate.and(
+                        t.userId().eq(UUID.fromString(userId)),
+                        t.sessionId().ne(sessionId)
+                ))
+                .execute();
+
+        if (deviceId == null)
+            return;
+
+        var bt = BiometricTable.$;
+        sqlClient.createDelete(bt)
+                .where(Predicate.and(
+                        bt.userId().eq(UUID.fromString(userId)),
+                        bt.deviceId().ne(deviceId)
+                ))
+                .execute();
     }
 }

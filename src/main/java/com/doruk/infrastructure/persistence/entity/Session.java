@@ -1,11 +1,13 @@
 package com.doruk.infrastructure.persistence.entity;
 
+import io.micronaut.core.annotation.Introspected;
 import jakarta.annotation.Nullable;
 import org.babyfish.jimmer.sql.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Introspected
 @Entity
 @Table(name = "sessions")
 public interface Session {
@@ -30,6 +32,9 @@ public interface Session {
 
     @Column(name = "expires_at")
     LocalDateTime expiresAt();
+
+    @Column(name = "created_at")
+    LocalDateTime createdAt();
 
     @Column(name = "permissions")
     List<Integer> cachedPermissions();

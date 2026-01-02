@@ -1,14 +1,25 @@
 package com.doruk.application.auth.dto;
 
 import com.doruk.domain.shared.enums.Permissions;
-import io.micronaut.core.annotation.Introspected;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import io.micronaut.serde.annotation.Serdeable;
 import lombok.Builder;
 
 import java.time.LocalDateTime;
 import java.util.Set;
 
-@Introspected
+@Serdeable
 @Builder
-public record SessionDto(String id, String userId, String sessionId, String deviceInfo, String deviceId, LocalDateTime expiresAt,
-                         Set<Permissions> permissions) {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public record SessionDto(
+        String id,
+        String userId,
+        String sessionId,
+        String deviceInfo,
+        String deviceId,
+        LocalDateTime expiresAt,
+        LocalDateTime createdAt,
+        @JsonIgnore
+        Set<Permissions> permissions) {
 }

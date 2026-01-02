@@ -25,6 +25,7 @@ import nl.basjes.parse.useragent.UserAgentAnalyzer;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -183,5 +184,21 @@ public class AuthService {
                 session.userId(),
                 appConfig.appId(),
                 session.permissions()));
+    }
+
+    public List<SessionDto> listSessions(String userId) {
+        return authRepository.getActiveDevices(userId);
+    }
+
+    public void logoutCurrent(String sessionId) {
+        authRepository.deleteSession(sessionId);
+    }
+//
+    public void logoutAll(String userId, boolean deleteBiometrics) {
+        authRepository.deleteAllSessions(userId, deleteBiometrics);
+    }
+//
+    public void logoutOthers(String userId, String sessionId, boolean deleteBiometrics) {
+        authRepository.deleteOtherSessions(userId, sessionId, deleteBiometrics);
     }
 }

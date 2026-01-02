@@ -75,6 +75,7 @@ create table sessions
     device_info varchar(255),
     device_id varchar(255) unique,
     expires_at timestamp with time zone not null,
+    created_at timestamp with time zone default now(),
     permissions integer[] not null
 );
 
