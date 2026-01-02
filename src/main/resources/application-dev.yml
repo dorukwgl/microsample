@@ -1,12 +1,13 @@
 micronaut:
   application:
     name: microsample
-    publicUploadPath: "/var/www/microsample/public"
-    privateUploadPath: "/var/www/microsample/private"
-    sociairApiKey: ${SOCIAIR_KEY}
+    public-upload-path: "/var/www/microsample/public"
+    private-upload-path: "/var/www/microsample/private"
+    sociair-api-key: ${SOCIAIR_KEY}
     app-id: ${APP_ID}
     session-expiration: ${SESSION_EXPIRATION:7} # days
-    appUrl: http://localhost:${MICROSAMPLE_PORT}
+    app-url: http://localhost:${MICROSAMPLE_PORT}
+    cookie-secure: false
   security:
     enabled: true
     reject-not-found: false

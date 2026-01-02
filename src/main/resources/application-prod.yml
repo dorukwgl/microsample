@@ -6,6 +6,7 @@ micronaut:
     sociairApiKey: ${SOCIAIR_KEY}
     app-id: ${APP_ID}
     session-expiration: ${SESSION_EXPIRATION:7} # days
+    cookie-secure: true
   security:
     enabled: true
     reject-not-found: false

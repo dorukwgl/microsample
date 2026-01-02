@@ -3,12 +3,15 @@ package com.doruk.presentation.auth.controller;
 import com.doruk.application.auth.dto.JwtResponse;
 import com.doruk.application.auth.dto.LoginResponse;
 import com.doruk.application.auth.service.AuthService;
+import com.doruk.infrastructure.config.AppConfig;
 import com.doruk.infrastructure.util.Constants;
 import com.doruk.presentation.auth.dto.DeviceInfoRequest;
 import com.doruk.presentation.auth.dto.LoginRequest;
 import com.doruk.presentation.auth.mappers.DeviceInfoMapper;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.annotation.*;
+import io.micronaut.http.cookie.Cookie;
+import io.micronaut.http.cookie.SameSite;
 import io.micronaut.security.annotation.Secured;
 import io.micronaut.security.rules.SecurityRule;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,6 +22,7 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 
+import java.time.Duration;
 import java.util.Map;
 
 @Tag(name = "Authentications")
@@ -28,6 +32,7 @@ import java.util.Map;
 public class AuthController {
     private final AuthService service;
     private final DeviceInfoMapper infoMapper;
+    private final AppConfig appConfig;
 
 
     @Get("/hello")
@@ -36,7 +41,6 @@ public class AuthController {
         return HttpResponse.status(666, "hello world").body(Map.of("message", "hello world"));
     }
 
-    @Operation
     @ApiResponse(responseCode = "201", description = "Login successful")
     @ApiResponse(responseCode = "202", description = "Multi factor authentication required")
     @Post("/login")
@@ -50,7 +54,15 @@ public class AuthController {
 
         if (response.mfaRequired())
             return HttpResponse.status(202, "MFA Required").body(response);
-        return HttpResponse.created(response);
+
+        // now set cookies to the response
+        return HttpResponse.created(response)
+                .cookie(Cookie.of(Constants.SESSION_COOKIE_HEADER, response.refreshToken())
+                        .httpOnly()
+                        .secure(appConfig.cookieSecure())
+                        .maxAge(Duration.ofDays(appConfig.sessionExpiration()))
+                        .path("/app/refresh/token")
+                        .sameSite(SameSite.Lax));
     }
 
     @Post("/mfa/verify/{mfaToken}")
