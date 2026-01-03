@@ -10,5 +10,6 @@ public record AppConfig(String name,
                         String appId,
                         int sessionExpiration,
                         String appUrl,
-                        boolean cookieSecure) {
+                        boolean cookieSecure,
+                        String tempDir) {
 }

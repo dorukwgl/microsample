@@ -3,6 +3,7 @@ micronaut:
     name: microsample
     publicUploadPath: "/var/www/microsample/public"
     privateUploadPath: "/var/www/microsample/private"
+    temp-dir: "/var/www/microsample/temp"
     sociairApiKey: ${SOCIAIR_KEY}
     app-id: ${APP_ID}
     session-expiration: ${SESSION_EXPIRATION:7} # days

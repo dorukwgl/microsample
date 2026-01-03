@@ -2,7 +2,6 @@ package com.doruk.infrastructure.persistence.auth;
 
 import com.doruk.application.auth.dto.AuthDto;
 import com.doruk.application.auth.dto.SessionDto;
-import com.doruk.domain.shared.enums.MultiAuthType;
 import com.doruk.domain.shared.enums.Permissions;
 import com.doruk.infrastructure.persistence.auth.mapper.AuthMapper;
 import com.doruk.infrastructure.persistence.auth.mapper.SessionMapper;
@@ -13,12 +12,13 @@ import lombok.RequiredArgsConstructor;
 import org.babyfish.jimmer.sql.JSqlClient;
 import org.babyfish.jimmer.sql.JoinType;
 import org.babyfish.jimmer.sql.ast.Predicate;
-import org.babyfish.jimmer.sql.ast.tuple.Tuple8;
-import org.babyfish.jimmer.sql.ast.tuple.Tuple9;
 import org.babyfish.jimmer.sql.runtime.LogicalDeletedBehavior;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 
 @Singleton
 @RequiredArgsConstructor
@@ -105,7 +105,7 @@ public class AuthRepository {
         var t = SessionTable.$;
         return sqlClient.createQuery(t)
                 .where(Predicate.and(
-                        t.userId().eq(UUID.fromString(userId))),
+                                t.userId().eq(UUID.fromString(userId))),
                         t.expiresAt().gt(LocalDateTime.now())
                 )
                 .select(t.id(), t.deviceId(), t.deviceInfo(), t.createdAt())

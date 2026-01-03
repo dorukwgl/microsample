@@ -193,11 +193,11 @@ public class AuthService {
     public void logoutCurrent(String sessionId) {
         authRepository.deleteSession(sessionId);
     }
-//
+
     public void logoutAll(String userId, boolean deleteBiometrics) {
         authRepository.deleteAllSessions(userId, deleteBiometrics);
     }
-//
+
     public void logoutOthers(String userId, String sessionId, boolean deleteBiometrics) {
         authRepository.deleteOtherSessions(userId, sessionId, deleteBiometrics);
     }

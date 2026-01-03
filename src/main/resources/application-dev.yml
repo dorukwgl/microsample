@@ -3,6 +3,7 @@ micronaut:
     name: microsample
     public-upload-path: "/var/www/microsample/public"
     private-upload-path: "/var/www/microsample/private"
+    temp-dir: "/var/www/microsample/temp"
     sociair-api-key: ${SOCIAIR_KEY}
     app-id: ${APP_ID}
     session-expiration: ${SESSION_EXPIRATION:7} # days
@@ -31,6 +32,9 @@ micronaut:
       n-threads: 4
 
   server:
+    multipart:
+      max-file-size: 10
+      max-request-size: 52MB
     cors:
       enabled: true
       configurations:
