@@ -5,7 +5,6 @@ import com.doruk.infrastructure.dto.ErrorResponse;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpResponse;
-import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.Produces;
 import io.micronaut.http.server.exceptions.ExceptionHandler;
 import jakarta.inject.Singleton;
@@ -18,7 +17,7 @@ import java.util.Random;
 @Requires(classes = ApplicationException.class)
 public class ApplicationExceptionHandler implements ExceptionHandler<ApplicationException, HttpResponse<?>> {
     private static final String[] suspiciousMessages = {
-        "You knocked from the wrong side of the veil.",
+            "You knocked from the wrong side of the veil.",
             "This request carries a familiar stench.",
             "Behavior inconsistent with anything human.",
             "Too many masks. None convincing.",
@@ -31,7 +30,7 @@ public class ApplicationExceptionHandler implements ExceptionHandler<Application
             "If this were subtle, we’d be concerned.",
             "You tried to look normal. That was the mistake."
     };
-    private static byte counter = (byte)(new Random().nextInt(0, suspiciousMessages.length));
+    private static byte counter = (byte) (new Random().nextInt(0, suspiciousMessages.length));
 
     private Pair<Integer, String> getStatusCode(ApplicationException exception) {
         return switch (exception) {
@@ -42,6 +41,7 @@ public class ApplicationExceptionHandler implements ExceptionHandler<Application
             case TooManyAttemptsException _ -> new Pair<>(429, "Too Many Attempts");
             case IncompleteStateException _ -> new Pair<>(422, "Partial Content");
             case InvalidInputException _ -> new Pair<>(400, "Bad Request");
+            case RateLimitException _ -> new Pair<>(429, "Cooling Down");
             default -> throw exception; // let the global exception handler handle the server error
         };
     }
@@ -58,6 +58,7 @@ public class ApplicationExceptionHandler implements ExceptionHandler<Application
         return switch (e) {
             case ForbiddenException _ -> msg == null || msg.isBlank() ?
                     "You are not supposed to perform this action." : msg;
+            case RateLimitException _ -> "Slowdown, take a break! Try again after a while.";
             case SuspiciousIntrusionException _ -> getSuspiciousMessage();
             default -> msg;
         };
