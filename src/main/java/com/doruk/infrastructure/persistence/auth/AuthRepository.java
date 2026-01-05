@@ -166,4 +166,21 @@ public class AuthRepository {
                 ))
                 .execute();
     }
+
+    public String getUserPassword(String userId) {
+        var t = UserTable.$;
+        return sqlClient.createQuery(t)
+                .where(t.id().eq(UUID.fromString(userId)))
+                .select(t.password())
+                .execute()
+                .getFirst();
+    }
+
+    public void updatePassword(String userId, String password) {
+        var t = UserTable.$;
+        sqlClient.createUpdate(t)
+                .where(t.id().eq(UUID.fromString(userId)))
+                .set(t.password(), password)
+                .execute();
+    }
 }

@@ -20,7 +20,7 @@ import com.doruk.infrastructure.util.GenerateRandom;
 import com.doruk.infrastructure.util.KeyNamespace;
 import io.micronaut.context.annotation.Context;
 import javafx.util.Pair;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import nl.basjes.parse.useragent.UserAgentAnalyzer;
 
 import java.time.Duration;
@@ -34,7 +34,7 @@ import java.util.concurrent.Executors;
 import java.util.function.Function;
 
 @Context
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class AuthService {
     private final AppExecutors executor;
     private final JwtIssuer issuer;
@@ -44,6 +44,7 @@ public class AuthService {
     private final MemoryStorage memoryStorage;
     private final EventPublisher eventPublisher;
     private final UserAgentAnalyzer uaa;
+    private final PasswordEncoder passwordEncoder;
 
     private final Map<MultiAuthType, Function<AuthDto, LoginResponse>> authInitializers = Map.of(
             MultiAuthType.PHONE, this::initPhoneFactorAuth,
@@ -200,5 +201,13 @@ public class AuthService {
 
     public void logoutOthers(String userId, String sessionId, boolean deleteBiometrics) {
         authRepository.deleteOtherSessions(userId, sessionId, deleteBiometrics);
+    }
+
+    public void updatePassword(String userId, String password, String newPassword) {
+        var currentPassword = authRepository.getUserPassword(userId);
+        if (!passwordEncoder.matches(password, currentPassword))
+            throw new InvalidCredentialException("Incorrect current password");
+
+        authRepository.updatePassword(userId, passwordEncoder.encode(newPassword));
     }
 }
