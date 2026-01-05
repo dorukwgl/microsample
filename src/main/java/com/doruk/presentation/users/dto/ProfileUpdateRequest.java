@@ -23,6 +23,10 @@ public record ProfileUpdateRequest(
 
         @Nullable
         @NotBlank
+        String state,
+
+        @Nullable
+        @NotBlank
         String country,
 
         @Nullable

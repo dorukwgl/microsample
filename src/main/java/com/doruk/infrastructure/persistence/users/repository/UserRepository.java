@@ -1,18 +1,17 @@
 package com.doruk.infrastructure.persistence.users.repository;
 
+import com.doruk.application.users.dto.*;
 import com.doruk.application.security.PasswordEncoder;
-import com.doruk.application.users.dto.CreateUserCmd;
-import com.doruk.application.users.dto.UserResponseDto;
-import com.doruk.application.users.dto.UserUniqueFields;
-import com.doruk.infrastructure.persistence.entity.RoleDraft;
-import com.doruk.infrastructure.persistence.entity.User;
-import com.doruk.infrastructure.persistence.entity.UserDraft;
-import com.doruk.infrastructure.persistence.entity.UserTable;
+import com.doruk.infrastructure.persistence.entity.*;
+import com.doruk.infrastructure.persistence.users.mapper.ProfileMapper;
 import com.doruk.infrastructure.persistence.users.mapper.UserMapper;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import org.babyfish.jimmer.sql.JSqlClient;
+import org.babyfish.jimmer.sql.JoinType;
 import org.babyfish.jimmer.sql.ast.Predicate;
+import org.babyfish.jimmer.sql.ast.mutation.SaveMode;
+import org.babyfish.jimmer.sql.fetcher.ReferenceFetchType;
 
 import java.util.*;
 
@@ -22,6 +21,7 @@ public class UserRepository {
     private final JSqlClient sqlClient;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
+    private final ProfileMapper profileMapper;
 
 //    public Mono<UserDto> findByEmailOrUsername(String field) {
 //        var table = UserTable.$;
@@ -89,5 +89,67 @@ public class UserRepository {
                 .select(UserTable.$.phone())
                 .execute()
                 .getFirst();
+    }
+
+    public ProfileDto updateProfile(String userId, ProfileDto dto) {
+        var draft = UserProfileDraft.$.produce(d -> d
+                .setFullName(dto.fullName())
+                .setAddress(dto.address())
+                .setCity(dto.city())
+                .setState(dto.state())
+                .setCountry(dto.country())
+                .setPostalCode(dto.postalCode())
+                .setUser(UserDraft.$.produce(u ->
+                        u.setId(UUID.fromString(userId))))
+        );
+        var res = sqlClient.saveCommand(draft).setMode(SaveMode.UPSERT).execute();
+        return profileMapper.toProfileDto(res.getModifiedEntity());
+    }
+
+    public void updatePhoneNumber(String userId, String phone) {
+        var t = UserTable.$;
+        sqlClient.createUpdate(t)
+                .where(t.id().eq(UUID.fromString(userId)))
+                .set(t.phone(), phone)
+                .set(t.phoneVerified(), false)
+                .execute();
+    }
+
+    public void updateEmailAddress(String userId, String email) {
+        var t = UserTable.$;
+        sqlClient.createUpdate(t)
+                .where(t.id().eq(UUID.fromString(userId)))
+                .set(t.email(), email)
+                .set(t.emailVerified(), false)
+                .execute();
+    }
+
+    public String updateProfileIconReturningOld(String userId, String profilePicId) {
+        var t = UserProfileTable.$;
+        var profilePics = sqlClient.createQuery(t)
+                        .where(t.userId().eq(UUID.fromString(userId)))
+                        .select(t.profilePicture())
+                .execute();
+
+        sqlClient.createUpdate(t)
+                .where(t.user().id().eq(UUID.fromString(userId)))
+                .set(t.profilePicture(), profilePicId)
+                .execute();
+
+        return profilePics.isEmpty() ? null : profilePics.getFirst();
+    }
+
+    public CurrentUserDto getCurrentUser(String userId) {
+        var t = UserTable.$;
+        var userLst = sqlClient.createQuery(t)
+                .where(t.id().eq(UUID.fromString(userId)))
+                .select(
+                        t.fetch(UserFetcher.$.allScalarFields()
+                                .profile(ReferenceFetchType.JOIN_ALWAYS, UserProfileFetcher.$.allScalarFields())
+                                .roles()
+                ))
+                .execute();
+
+        return userMapper.toCurrentUserDto(userLst.getFirst());
     }
 }

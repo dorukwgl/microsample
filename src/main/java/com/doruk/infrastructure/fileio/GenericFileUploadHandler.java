@@ -5,6 +5,7 @@ import com.doruk.application.enums.FileType;
 import com.doruk.application.exception.FileUploadException;
 import com.doruk.application.interfaces.FileUploadHandler;
 import com.doruk.infrastructure.config.AppConfig;
+import io.micronaut.context.annotation.Bean;
 import io.micronaut.http.multipart.StreamingFileUpload;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 
 @Singleton
 @RequiredArgsConstructor
+@Bean(typed = FileUploadHandler.class)
 public class GenericFileUploadHandler implements FileUploadHandler {
     private final AppConfig config;
 

@@ -1,22 +1,31 @@
 package com.doruk.presentation.users.controller;
 
+import com.doruk.application.users.dto.CurrentUserDto;
+import com.doruk.application.users.dto.ProfileDto;
+import com.doruk.application.enums.FileType;
+import com.doruk.application.interfaces.FileUploadHandler;
 import com.doruk.application.security.UserScope;
 import com.doruk.application.users.dto.UserResponseDto;
 import com.doruk.application.users.service.UserService;
+import com.doruk.infrastructure.config.AppConfig;
 import com.doruk.infrastructure.dto.InfoResponse;
+import com.doruk.presentation.users.dto.ProfileUpdateRequest;
 import com.doruk.presentation.users.dto.RegistrationRequest;
+import com.doruk.presentation.users.mapper.ProfileMapper;
 import com.doruk.presentation.users.mapper.RegistrationMapper;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.*;
+import io.micronaut.http.multipart.StreamingFileUpload;
 import io.micronaut.security.annotation.Secured;
 import io.micronaut.security.authentication.Authentication;
 import io.micronaut.security.rules.SecurityRule;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.*;
 import lombok.RequiredArgsConstructor;
+
+import java.util.Map;
 
 @Tag(name = "User Management, Registrations & Profiles")
 @RequiredArgsConstructor
@@ -25,6 +34,9 @@ import lombok.RequiredArgsConstructor;
 public class UserController {
     private final UserService service;
     private final RegistrationMapper registrationMapper;
+    private final ProfileMapper profileMapper;
+    private final FileUploadHandler fileUploadHandler;
+    private final AppConfig appConfig;
 
     @Secured(SecurityRule.IS_ANONYMOUS)
     @Status(HttpStatus.CREATED)
@@ -33,14 +45,10 @@ public class UserController {
         return service.registerUser(registrationMapper.toUserCmdDto(req));
     }
 
-
-    @Get("/test")
-    public Authentication test(Authentication auth) {
-        IO.println(auth.getName());
-        IO.println(auth.getAttributes());
-        IO.println(auth.getAttributes().get(UserScope.KEY));
-        IO.println(auth.getRoles());
-        return auth;
+    @Operation(summary = "Get information about current user")
+    @CustomHttpMethod(method = "info")
+    public CurrentUserDto test(Authentication auth) {
+        return service.getCurrentUser(auth.getName());
     }
 
     @Status(HttpStatus.ACCEPTED)
@@ -87,5 +95,39 @@ public class UserController {
             int otp) {
         service.verifyPhone(transactionId, otp);
         return new InfoResponse("Phone number verified successfully");
+    }
+
+    @Put("/profile")
+    public ProfileDto updateProfile(Authentication auth, @Valid @Body ProfileUpdateRequest req) {
+        return service.updateProfile(auth.getName(), profileMapper.toProfileDto(req));
+    }
+
+    @Put("/profile/phone")
+    public InfoResponse updatePhoneNumber(Authentication auth,
+                                          @Body
+                                          @NotBlank
+                                          @Pattern(regexp = "^\\+?[1-9][0-9]{7,14}$")
+                                          String phone) {
+        service.updatePhoneNumber(auth.getName(), phone);
+        return new InfoResponse("Phone number updated successfully");
+    }
+
+    @Put("/profile/email")
+    public InfoResponse updateEmailAddress(Authentication auth,
+                                           @Body
+                                           @NotBlank
+                                           @Email
+                                           String email) {
+        service.updateEmail(auth.getName(), email);
+        return new InfoResponse("Email address updated successfully");
+    }
+
+    @Put("/profile/icon")
+    public Map<String, String> updateProfileIcon(Authentication auth,
+                                                 @Part("profile-icon")
+                                                 StreamingFileUpload file) {
+        var uploaded = fileUploadHandler.uploadSingle(file, FileType.IMAGE, appConfig.profileIconMaxSize());
+
+        return service.updateProfileIcon(auth.getName(), uploaded);
     }
 }

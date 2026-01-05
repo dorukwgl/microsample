@@ -25,7 +25,7 @@ create table user_profiles
     id bigserial primary key,
     user_id uuid unique references users (id) on delete cascade,
     full_name varchar(255),
-    icon_url varchar(255),
+    profile_picture varchar(255),
     address varchar(255),
     city varchar(255),
     state varchar(255),

@@ -8,6 +8,7 @@ micronaut:
     app-id: ${APP_ID}
     session-expiration: ${SESSION_EXPIRATION:7} # days
     app-url: http://localhost:${MICROSAMPLE_PORT}
+    profile-icon-max-size: 5242880 # 5MB
     cookie-secure: false
   security:
     enabled: true

@@ -6,7 +6,6 @@ import com.doruk.application.auth.dto.SessionDto;
 import com.doruk.application.auth.service.AuthService;
 import com.doruk.infrastructure.config.AppConfig;
 import com.doruk.infrastructure.util.Constants;
-import com.doruk.infrastructure.util.StringUtil;
 import com.doruk.presentation.auth.dto.DeviceInfoRequest;
 import com.doruk.presentation.auth.dto.LoginRequest;
 import com.doruk.presentation.auth.mappers.DeviceInfoMapper;
@@ -28,7 +27,6 @@ import lombok.RequiredArgsConstructor;
 
 import java.time.Duration;
 import java.util.List;
-import java.util.Map;
 
 @Tag(name = "Authentications")
 @Secured(SecurityRule.IS_AUTHENTICATED)
@@ -89,7 +87,7 @@ public class AuthController {
     @Get("/session/list")
     HttpResponse<List<SessionDto>> listSessions(Authentication auth) {
         return HttpResponse.ok()
-        .body(service.listSessions(auth.getName()));
+                .body(service.listSessions(auth.getName()));
     }
 
     @Operation(description = "Sign Out from current device")
@@ -102,11 +100,9 @@ public class AuthController {
     @Operation(description = "Sign Out from all devices")
     @Delete("/session/logout-all{?biometric}")
     HttpResponse<?> logoutAll(Authentication auth,
-            @CookieValue(Constants.SESSION_COOKIE_HEADER)
-            String sessionId,
-            @Parameter(description = "Also removes the biometrics data, if set to true")
-            @QueryValue(defaultValue = "false")
-            boolean biometric) {
+                              @Parameter(description = "Also removes the biometrics data, if set to true")
+                              @QueryValue(defaultValue = "false")
+                              boolean biometric) {
         service.logoutAll(auth.getName(), biometric);
         return HttpResponse.noContent();
     }
@@ -114,11 +110,11 @@ public class AuthController {
     @Operation(description = "Sign Out from other logged in devices, except the current one.")
     @Delete("/session/logout-others{?biometric}")
     HttpResponse<?> logoutOthers(Authentication auth,
-            @CookieValue(Constants.SESSION_COOKIE_HEADER)
-            String sessionId,
-            @Parameter(description = "Also removes the biometrics data, if set to true")
-            @QueryValue(defaultValue = "false")
-            boolean biometric) {
+                                 @CookieValue(Constants.SESSION_COOKIE_HEADER)
+                                 String sessionId,
+                                 @Parameter(description = "Also removes the biometrics data, if set to true")
+                                 @QueryValue(defaultValue = "false")
+                                 boolean biometric) {
         service.logoutOthers(auth.getName(), sessionId, biometric);
         return HttpResponse.noContent();
     }

@@ -1,27 +1,29 @@
 package com.doruk.application.users.service;
 
+import com.doruk.application.users.dto.*;
+import com.doruk.application.auth.dto.UploadedFileResult;
 import com.doruk.application.dto.EmailOtpDto;
 import com.doruk.application.dto.SmsOtpDto;
 import com.doruk.application.enums.TemplateType;
+import com.doruk.application.events.ProfileImageUpload;
 import com.doruk.application.exception.ConflictingArgumentException;
 import com.doruk.application.exception.IncompleteStateException;
 import com.doruk.application.exception.InvalidCredentialException;
 import com.doruk.application.exception.TooManyAttemptsException;
 import com.doruk.application.interfaces.EventPublisher;
 import com.doruk.application.interfaces.MemoryStorage;
-import com.doruk.application.users.dto.CreateUserCmd;
-import com.doruk.application.users.dto.UserResponseDto;
-import com.doruk.application.users.dto.UserUniqueFields;
 import com.doruk.infrastructure.config.AppConfig;
 import com.doruk.infrastructure.persistence.users.repository.UserRepository;
 import com.doruk.infrastructure.util.Constants;
 import com.doruk.infrastructure.util.GenerateRandom;
 import com.doruk.infrastructure.util.KeyNamespace;
 import com.doruk.infrastructure.util.StringUtil;
+import io.micronaut.serde.jackson.SerdeJacksonConfiguration;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 
 import java.time.Duration;
+import java.util.Map;
 
 @Singleton
 @RequiredArgsConstructor
@@ -30,6 +32,7 @@ public class UserService {
     private final EventPublisher event;
     private final MemoryStorage storage;
     private final AppConfig config;
+    private final SerdeJacksonConfiguration serdeJacksonConfiguration;
 
     private void checkConflict(UserUniqueFields src, CreateUserCmd req) {
         if (req.email().equals(src.email()))
@@ -172,5 +175,31 @@ public class UserService {
         // finally validate the user
         userRepo.verifyUserPhone(transaction.id());
         this.removeVerificationTransaction(transactionId);
+    }
+
+    public ProfileDto updateProfile(String userId, ProfileDto cmd) {
+        return userRepo.updateProfile(userId, cmd);
+    }
+
+    public void updatePhoneNumber(String userId, String phone) {
+        userRepo.updatePhoneNumber(userId, phone);
+        initPhoneVerification(userId);
+    }
+
+    public void updateEmail(String userId, String email) {
+        userRepo.updateEmailAddress(userId, email);
+        initEmailVerification(userId);
+    }
+
+    public Map<String, String> updateProfileIcon(String userId, UploadedFileResult icon) {
+        var previous = userRepo.updateProfileIconReturningOld(userId, icon.storedName());
+
+        event.publish(new ProfileImageUpload(icon, previous));
+
+        return Map.of("newProfilePicture", icon.storedName());
+    }
+
+    public CurrentUserDto getCurrentUser(String userId) {
+        return userRepo.getCurrentUser(userId);
     }
 }

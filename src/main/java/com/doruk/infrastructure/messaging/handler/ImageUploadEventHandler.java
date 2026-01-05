@@ -80,8 +80,8 @@ public class ImageUploadEventHandler {
 
     @Subject(value = "image.profile.upload", queue = "image-upload-queue")
     public void handle(ProfileImageUpload event) {
-        CompletableFuture.runAsync(() -> deleteFile(event.previousImage()), executors.VIRTUAL());
-        CompletableFuture.runAsync(() -> storeFile(event.file()), executors.CPU());
+        CompletableFuture.runAsync(() -> storeFile(event.file()), executors.CPU())
+                .thenRunAsync(() -> deleteFile(event.file().storedName()), executors.VIRTUAL());
     }
 
 //    @Subject(value = "file.image.upload.multi", queue = "image-upload-multi-queue")

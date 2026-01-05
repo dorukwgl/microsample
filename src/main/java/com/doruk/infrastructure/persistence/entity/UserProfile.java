@@ -23,7 +23,7 @@ public interface UserProfile {
     String fullName();
 
     @Nullable
-    String iconUrl();
+    String profilePicture();
 
     // Address fields...
     @Nullable String address();

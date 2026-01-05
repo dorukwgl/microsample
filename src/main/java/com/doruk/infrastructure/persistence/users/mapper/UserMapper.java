@@ -1,5 +1,6 @@
 package com.doruk.infrastructure.persistence.users.mapper;
 
+import com.doruk.application.users.dto.CurrentUserDto;
 import com.doruk.application.users.dto.UserResponseDto;
 import com.doruk.infrastructure.persistence.entity.User;
 import io.micronaut.context.annotation.Mapper;
@@ -7,8 +8,8 @@ import jakarta.inject.Singleton;
 
 
 @Singleton
-public class UserMapper {
-    public UserResponseDto toResponseDto(User user) {
+public interface UserMapper {
+    default UserResponseDto toResponseDto(User user) {
         return UserResponseDto.builder()
                 .id(user.id())
                 .email(user.email())
@@ -22,4 +23,7 @@ public class UserMapper {
                 .multiFactorAuth(user.multiFactorAuth())
                 .build();
     }
+
+    @Mapper
+    CurrentUserDto toCurrentUserDto(User user);
 }

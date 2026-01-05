@@ -7,6 +7,7 @@ micronaut:
     sociairApiKey: ${SOCIAIR_KEY}
     app-id: ${APP_ID}
     session-expiration: ${SESSION_EXPIRATION:7} # days
+    profile-icon-max-size: 5242880 # 5MB
     cookie-secure: true
   security:
     enabled: true
