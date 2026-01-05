@@ -1,6 +1,5 @@
 package com.doruk.application.users.service;
 
-import com.doruk.application.users.dto.*;
 import com.doruk.application.auth.dto.UploadedFileResult;
 import com.doruk.application.dto.EmailOtpDto;
 import com.doruk.application.dto.SmsOtpDto;
@@ -12,13 +11,14 @@ import com.doruk.application.exception.InvalidCredentialException;
 import com.doruk.application.exception.TooManyAttemptsException;
 import com.doruk.application.interfaces.EventPublisher;
 import com.doruk.application.interfaces.MemoryStorage;
+import com.doruk.application.security.PasswordEncoder;
+import com.doruk.application.users.dto.*;
 import com.doruk.infrastructure.config.AppConfig;
 import com.doruk.infrastructure.persistence.users.repository.UserRepository;
 import com.doruk.infrastructure.util.Constants;
 import com.doruk.infrastructure.util.GenerateRandom;
 import com.doruk.infrastructure.util.KeyNamespace;
 import com.doruk.infrastructure.util.StringUtil;
-import io.micronaut.serde.jackson.SerdeJacksonConfiguration;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 
@@ -32,7 +32,7 @@ public class UserService {
     private final EventPublisher event;
     private final MemoryStorage storage;
     private final AppConfig config;
-    private final SerdeJacksonConfiguration serdeJacksonConfiguration;
+    private final PasswordEncoder passwordEncoder;
 
     private void checkConflict(UserUniqueFields src, CreateUserCmd req) {
         if (req.email().equals(src.email()))
@@ -93,7 +93,7 @@ public class UserService {
         existing.ifPresent(src -> this.checkConflict(src, userDto));
 
         // create the user
-        var usr = userRepo.createUser(userDto);
+        var usr = userRepo.createUser(userDto, passwordEncoder.encode(userDto.password()));
 
         // send email verification otp
         this.createAndPublishEmailVerificationTransaction(usr.id().toString());

@@ -19,7 +19,6 @@ import java.util.*;
 @RequiredArgsConstructor
 public class UserRepository {
     private final JSqlClient sqlClient;
-    private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
     private final ProfileMapper profileMapper;
 
@@ -51,12 +50,12 @@ public class UserRepository {
     }
 
 
-    public UserResponseDto createUser(CreateUserCmd dto) {
+    public UserResponseDto createUser(CreateUserCmd dto, String hashedPassword) {
         var draft = UserDraft.$.produce(u ->
                 u.setUsername(dto.username().toLowerCase(Locale.ROOT))
                         .setEmail(dto.email().toLowerCase(Locale.ROOT))
                         .setPhone(dto.phone())
-                        .setPassword(passwordEncoder.encode(dto.password()))
+                        .setPassword(hashedPassword)
                         .setRoles(List.of(RoleDraft.$.produce(r -> r.setName("USER"))))
         );
 
