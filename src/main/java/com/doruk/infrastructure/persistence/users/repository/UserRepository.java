@@ -1,7 +1,6 @@
 package com.doruk.infrastructure.persistence.users.repository;
 
 import com.doruk.application.users.dto.*;
-import com.doruk.application.security.PasswordEncoder;
 import com.doruk.infrastructure.persistence.entity.*;
 import com.doruk.infrastructure.persistence.users.mapper.ProfileMapper;
 import com.doruk.infrastructure.persistence.users.mapper.UserMapper;
@@ -9,7 +8,6 @@ import jakarta.inject.Singleton;
 import javafx.util.Pair;
 import lombok.RequiredArgsConstructor;
 import org.babyfish.jimmer.sql.JSqlClient;
-import org.babyfish.jimmer.sql.JoinType;
 import org.babyfish.jimmer.sql.ast.Predicate;
 import org.babyfish.jimmer.sql.ast.mutation.SaveMode;
 import org.babyfish.jimmer.sql.fetcher.ReferenceFetchType;
@@ -96,8 +94,8 @@ public class UserRepository {
     public String updateProfileIconReturningOld(String userId, String profilePicId) {
         var t = UserProfileTable.$;
         var profilePics = sqlClient.createQuery(t)
-                        .where(t.userId().eq(UUID.fromString(userId)))
-                        .select(t.profilePicture())
+                .where(t.userId().eq(UUID.fromString(userId)))
+                .select(t.profilePicture())
                 .execute();
 
         sqlClient.createUpdate(t)
@@ -116,7 +114,7 @@ public class UserRepository {
                         t.fetch(UserFetcher.$.allScalarFields()
                                 .profile(ReferenceFetchType.JOIN_ALWAYS, UserProfileFetcher.$.allScalarFields())
                                 .roles()
-                ))
+                        ))
                 .execute();
 
         return userMapper.toCurrentUserDto(userLst.getFirst());

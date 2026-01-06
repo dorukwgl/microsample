@@ -29,6 +29,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Map;
 
 @Tag(name = "Authentications")
 @Secured(SecurityRule.IS_AUTHENTICATED)
@@ -136,9 +137,8 @@ public class AuthController {
 
     @Status(HttpStatus.ACCEPTED)
     @Post("/email/init-verification")
-    public InfoResponse initEmailVerification(Authentication auth) {
-        service.initEmailVerification(auth.getName());
-        return new InfoResponse("OTP is sent to your email address");
+    public Map<String, String> initEmailVerification(Authentication auth) {
+        return service.initEmailVerification(auth.getName());
     }
 
     @Post("/email/verify-otp/{transactionId}")
@@ -163,9 +163,8 @@ public class AuthController {
 
     @Status(HttpStatus.ACCEPTED)
     @Post("/phone/init-verification")
-    public InfoResponse initPhoneVerification(Authentication auth) {
-        service.initPhoneVerification(auth.getName());
-        return new InfoResponse("OTP sent to your phone number");
+    public Map<String, String> initPhoneVerification(Authentication auth) {
+        return service.initPhoneVerification(auth.getName());
     }
 
     @Post("/phone/verify-otp/{transactionId}")
@@ -180,6 +179,15 @@ public class AuthController {
         return new InfoResponse("Phone number verified successfully");
     }
 
+    @Operation(description = "Update the existing email address")
+    @ApiResponse(
+            description = "When existing email address is not verified.",
+            responseCode = "200"
+    )
+    @ApiResponse(
+            description = "When existing email address is verified.",
+            responseCode = "202"
+    )
     @Put("/update/email")
     public HttpResponse<AuthUpdateResponse> updateEmail(Authentication auth,
                                                         @Email
@@ -191,6 +199,15 @@ public class AuthController {
         return HttpResponse.ok().body(res);
     }
 
+    @Operation(description = "Update existing or add new phone number")
+    @ApiResponse(
+            description = "When existing phone number is not verified",
+            responseCode = "200"
+    )
+    @ApiResponse(
+            description = "When existing phone number is verified",
+            responseCode = "202"
+    )
     @Put("/update/phone")
     public HttpResponse<AuthUpdateResponse> updatePhone(Authentication auth,
                                                         @NotBlank
@@ -202,6 +219,7 @@ public class AuthController {
         return HttpResponse.ok().body(res);
     }
 
+    @Operation(description = "Verify the update phone transaction. Second step of the route /update/phone")
     @Put("/update/phone/verify")
     public InfoResponse verifyUpdatePhone(Authentication auth,
                                           @Size(max = 80)
@@ -216,6 +234,7 @@ public class AuthController {
         return new InfoResponse("Phone number updated successfully");
     }
 
+    @Operation(description = "Verify the update email transaction. Second step of the route /update/email")
     @Put("/update/email/verify")
     public InfoResponse verifyUpdateEmail(Authentication auth,
                                           @Size(max = 80)

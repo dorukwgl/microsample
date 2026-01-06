@@ -139,7 +139,7 @@ public class AuthService {
         return response.getValue();
     }
 
-    private void createAndPublishEmailVerificationTransaction(String userId) {
+    private String createAndPublishEmailVerificationTransaction(String userId) {
         var otp = GenerateRandom.generateOtp();
         var tmpUrl = GenerateRandom.generateSessionId();
         var transactionId = GenerateRandom.generateTransactionId();
@@ -161,9 +161,11 @@ public class AuthService {
         storage.saveEx(KeyNamespace.verificationMagicId(tmpUrl), tid, duration);
 
         event.publish(transaction);
+
+        return transactionId;
     }
 
-    private void createAndPublishPhoneVerificationTransaction(String userId, String phone) {
+    private String createAndPublishPhoneVerificationTransaction(String userId, String phone) {
         var otp = GenerateRandom.generateOtp();
         var transactionId = GenerateRandom.generateTransactionId();
         var duration = Duration.ofSeconds(Constants.OTP_VALIDITY_SECONDS);
@@ -179,6 +181,8 @@ public class AuthService {
         storage.saveEx(KeyNamespace.verificationOtpAttempt(transactionId), 0, duration);
 
         event.publish(transaction);
+
+        return transactionId;
     }
 
     private void removeVerificationTransaction(String transactionId) {
@@ -205,6 +209,33 @@ public class AuthService {
         event.publish(txn);
 
         return transactionId;
+    }
+
+    private void verifyAuthUpdateTransaction(String userId, String tid, int otp, AuthUpdateTransaction.Type type) {
+        var invalidCredentials = new InvalidCredentialException("Expired or Invalid otp session");
+        var txn = storage.get(KeyNamespace.updateAuthTransactionId(tid), AuthUpdateTransaction.class)
+                .orElseThrow(() -> invalidCredentials);
+        if (!(
+                txn.type() == type &&
+                        txn.userId().equalsIgnoreCase(userId)
+        ))
+            throw invalidCredentials;
+
+        // check for attempts
+        var attempts = storage.increment(KeyNamespace.updateAuthOtpAttempt(tid));
+        if (attempts >= Constants.AUTH_UPDATE_ATTEMPT_LIMIT) {
+            storage.delete(KeyNamespace.updateAuthTransactionId(tid));
+            storage.delete(KeyNamespace.updateAuthOtpAttempt(tid));
+            throw new TooManyAttemptsException("Too Many Attempts");
+        }
+
+        if (txn.otp() != otp)
+            throw invalidCredentials;
+
+        switch (type) {
+            case EMAIL -> authRepo.updateEmail(txn.userId(), txn.payload(), true);
+            case PHONE -> authRepo.updatePhone(txn.userId(), txn.payload(), true);
+        }
     }
 
     public LoginResponse performLogin(String identifier, String password, DeviceInfoObject deviceInfoObject) {
@@ -284,8 +315,9 @@ public class AuthService {
         authRepo.updatePassword(userId, passwordEncoder.encode(newPassword));
     }
 
-    public void initEmailVerification(String userId) {
-        this.createAndPublishEmailVerificationTransaction(userId);
+    public Map<String, String> initEmailVerification(String userId) {
+        var tid = this.createAndPublishEmailVerificationTransaction(userId);
+        return Map.of("tid", tid, "message", "OTP is sent to your email address");
     }
 
     // from otp, and from magic link
@@ -332,13 +364,14 @@ public class AuthService {
         storage.delete(pointer);
     }
 
-    public void initPhoneVerification(String userId) {
+    public Map<String, String> initPhoneVerification(String userId) {
         var phonePair = authRepo.getUserPhone(userId);
         var phone = phonePair.getKey();
 
         if (phone == null || phone.isBlank())
             throw new IncompleteStateException("Phone number not provided, please update your profile.");
-        this.createAndPublishPhoneVerificationTransaction(userId, phone);
+        var tid = this.createAndPublishPhoneVerificationTransaction(userId, phone);
+        return Map.of("tid", tid, "message", "OTP is sent to your phone number");
     }
 
     // from otp only
@@ -393,33 +426,6 @@ public class AuthService {
 
         return new AuthUpdateResponse(tid, true,
                 "OTP is sent to your new phone number, please enter the OTP to complete the process.");
-    }
-
-    private void verifyAuthUpdateTransaction(String userId, String tid, int otp, AuthUpdateTransaction.Type type) {
-        var invalidCredentials = new InvalidCredentialException("Expired or Invalid otp session");
-        var txn = storage.get(KeyNamespace.updateAuthTransactionId(tid), AuthUpdateTransaction.class)
-                .orElseThrow(() -> invalidCredentials);
-        if (!(
-                txn.type() == type &&
-                        txn.userId().equalsIgnoreCase(userId)
-        ))
-            throw invalidCredentials;
-
-        // check for attempts
-        var attempts = storage.increment(KeyNamespace.updateAuthOtpAttempt(tid));
-        if (attempts >= Constants.AUTH_UPDATE_ATTEMPT_LIMIT) {
-            storage.delete(KeyNamespace.updateAuthTransactionId(tid));
-            storage.delete(KeyNamespace.updateAuthOtpAttempt(tid));
-            throw new TooManyAttemptsException("Too Many Attempts");
-        }
-
-        if (txn.otp() != otp)
-            throw invalidCredentials;
-
-        switch (type) {
-            case EMAIL -> authRepo.updateEmail(txn.userId(), txn.payload(), true);
-            case PHONE -> authRepo.updatePhone(txn.userId(), txn.payload(), true);
-        }
     }
 
     public void verifyUpdatePhoneTransaction(String userId, String tid, int otp) {
