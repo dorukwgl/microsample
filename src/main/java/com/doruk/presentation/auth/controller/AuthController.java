@@ -1,15 +1,18 @@
 package com.doruk.presentation.auth.controller;
 
+import com.doruk.application.auth.dto.AuthUpdateResponse;
 import com.doruk.application.auth.dto.JwtResponse;
 import com.doruk.application.auth.dto.LoginResponse;
 import com.doruk.application.auth.dto.SessionDto;
 import com.doruk.application.auth.service.AuthService;
 import com.doruk.infrastructure.config.AppConfig;
+import com.doruk.infrastructure.dto.InfoResponse;
 import com.doruk.infrastructure.util.Constants;
 import com.doruk.presentation.auth.dto.DeviceInfoRequest;
 import com.doruk.presentation.auth.dto.LoginRequest;
 import com.doruk.presentation.auth.mappers.DeviceInfoMapper;
 import io.micronaut.http.HttpResponse;
+import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.*;
 import io.micronaut.http.cookie.Cookie;
 import io.micronaut.http.cookie.SameSite;
@@ -21,8 +24,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.*;
 import lombok.RequiredArgsConstructor;
 
 import java.time.Duration;
@@ -117,5 +119,113 @@ public class AuthController {
                                  boolean biometric) {
         service.logoutOthers(auth.getName(), sessionId, biometric);
         return HttpResponse.noContent();
+    }
+
+    @Operation(description = "Change Password")
+    @Put("/password")
+    HttpResponse<?> changePassword(Authentication auth,
+                                   @Body
+                                   @Size(min = 8, max = 50)
+                                   String newPassword,
+                                   @Body
+                                   @Size(min = 8, max = 50)
+                                   String password) {
+        service.updatePassword(auth.getName(), password, newPassword);
+        return HttpResponse.noContent();
+    }
+
+    @Status(HttpStatus.ACCEPTED)
+    @Post("/email/init-verification")
+    public InfoResponse initEmailVerification(Authentication auth) {
+        service.initEmailVerification(auth.getName());
+        return new InfoResponse("OTP is sent to your email address");
+    }
+
+    @Post("/email/verify-otp/{transactionId}")
+    public InfoResponse verifyEmailOtp(Authentication auth,
+                                       String transactionId,
+                                       @Body
+                                       @NotBlank
+                                       @Min(value = 100000)
+                                       @Max(value = 999999)
+                                       int otp) {
+
+        service.verifyEmail(auth.getName(), transactionId, otp);
+        return new InfoResponse("Email verified successfully");
+    }
+
+    @Secured(SecurityRule.IS_ANONYMOUS)
+    @Get("/email/verify-magic/{magicLink}")
+    public InfoResponse verifyEmailViaMagicLink(String magicLink) {
+        service.verifyEmail(magicLink);
+        return new InfoResponse("Email verified successfully");
+    }
+
+    @Status(HttpStatus.ACCEPTED)
+    @Post("/phone/init-verification")
+    public InfoResponse initPhoneVerification(Authentication auth) {
+        service.initPhoneVerification(auth.getName());
+        return new InfoResponse("OTP sent to your phone number");
+    }
+
+    @Post("/phone/verify-otp/{transactionId}")
+    public InfoResponse verifyPhoneNumber(
+            String transactionId,
+            @Body
+            @NotBlank
+            @Min(value = 100000)
+            @Max(value = 999999)
+            int otp) {
+        service.verifyPhone(transactionId, otp);
+        return new InfoResponse("Phone number verified successfully");
+    }
+
+    @Put("/update/email")
+    public HttpResponse<AuthUpdateResponse> updateEmail(Authentication auth,
+                                                        @Email
+                                                        @NotBlank
+                                                        String email) {
+        var res = service.updateEmail(auth.getName(), email);
+        if (res.otpRequired())
+            return HttpResponse.accepted().body(res);
+        return HttpResponse.ok().body(res);
+    }
+
+    @Put("/update/phone")
+    public HttpResponse<AuthUpdateResponse> updatePhone(Authentication auth,
+                                                        @NotBlank
+                                                        @Pattern(regexp = "^\\+?\\d{6,14}$\n")
+                                                        String phone) {
+        var res = service.updatePhone(auth.getName(), phone);
+        if (res.otpRequired())
+            return HttpResponse.accepted().body(res);
+        return HttpResponse.ok().body(res);
+    }
+
+    @Put("/update/phone/verify")
+    public InfoResponse verifyUpdatePhone(Authentication auth,
+                                          @Size(max = 80)
+                                          @Body
+                                          String tid,
+                                          @Body
+                                          @Max(999999)
+                                          @Min(1)
+                                          int otp
+    ) {
+        service.verifyUpdatePhoneTransaction(auth.getName(), tid, otp);
+        return new InfoResponse("Phone number updated successfully");
+    }
+
+    @Put("/update/email/verify")
+    public InfoResponse verifyUpdateEmail(Authentication auth,
+                                          @Size(max = 80)
+                                          @Body
+                                          String tid,
+                                          @Body
+                                          @Max(999999)
+                                          @Min(1)
+                                          int otp) {
+        service.verifyUpdateEmailTransaction(auth.getName(), tid, otp);
+        return new InfoResponse("Email address updated successfully");
     }
 }

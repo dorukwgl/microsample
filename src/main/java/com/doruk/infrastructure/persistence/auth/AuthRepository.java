@@ -76,17 +76,6 @@ public class AuthRepository {
         ).execute();
     }
 
-    public Pair<String, String> getMailAddress(String id) {
-        var t = UserTable.$;
-        var user = sqlClient.createQuery(t)
-                .where(t.id().eq(UUID.fromString(id)))
-                .select(t.username(), t.email())
-                .execute();
-
-        return user.isEmpty() ? null :
-                new Pair<>(user.getFirst().get_1(), user.getFirst().get_2());
-    }
-
     public Optional<SessionDto> getSession(String sessionId) {
         var t = SessionTable.$;
         var dt = sqlClient.createQuery(t)
@@ -182,5 +171,76 @@ public class AuthRepository {
                 .where(t.id().eq(UUID.fromString(userId)))
                 .set(t.password(), password)
                 .execute();
+    }
+
+    public void updateEmail(String userId, String email, boolean verified) {
+        var t = UserTable.$;
+        sqlClient.createUpdate(t)
+                .where(t.id().eq(UUID.fromString(userId)))
+                .set(t.email(), email)
+                .set(t.emailVerified(), verified)
+                .execute();
+    }
+
+    public void updatePhone(String userId, String phone, boolean verified) {
+        var t = UserTable.$;
+        sqlClient.createUpdate(t)
+                .where(t.id().eq(UUID.fromString(userId)))
+                .set(t.phone(), phone)
+                .set(t.phoneVerified(), verified)
+                .execute();
+    }
+
+    public void verifyUserEmail(String userId) {
+        var t = UserTable.$;
+        sqlClient.createUpdate(t)
+                .where(t.id().eq(UUID.fromString(userId)))
+                .set(t.emailVerified(), true)
+                .execute();
+    }
+
+    public void verifyUserPhone(String userId) {
+        var t = UserTable.$;
+        sqlClient.createUpdate(t)
+                .where(t.id().eq(UUID.fromString(userId)))
+                .set(t.phoneVerified(), true)
+                .execute();
+    }
+
+    /**
+     * Retrieves the email and email verification status of a user.
+     *
+     * @param userId the ID of the user
+     * @return a Pair containing the user's email and verification status.
+     *         The first element is a String representing the email address,
+     *         and the second element is a boolean indicating whether the
+     *         email has been verified.
+     */
+    public Pair<String, Boolean> getUserEmail(String userId) {
+        var t = UserTable.$;
+        var d = sqlClient.createQuery(t)
+                .where(t.id().eq(UUID.fromString(userId)))
+                .select(t.email(), t.emailVerified())
+                .execute()
+                .getFirst();
+        return new Pair<>(d.get_1(), d.get_2());
+    }
+
+    /**
+     * Retrieves the phone and phone verification status of a user
+     * @param userId
+     * @return a Pair containing the user's phone and verification status.
+     *         The first element is a String representing the phone number,
+     *         and the second element is a boolean indicating whether the
+     *         phone has been verified.
+     */
+    public Pair<String, Boolean> getUserPhone(String userId) {
+        var t = UserTable.$;
+        var d = sqlClient.createQuery(t)
+                .where(t.id().eq(UUID.fromString(userId)))
+                .select(t.phone(), t.phoneVerified())
+                .execute()
+                .getFirst();
+        return new Pair<>(d.get_1(), d.get_2());
     }
 }

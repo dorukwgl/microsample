@@ -51,75 +51,9 @@ public class UserController {
         return service.getCurrentUser(auth.getName());
     }
 
-    @Status(HttpStatus.ACCEPTED)
-    @Post("/email/init-verification")
-    public InfoResponse initEmailVerification(Authentication auth) {
-        service.initEmailVerification(auth.getName());
-        return new InfoResponse("OTP is sent to your email address");
-    }
-
-    @Post("/email/verify-otp/{transactionId}")
-    public InfoResponse verifyEmailOtp(Authentication auth,
-                                       String transactionId,
-                                       @Body
-                                       @NotBlank
-                                       @Min(value = 100000)
-                                       @Max(value = 999999)
-                                       int otp) {
-
-        service.verifyEmail(auth.getName(), transactionId, otp);
-        return new InfoResponse("Email verified successfully");
-    }
-
-    @Secured(SecurityRule.IS_ANONYMOUS)
-    @Get("/email/verify-magic/{magicLink}")
-    public InfoResponse verifyEmailViaMagicLink(String magicLink) {
-        service.verifyEmail(magicLink);
-        return new InfoResponse("Email verified successfully");
-    }
-
-    @Status(HttpStatus.ACCEPTED)
-    @Post("/phone/init-verification")
-    public InfoResponse initPhoneVerification(Authentication auth) {
-        service.initPhoneVerification(auth.getName());
-        return new InfoResponse("OTP sent to your phone number");
-    }
-
-    @Post("/phone/verify-otp/{transactionId}")
-    public InfoResponse verifyPhoneNumber(
-            String transactionId,
-            @Body
-            @NotBlank
-            @Min(value = 100000)
-            @Max(value = 999999)
-            int otp) {
-        service.verifyPhone(transactionId, otp);
-        return new InfoResponse("Phone number verified successfully");
-    }
-
     @Put("/profile")
     public ProfileDto updateProfile(Authentication auth, @Valid @Body ProfileUpdateRequest req) {
         return service.updateProfile(auth.getName(), profileMapper.toProfileDto(req));
-    }
-
-    @Put("/profile/phone")
-    public InfoResponse updatePhoneNumber(Authentication auth,
-                                          @Body
-                                          @NotBlank
-                                          @Pattern(regexp = "^\\+?[1-9][0-9]{7,14}$")
-                                          String phone) {
-        service.updatePhoneNumber(auth.getName(), phone);
-        return new InfoResponse("Phone number updated successfully");
-    }
-
-    @Put("/profile/email")
-    public InfoResponse updateEmailAddress(Authentication auth,
-                                           @Body
-                                           @NotBlank
-                                           @Email
-                                           String email) {
-        service.updateEmail(auth.getName(), email);
-        return new InfoResponse("Email address updated successfully");
     }
 
     @Put("/profile/icon")

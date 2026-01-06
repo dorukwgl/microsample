@@ -24,6 +24,7 @@ public class BrevoMailService implements MailService {
             case MFA -> new Pair<>("Multi Factor Authentication", Templates.mfaTemplate());
             case EMAIL_VERIFICATION -> new Pair<>("Email Verification", Templates.emailVerificationTemplate());
             case PASSWORD_RESET -> new Pair<>("Password Reset", Templates.passwordResetTemplate());
+            case GENERIC -> new Pair<>("OTP Verification", Templates.genericTemplate());
             default -> throw new IllegalArgumentException("Invalid template type");
         };
 

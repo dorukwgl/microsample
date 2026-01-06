@@ -145,4 +145,35 @@ public class Templates {
             </html>
             """;
     }
+
+    public static String genericTemplate() {
+        return """
+            <!DOCTYPE html>
+            <html>
+            <head>""" + CSS_STYLE + """
+            </head>
+            <body>
+                <div class="wrapper">
+                    <div class="container">
+                        <div class="header"><h1>YakshaSoft</h1></div>
+                        <div class="content" style="text-align: center;">
+                            <h2>Identity Verification</h2>
+                            <p class="text-main">Use the code below to complete your action. This code will expire shortly.</p>
+
+                            <div class="otp-label">MFA Code</div>
+                            <div class="otp-box">
+                                <p class="otp-code">{{params.otp}}</p>
+                            </div>
+
+                            <p style="color: #ef4444; font-size: 14px; font-weight: 600;">Never share this code with anyone.</p>
+                        </div>
+                        <div class="footer">
+                            Secured by YakshaSoft Guard
+                        </div>
+                    </div>
+                </div>
+            </body>
+            </html>
+            """;
+    }
 }

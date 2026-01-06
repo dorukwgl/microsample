@@ -13,6 +13,7 @@ public class SmsTemplates {
 
             case PHONE_VERIFICATION ->
                     "YakshaSoft: Your phone verification code is " + otp + ".";
+            case GENERIC -> "YakshaSoft: Your OTP verification code is " + otp + ".";
             default -> throw new IllegalArgumentException("Invalid sms template type");
         };
     }

@@ -20,4 +20,12 @@ public class KeyNamespace {
     public static String verificationMagicId(String token) {
         return "vrf:magic:txn:" + token;
     }
+
+    public static String updateAuthTransactionId(String token) {
+        return "auth:update:txn:" + token;
+    }
+
+    public static String updateAuthOtpAttempt(String token) {
+        return "auth:update:txn:" + token + ":attempt";
+    }
 }

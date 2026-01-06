@@ -6,6 +6,7 @@ import com.doruk.infrastructure.persistence.entity.*;
 import com.doruk.infrastructure.persistence.users.mapper.ProfileMapper;
 import com.doruk.infrastructure.persistence.users.mapper.UserMapper;
 import jakarta.inject.Singleton;
+import javafx.util.Pair;
 import lombok.RequiredArgsConstructor;
 import org.babyfish.jimmer.sql.JSqlClient;
 import org.babyfish.jimmer.sql.JoinType;
@@ -66,28 +67,15 @@ public class UserRepository {
         return userMapper.toResponseDto(Objects.requireNonNull(user));
     }
 
-    public void verifyUserEmail(String userId) {
+    public Pair<String, String> getMailAddress(String id) {
         var t = UserTable.$;
-        sqlClient.createUpdate(t)
-                .where(t.id().eq(UUID.fromString(userId)))
-                .set(t.emailVerified(), true)
+        var user = sqlClient.createQuery(t)
+                .where(t.id().eq(UUID.fromString(id)))
+                .select(t.username(), t.email())
                 .execute();
-    }
 
-    public void verifyUserPhone(String userId) {
-        var t = UserTable.$;
-        sqlClient.createUpdate(t)
-                .where(t.id().eq(UUID.fromString(userId)))
-                .set(t.phoneVerified(), true)
-                .execute();
-    }
-
-    public String getPhoneNumber(String userId) {
-        return sqlClient.createQuery(UserTable.$)
-                .where(UserTable.$.id().eq(UUID.fromString(userId)))
-                .select(UserTable.$.phone())
-                .execute()
-                .getFirst();
+        return user.isEmpty() ? null :
+                new Pair<>(user.getFirst().get_1(), user.getFirst().get_2());
     }
 
     public ProfileDto updateProfile(String userId, ProfileDto dto) {
@@ -103,24 +91,6 @@ public class UserRepository {
         );
         var res = sqlClient.saveCommand(draft).setMode(SaveMode.UPSERT).execute();
         return profileMapper.toProfileDto(res.getModifiedEntity());
-    }
-
-    public void updatePhoneNumber(String userId, String phone) {
-        var t = UserTable.$;
-        sqlClient.createUpdate(t)
-                .where(t.id().eq(UUID.fromString(userId)))
-                .set(t.phone(), phone)
-                .set(t.phoneVerified(), false)
-                .execute();
-    }
-
-    public void updateEmailAddress(String userId, String email) {
-        var t = UserTable.$;
-        sqlClient.createUpdate(t)
-                .where(t.id().eq(UUID.fromString(userId)))
-                .set(t.email(), email)
-                .set(t.emailVerified(), false)
-                .execute();
     }
 
     public String updateProfileIconReturningOld(String userId, String profilePicId) {

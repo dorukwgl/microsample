@@ -14,4 +14,6 @@ public final class Constants {
     public final static int SMALL_SIZE = 320;
     public final static int MEDIUM_SIZE = 640;
     public final static int FULL_SIZE = -1; // full size
+    public final static int AUTH_UPDATE_VALIDITY_SECONDS = 180;
+    public final static int AUTH_UPDATE_ATTEMPT_LIMIT = 2;
 }
