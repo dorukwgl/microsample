@@ -1,10 +1,12 @@
 package com.doruk.application.users.dto;
 
 import io.micronaut.serde.annotation.Serdeable;
+import lombok.Builder;
 
 import java.time.LocalDateTime;
 
 @Serdeable
+@Builder
 public record ProfileDto(
         String userId,
         String fullName,
