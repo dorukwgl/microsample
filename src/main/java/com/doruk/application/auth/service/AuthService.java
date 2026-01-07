@@ -27,10 +27,7 @@ import nl.basjes.parse.useragent.UserAgentAnalyzer;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 import java.util.function.Function;
@@ -434,5 +431,93 @@ public class AuthService {
 
     public void verifyUpdateEmailTransaction(String userId, String tid, int otp) {
         verifyAuthUpdateTransaction(userId, tid, otp, AuthUpdateTransaction.Type.EMAIL);
+    }
+
+    private String createAndPublishPasswordResetTransaction(String userId, String phone, boolean isPhone) {
+        var otp = GenerateRandom.generateOtp();
+        var transactionId = GenerateRandom.generateTransactionId();
+        var duration = Duration.ofSeconds(Constants.PW_RESET_VALIDITY_SECONDS);
+
+        var txn = new PasswordResetTransaction(userId, otp);
+
+        // store in redis
+        var tid = KeyNamespace.resetPasswordTransactionId(transactionId);
+        storage.saveEx(tid, txn, duration);
+        storage.saveEx(KeyNamespace.resetPasswordOtpAttempts(transactionId), 0, duration);
+        storage.saveEx(KeyNamespace.resetPasswordOtpCooldown(transactionId), Boolean.TRUE,
+                Duration.ofSeconds(Constants.RESEND_OTP_COOLDOWN_SECONDS));
+
+        var tmpUrl = GenerateRandom.generateSessionId();
+
+        var otpEvent = isPhone ? new SmsOtpDto(userId, phone, otp, TemplateType.PASSWORD_RESET) :
+                new EmailOtpDto(userId, tmpUrl, otp, TemplateType.PASSWORD_RESET);
+
+        event.publish(otpEvent);
+
+        if (isPhone)
+            return null;
+
+        // create magic link for email
+        storage.saveEx(KeyNamespace.resetPasswordMagicLink(tmpUrl), tid, duration);
+        return transactionId;
+    }
+
+    public Map<String, String> initPasswordReset(String identifier, boolean usePhone) {
+        Map<String, String> successMsg = new HashMap<>();
+        successMsg.put("message", "OTP sent to your " + (usePhone ? "phone number" : "email address"));
+
+        var userOpt = authRepo.findByUsernameOrEmail(identifier);
+        if (userOpt.isEmpty())
+            return successMsg;
+        var user = userOpt.get();
+
+        if (usePhone && user.phone() == null)
+            return successMsg;
+
+        var tid = this.createAndPublishPasswordResetTransaction(user.id(), user.phone(), usePhone);
+
+        successMsg.put("tid", tid);
+        return successMsg;
+    }
+
+    private void deleteResetPasswordTransaction(String tid) {
+        storage.delete(KeyNamespace.resetPasswordTransactionId(tid));
+        storage.delete(KeyNamespace.resetPasswordOtpAttempts(tid));
+        storage.delete(KeyNamespace.resetPasswordOtpCooldown(tid));
+    }
+
+    public void verifyAndResetPasswordOtp(String tid, int otp, String password) {
+        var invalidException = new InvalidCredentialException("Invalid or Expired otp session");
+
+        var txn = storage.get(KeyNamespace.resetPasswordTransactionId(tid), PasswordResetTransaction.class)
+                .orElseThrow(() -> invalidException);
+
+        var attempts = storage.increment(KeyNamespace.resetPasswordOtpAttempts(tid));
+        if (attempts >= Constants.PW_UPDATE_OTP_ATTEMPT_LIMIT) {
+            deleteResetPasswordTransaction(tid);
+            throw new TooManyAttemptsException("Too many attempts");
+        }
+
+        if (txn.otp() != otp)
+            throw invalidException;
+
+        // update the password
+        authRepo.updatePassword(txn.userId(), passwordEncoder.encode(password));
+
+        // delete txn
+        deleteResetPasswordTransaction(tid);
+    }
+
+    public void verifyAndResetPasswordMagic(String magicLink, String password) {
+        var invalidException = new InvalidCredentialException("Invalid or Expired otp session");
+
+        var reference = storage.get(KeyNamespace.resetPasswordMagicLink(magicLink), String.class)
+                .orElseThrow(() -> invalidException);
+
+        var txn = storage.get(reference, PasswordResetTransaction.class)
+                .orElseThrow(() -> invalidException);
+
+        // if txn exists, update the password now
+        authRepo.updatePassword(txn.userId(), passwordEncoder.encode(password));
     }
 }

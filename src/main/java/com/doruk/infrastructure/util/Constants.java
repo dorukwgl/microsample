@@ -16,4 +16,7 @@ public final class Constants {
     public final static int FULL_SIZE = -1; // full size
     public final static int AUTH_UPDATE_VALIDITY_SECONDS = 180;
     public final static int AUTH_UPDATE_ATTEMPT_LIMIT = 2;
+    public final static int PW_UPDATE_OTP_ATTEMPT_LIMIT = 2;
+    public final static int RESEND_OTP_COOLDOWN_SECONDS = 30;
+    public final static int PW_RESET_VALIDITY_SECONDS = 300;
 }
