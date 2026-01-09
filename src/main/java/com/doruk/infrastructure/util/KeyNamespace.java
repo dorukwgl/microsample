@@ -1,59 +1,42 @@
 package com.doruk.infrastructure.util;
 
 public class KeyNamespace {
-    public static String mfaTransactionId(String token) {
-        return "mfa:txn:" + token;
+    public static String cooldownPrefix(String prefix, String tid) {
+        return prefix + ":cooldown:" + tid;
     }
 
-    public static String mfaOtpAttempt(String token) {
-        return "mfa:txn:" + token + ":attempt";
+    public static String attemptPrefix(String prefix, String tid) {
+        return prefix + ":attempt:" + tid;
     }
 
-    public static String mfaOtpCooldown(String token) {
-        return "mfa:txn:" + token + ":cooldown";
+    public static String magicLinkPrefix(String prefix, String tid) {
+        return prefix + ":magic:" + tid;
     }
 
-    public static String verificationTransactionId(String token) {
-        return "vrf:txn:" + token;
+    public static String mfaTransactionPrefix() {
+        return "mfa:txn:";
     }
 
-    public static String verificationOtpCooldown(String token) {
-        return "vrf:txn:" + token + ":cooldown";
+    public static String verificationTransaction() {
+        return "vrf:txn:";
     }
 
-    public static String verificationOtpAttempt(String token) {
-        return "vrf:txn:" + token + ":attempt";
+    public static String updateAuthTransaction() {
+        return "auth:update:txn:";
     }
 
-    public static String verificationMagicId(String token) {
-        return "vrf:magic:txn:" + token;
+    public static String resetPasswordTransaction() {
+        return "reset:pw:txn:";
     }
 
-    public static String updateAuthTransactionId(String token) {
-        return "auth:update:txn:" + token;
+    public static String getNamespacedId(String prefix, String tid) {
+        return prefix + tid;
     }
 
-    public static String updateAuthOtpAttempt(String token) {
-        return "auth:update:txn:" + token + ":attempt";
-    }
+    public static String extractTid(String prefix, String transactionId) {
+        if (!transactionId.startsWith(prefix))
+            throw new IllegalArgumentException("Transaction Id doesn't start with the given prefix.");
 
-    public static String updateAuthOtpCooldown(String token) {
-        return "auth:update:txn:" + token + ":cooldown";
-    }
-
-    public static String resetPasswordTransactionId(String token) {
-        return "reset:pw:txn" + token;
-    }
-
-    public static String resetPasswordOtpAttempts(String token) {
-        return "reset:pw:txn" + token + ":attempt";
-    }
-
-    public static String resetPasswordOtpCooldown(String token) {
-        return "reset:pw:txn" + token + ":cooldown";
-    }
-
-    public static String resetPasswordMagicLink(String token) {
-        return "reset:pw:txn:magic" + token;
+        return transactionId.substring(prefix.length());
     }
 }

@@ -247,4 +247,48 @@ public class AuthController {
         service.verifyUpdateEmailTransaction(auth.getName(), tid, otp);
         return new InfoResponse("Email address updated successfully");
     }
+
+    @Operation(description = "Initiate password reset")
+    @Post("/forgot-password/init{?usePhone}")
+    public Map<String, String> initPasswordReset(@Body @Size(max = 500) String identifier,
+                                                 @QueryValue(defaultValue = "false") boolean usePhone) {
+        return service.initPasswordReset(identifier, usePhone);
+    }
+
+    @Operation(description = "Verify the otp and update the password")
+    @Put("/forgot-password/verify-update-otp/{tid}")
+    public InfoResponse verifyAndUpdatePassword(@PathVariable String tid,
+                                                @Body
+                                                @Min(0)
+                                                @Max(999999)
+                                                int otp,
+                                                @Body
+                                                @Size(min = 8, max = 35)
+                                                String password) {
+
+        service.verifyAndResetPasswordOtp(tid, otp, password);
+        return new InfoResponse("Password updated successfully");
+    }
+
+    @Operation(description = "Returns the password reset page for given magic link")
+    @Get("/forgot-password/verify-update-magic/{magic}")
+    public InfoResponse getMagicPasswordResetPage(
+            @PathVariable
+            String magic
+            ) {
+        // return the reset page...
+        return new InfoResponse("Password updated successfully");
+    }
+
+    @Operation(description = "Update password via given reset link")
+    @Post("/forgot-password/verify-update-magic/{magic}")
+    public InfoResponse verifyAndUpdatePasswordMagic(
+            @PathVariable
+            String magic,
+            @Body
+            @Size(min = 8, max = 25)
+            String password) {
+        service.verifyAndResetPasswordMagic(magic, password);
+        return new InfoResponse("Password updated successfully");
+    }
 }

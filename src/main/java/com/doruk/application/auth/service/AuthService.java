@@ -22,6 +22,7 @@ import com.doruk.infrastructure.util.KeyNamespace;
 import com.doruk.infrastructure.util.StringUtil;
 import io.micronaut.context.annotation.Context;
 import javafx.util.Pair;
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import nl.basjes.parse.useragent.UserAgentAnalyzer;
 
@@ -35,12 +36,22 @@ import java.util.function.Function;
 @Context
 @RequiredArgsConstructor
 public class AuthService {
+    @Builder
+    private record TransactionRecord(
+            String transactionId,
+            String tid,
+            String magicLink,
+            int otp
+    ) {
+    }
+
+    ;
+
     private final AppExecutors executor;
     private final JwtIssuer issuer;
     private final AppConfig appConfig;
     private final AuthRepository authRepo;
     private final PasswordEncoder hasher;
-    private final MemoryStorage memoryStorage;
     private final EventPublisher eventPublisher;
     private final UserAgentAnalyzer uaa;
     private final PasswordEncoder passwordEncoder;
@@ -53,9 +64,7 @@ public class AuthService {
             MultiAuthType.EMAIL, this::initEmailFactorAuth
     );
 
-    private LoginResponse createMfaResponse(AuthDto user) {
-        String mfaToken = GenerateRandom.generateMfaToken();
-
+    private LoginResponse createMfaResponse(AuthDto user, String mfaToken) {
         return LoginResponse.builder()
                 .isEmailVerified(user.emailVerified())
                 .isPhoneVerified(user.phoneVerified())
@@ -97,120 +106,146 @@ public class AuthService {
         }
     }
 
-    private Pair<Integer, LoginResponse> createMfaTransaction(AuthDto user) {
-        var response = createMfaResponse(user);
-        var mfaToken = response.mfaToken();
+    private TransactionRecord createOtpExTransaction(String prefix, Duration duration, boolean createMagic) {
+        // should return transactionId, tid separately (tid = internal id, sent to user, transactionId = full redis id)
+        var cooldownDuration = Duration.ofSeconds(Constants.RESEND_OTP_COOLDOWN_SECONDS);
         var otp = GenerateRandom.generateOtp();
-        var duration = Duration.ofSeconds(Constants.MFA_VALIDITY_SECONDS);
-        memoryStorage.saveEx(KeyNamespace.mfaTransactionId(mfaToken), new MfaTransaction(otp, user.username()), duration);
-        memoryStorage.saveEx(KeyNamespace.mfaOtpAttempt(mfaToken), 0, duration);
-        return new Pair<>(otp, response);
+        var tid = GenerateRandom.generateTransactionId();
+
+        var transactionId = KeyNamespace.getNamespacedId(prefix, tid);
+
+        // create attempts, cooldown
+        storage.saveEx(KeyNamespace.cooldownPrefix(prefix, tid), Boolean.TRUE, cooldownDuration);
+        storage.saveEx(KeyNamespace.attemptPrefix(prefix, tid), 0, duration);
+
+        var transactionRecord = TransactionRecord.builder()
+                .transactionId(transactionId)
+                .tid(tid)
+                .otp(otp);
+
+        if (!createMagic)
+            return transactionRecord.build();
+
+        var magicSuffix = GenerateRandom.generateSessionId();
+        var magicLink = StringUtil.generateUrl(config, magicSuffix);
+
+        // save magic link
+        storage.saveEx(KeyNamespace.magicLinkPrefix(prefix, magicSuffix), transactionId, duration);
+
+        return transactionRecord
+                .magicLink(magicLink)
+                .build();
     }
 
-    private void removeMfaTransaction(String mfaToken) {
-        memoryStorage.delete(KeyNamespace.mfaTransactionId(mfaToken));
-        memoryStorage.delete(KeyNamespace.mfaOtpAttempt(mfaToken));
+    private void deleteOtpExTransaction(String prefix, String tid) {
+        storage.delete(KeyNamespace.getNamespacedId(prefix, tid)); // main transaction object
+        storage.delete(KeyNamespace.cooldownPrefix(prefix, tid));
+        storage.delete(KeyNamespace.attemptPrefix(prefix, tid));
+    }
+
+    private void deleteOtpExTransactionFromMagic(String prefix, String magicSuffix, String transactionId) {
+        storage.delete(KeyNamespace.getNamespacedId(prefix, magicSuffix)); // magic link
+        this.deleteOtpExTransaction(prefix, KeyNamespace.extractTid(prefix, transactionId)); // main transaction object
+    }
+
+    private void publishSmsOtpEvent(String userId, String phone, int otp, TemplateType template) {
+        eventPublisher.publish(new SmsOtpDto(
+                userId,
+                phone,
+                otp,
+                template
+        ));
+    }
+
+    private void publishEmailOtpEvent(String userId, String magicLink, int otp, TemplateType template) {
+        eventPublisher.publish(new EmailOtpDto(
+                userId,
+                magicLink,
+                otp,
+                template
+        ));
+    }
+
+    private Pair<Integer, LoginResponse> createMfaTransaction(AuthDto user) {
+        var duration = Duration.ofSeconds(Constants.MFA_VALIDITY_SECONDS);
+        var record = this.createOtpExTransaction(KeyNamespace.mfaTransactionPrefix(), duration, false);
+
+        var response = createMfaResponse(user, record.tid());
+
+        storage.saveEx(record.transactionId(), new MfaTransaction(record.otp(), user.username()), duration);
+        return new Pair<>(record.otp(), response);
     }
 
     private LoginResponse initPhoneFactorAuth(AuthDto user) {
         var response = createMfaTransaction(user);
-
-        eventPublisher.publish(new SmsOtpDto(
-                user.id(),
-                user.phone(),
-                response.getKey(),
-                TemplateType.MFA
-        ));
+        this.publishSmsOtpEvent(user.id(), user.phone(), response.getKey(), TemplateType.MFA);
         return response.getValue();
     }
 
     private LoginResponse initEmailFactorAuth(AuthDto user) {
         var response = createMfaTransaction(user);
-
-        eventPublisher.publish(new EmailOtpDto(
-                user.id(),
-                null,
-                response.getKey(),
-                TemplateType.MFA
-        ));
+        this.publishEmailOtpEvent(user.id(), null, response.getKey(), TemplateType.MFA);
         return response.getValue();
     }
 
     private String createAndPublishEmailVerificationTransaction(String userId) {
-        var otp = GenerateRandom.generateOtp();
-        var tmpUrl = GenerateRandom.generateSessionId();
-        var transactionId = GenerateRandom.generateTransactionId();
         var duration = Duration.ofSeconds(Constants.MAGIC_LINK_VALIDITY_SECONDS);
+        var record = this.createOtpExTransaction(
+                KeyNamespace.verificationTransaction(), duration, true);
 
-        var magicLink = StringUtil.generateUrl(config, tmpUrl);
         // create otp transaction
         var transaction = new EmailOtpDto(
                 userId,
-                magicLink,
-                otp,
-                TemplateType.EMAIL_VERIFICATION);
+                null,
+                record.otp(),
+                null);
 
-        var tid = KeyNamespace.verificationTransactionId(transactionId);
-        storage.saveEx(tid, transaction, duration);
-        storage.saveEx(KeyNamespace.verificationOtpAttempt(transactionId), 0, duration);
+        storage.saveEx(record.transactionId(), transaction, duration);
 
-        // create magic link transaction
-        storage.saveEx(KeyNamespace.verificationMagicId(tmpUrl), tid, duration);
+        this.publishEmailOtpEvent(userId, record.magicLink(), record.otp(), TemplateType.EMAIL_VERIFICATION);
 
-        event.publish(transaction);
-
-        return transactionId;
+        return record.tid();
     }
 
     private String createAndPublishPhoneVerificationTransaction(String userId, String phone) {
-        var otp = GenerateRandom.generateOtp();
-        var transactionId = GenerateRandom.generateTransactionId();
         var duration = Duration.ofSeconds(Constants.OTP_VALIDITY_SECONDS);
+        var record = this.createOtpExTransaction(KeyNamespace.verificationTransaction(), duration, false);
 
         var transaction = new SmsOtpDto(
                 userId,
-                phone,
-                otp,
-                TemplateType.PHONE_VERIFICATION);
+                null,
+                0,
+                null);
 
-        var tid = KeyNamespace.verificationTransactionId(transactionId);
-        storage.saveEx(tid, transaction, duration);
-        storage.saveEx(KeyNamespace.verificationOtpAttempt(transactionId), 0, duration);
+        storage.saveEx(record.transactionId(), transaction, duration);
 
-        event.publish(transaction);
+        this.publishSmsOtpEvent(userId, phone, record.otp, TemplateType.PHONE_VERIFICATION);
 
-        return transactionId;
-    }
-
-    private void removeVerificationTransaction(String transactionId) {
-        storage.delete(KeyNamespace.verificationTransactionId(transactionId));
-        storage.delete(KeyNamespace.verificationOtpAttempt(transactionId));
+        return record.tid();
     }
 
     private String createAndPublishAuthUpdateTransaction(String userId, String payload, AuthUpdateTransaction.Type type) {
-        var otp = GenerateRandom.generateOtp();
-        var transactionId = GenerateRandom.generateTransactionId();
         var duration = Duration.ofSeconds(Constants.AUTH_UPDATE_VALIDITY_SECONDS);
+        var record = this.createOtpExTransaction(KeyNamespace.updateAuthTransaction(), duration, false);
 
         var txn = new AuthUpdateTransaction(
-                transactionId,
+                record.tid(),
                 userId,
-                otp,
+                record.otp(),
                 payload,
                 type
         );
 
-        storage.saveEx(KeyNamespace.updateAuthTransactionId(transactionId), txn, duration);
-        storage.saveEx(KeyNamespace.updateAuthOtpAttempt(transactionId), 0, duration);
-
+        storage.saveEx(record.transactionId(), txn, duration);
         event.publish(txn);
 
-        return transactionId;
+        return record.tid();
     }
 
     private void verifyAuthUpdateTransaction(String userId, String tid, int otp, AuthUpdateTransaction.Type type) {
         var invalidCredentials = new InvalidCredentialException("Expired or Invalid otp session");
-        var txn = storage.get(KeyNamespace.updateAuthTransactionId(tid), AuthUpdateTransaction.class)
+        var prefix = KeyNamespace.updateAuthTransaction();
+        var txn = storage.get(KeyNamespace.getNamespacedId(prefix, tid), AuthUpdateTransaction.class)
                 .orElseThrow(() -> invalidCredentials);
         if (!(
                 txn.type() == type &&
@@ -219,10 +254,9 @@ public class AuthService {
             throw invalidCredentials;
 
         // check for attempts
-        var attempts = storage.increment(KeyNamespace.updateAuthOtpAttempt(tid));
+        var attempts = storage.increment(KeyNamespace.attemptPrefix(prefix, tid));
         if (attempts >= Constants.AUTH_UPDATE_ATTEMPT_LIMIT) {
-            storage.delete(KeyNamespace.updateAuthTransactionId(tid));
-            storage.delete(KeyNamespace.updateAuthOtpAttempt(tid));
+            this.deleteOtpExTransaction(prefix, tid);
             throw new TooManyAttemptsException("Too Many Attempts");
         }
 
@@ -252,13 +286,14 @@ public class AuthService {
     }
 
     public LoginResponse performMfa(String mfaToken, int otp, DeviceInfoObject deviceInfoObject) {
-        var mfaTransaction = memoryStorage.get(mfaToken, MfaTransaction.class)
+        String prefix = KeyNamespace.mfaTransactionPrefix();
+        var mfaTransaction = storage.get(KeyNamespace.getNamespacedId(prefix, mfaToken), MfaTransaction.class)
                 .orElseThrow(() -> new InvalidCredentialException("Invalid or expired MFA session."));
 
         // increment the attempt
-        var attempt = memoryStorage.increment(KeyNamespace.mfaOtpAttempt(mfaToken));
+        var attempt = storage.increment(KeyNamespace.attemptPrefix(prefix, mfaToken));
         if (attempt > Constants.MFA_ATTEMPT_LIMIT) {
-            this.removeMfaTransaction(mfaToken);
+            this.deleteOtpExTransaction(prefix, mfaToken);
             throw new TooManyAttemptsException("Too many attempts");
         }
 
@@ -270,7 +305,7 @@ public class AuthService {
                 authRepo.findByUsernameOrEmail(mfaTransaction.username()).orElseThrow());
 
         // remove the mfa transaction
-        this.removeMfaTransaction(mfaToken);
+        this.deleteOtpExTransaction(prefix, mfaToken);
         return response;
     }
 
@@ -318,10 +353,11 @@ public class AuthService {
     }
 
     // from otp, and from magic link
-    public void verifyEmail(String userId, String transactionId, int otp) {
+    public void verifyEmail(String userId, String tid, int otp) {
         var expiredException = new InvalidCredentialException("Invalid or expired verification session.");
+        var prefix = KeyNamespace.verificationTransaction();
 
-        var transaction = storage.get(KeyNamespace.verificationTransactionId(transactionId),
+        var transaction = storage.get(KeyNamespace.getNamespacedId(prefix, tid),
                 EmailOtpDto.class).orElseThrow(() -> expiredException);
 
         // check if the user id matches
@@ -329,36 +365,39 @@ public class AuthService {
             throw expiredException;
 
         // finally proceed with otp matching and attempt counts.
-        var attempt = storage.increment(KeyNamespace.verificationOtpAttempt(transactionId));
+        var attempt = storage.increment(KeyNamespace.attemptPrefix(prefix, tid));
         if (attempt >= Constants.MFA_ATTEMPT_LIMIT) {
-            this.removeVerificationTransaction(transactionId);
+            this.deleteOtpExTransaction(prefix, tid);
             throw new TooManyAttemptsException("Too many attempts");
         }
-
         // check if the otp matches
         if (transaction.otp() != otp)
             throw expiredException;
 
         // finally validate the user
         authRepo.verifyUserEmail(userId);
-        this.removeVerificationTransaction(transactionId);
+        this.deleteOtpExTransaction(prefix, tid);
     }
 
     public void verifyEmail(String magicLinkPointer) {
         var expiredException = new InvalidCredentialException("Invalid or expired verification session.");
-        var pointer = KeyNamespace.verificationMagicId(magicLinkPointer);
+        var prefix = KeyNamespace.verificationTransaction();
+        var pointer = KeyNamespace.magicLinkPrefix(prefix, magicLinkPointer);
         // fetch the transaction id
         var transactionId = storage.get(pointer, String.class)
                 .orElseThrow(() -> expiredException);
 
         // check if the transaction exists, in case of otp attempt limit
         var transaction = storage.get(transactionId,
-                EmailOtpDto.class).orElseThrow(() -> expiredException);
+                EmailOtpDto.class).orElseThrow(() -> {
+            // delete the pointer
+            storage.delete(pointer);
+            return expiredException;
+        });
 
         // finally validate the user
         authRepo.verifyUserEmail(transaction.id());
-        this.removeVerificationTransaction(transactionId);
-        storage.delete(pointer);
+        this.deleteOtpExTransactionFromMagic(prefix, magicLinkPointer, transactionId);
     }
 
     public Map<String, String> initPhoneVerification(String userId) {
@@ -372,15 +411,16 @@ public class AuthService {
     }
 
     // from otp only
-    public void verifyPhone(String transactionId, int otp) {
+    public void verifyPhone(String tid, int otp) {
         var expiredException = new InvalidCredentialException("Invalid or expired otp session");
-        var transaction = storage.get(transactionId,
+        var prefix = KeyNamespace.verificationTransaction();
+        var transaction = storage.get(KeyNamespace.getNamespacedId(prefix, tid),
                 SmsOtpDto.class).orElseThrow(() -> expiredException);
 
         // check for attempts
-        var attempt = storage.increment(KeyNamespace.verificationOtpAttempt(transactionId));
+        var attempt = storage.increment(KeyNamespace.attemptPrefix(prefix, tid));
         if (attempt >= Constants.MFA_ATTEMPT_LIMIT) {
-            this.removeVerificationTransaction(transactionId);
+            this.deleteOtpExTransaction(prefix, tid);
             throw new TooManyAttemptsException("Too many attempts");
         }
 
@@ -390,7 +430,7 @@ public class AuthService {
 
         // finally validate the user
         authRepo.verifyUserPhone(transaction.id());
-        this.removeVerificationTransaction(transactionId);
+        this.deleteOtpExTransaction(prefix, tid);
     }
 
     // ~~~~~~~~~Update Email / Phone~~~~~~~~~
@@ -434,32 +474,21 @@ public class AuthService {
     }
 
     private String createAndPublishPasswordResetTransaction(String userId, String phone, boolean isPhone) {
-        var otp = GenerateRandom.generateOtp();
-        var transactionId = GenerateRandom.generateTransactionId();
         var duration = Duration.ofSeconds(Constants.PW_RESET_VALIDITY_SECONDS);
+        var prefix = KeyNamespace.resetPasswordTransaction();
 
-        var txn = new PasswordResetTransaction(userId, otp);
+        var record = this.createOtpExTransaction(prefix, duration, !isPhone);
+        var txn = new PasswordResetTransaction(userId, record.otp());
 
         // store in redis
-        var tid = KeyNamespace.resetPasswordTransactionId(transactionId);
-        storage.saveEx(tid, txn, duration);
-        storage.saveEx(KeyNamespace.resetPasswordOtpAttempts(transactionId), 0, duration);
-        storage.saveEx(KeyNamespace.resetPasswordOtpCooldown(transactionId), Boolean.TRUE,
-                Duration.ofSeconds(Constants.RESEND_OTP_COOLDOWN_SECONDS));
-
-        var tmpUrl = GenerateRandom.generateSessionId();
-
-        var otpEvent = isPhone ? new SmsOtpDto(userId, phone, otp, TemplateType.PASSWORD_RESET) :
-                new EmailOtpDto(userId, tmpUrl, otp, TemplateType.PASSWORD_RESET);
-
-        event.publish(otpEvent);
+        storage.saveEx(record.transactionId(), txn, duration);
 
         if (isPhone)
-            return null;
+            this.publishSmsOtpEvent(userId, phone, record.otp(), TemplateType.PASSWORD_RESET);
+        else
+            this.publishEmailOtpEvent(userId, record.magicLink(), record.otp(), TemplateType.PASSWORD_RESET);
 
-        // create magic link for email
-        storage.saveEx(KeyNamespace.resetPasswordMagicLink(tmpUrl), tid, duration);
-        return transactionId;
+        return record.tid();
     }
 
     public Map<String, String> initPasswordReset(String identifier, boolean usePhone) {
@@ -480,21 +509,16 @@ public class AuthService {
         return successMsg;
     }
 
-    private void deleteResetPasswordTransaction(String tid) {
-        storage.delete(KeyNamespace.resetPasswordTransactionId(tid));
-        storage.delete(KeyNamespace.resetPasswordOtpAttempts(tid));
-        storage.delete(KeyNamespace.resetPasswordOtpCooldown(tid));
-    }
-
     public void verifyAndResetPasswordOtp(String tid, int otp, String password) {
         var invalidException = new InvalidCredentialException("Invalid or Expired otp session");
+        var prefix = KeyNamespace.resetPasswordTransaction();
 
-        var txn = storage.get(KeyNamespace.resetPasswordTransactionId(tid), PasswordResetTransaction.class)
+        var txn = storage.get(KeyNamespace.getNamespacedId(prefix, tid), PasswordResetTransaction.class)
                 .orElseThrow(() -> invalidException);
 
-        var attempts = storage.increment(KeyNamespace.resetPasswordOtpAttempts(tid));
+        var attempts = storage.increment(KeyNamespace.attemptPrefix(prefix, tid));
         if (attempts >= Constants.PW_UPDATE_OTP_ATTEMPT_LIMIT) {
-            deleteResetPasswordTransaction(tid);
+            this.deleteOtpExTransaction(prefix, tid);
             throw new TooManyAttemptsException("Too many attempts");
         }
 
@@ -505,19 +529,25 @@ public class AuthService {
         authRepo.updatePassword(txn.userId(), passwordEncoder.encode(password));
 
         // delete txn
-        deleteResetPasswordTransaction(tid);
+        this.deleteOtpExTransaction(prefix, tid);
     }
 
     public void verifyAndResetPasswordMagic(String magicLink, String password) {
         var invalidException = new InvalidCredentialException("Invalid or Expired otp session");
+        var  prefix = KeyNamespace.resetPasswordTransaction();
 
-        var reference = storage.get(KeyNamespace.resetPasswordMagicLink(magicLink), String.class)
+        var reference = storage.get(KeyNamespace.magicLinkPrefix(prefix, magicLink), String.class)
                 .orElseThrow(() -> invalidException);
 
         var txn = storage.get(reference, PasswordResetTransaction.class)
-                .orElseThrow(() -> invalidException);
+                .orElseThrow(() -> {
+                    storage.delete(reference);
+                    return invalidException;
+                });
 
         // if txn exists, update the password now
         authRepo.updatePassword(txn.userId(), passwordEncoder.encode(password));
+
+        this.deleteOtpExTransactionFromMagic(prefix, magicLink, reference);
     }
 }
