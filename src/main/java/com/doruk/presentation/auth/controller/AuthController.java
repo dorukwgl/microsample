@@ -12,9 +12,9 @@ import com.doruk.infrastructure.util.Constants;
 import com.doruk.presentation.auth.dto.DeviceInfoRequest;
 import com.doruk.presentation.auth.dto.LoginRequest;
 import com.doruk.presentation.auth.mappers.DeviceInfoMapper;
-import io.micronaut.context.annotation.Requires;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.HttpStatus;
+import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.*;
 import io.micronaut.http.cookie.Cookie;
 import io.micronaut.http.cookie.SameSite;
@@ -41,6 +41,106 @@ public class AuthController {
     private final AuthService service;
     private final DeviceInfoMapper infoMapper;
     private final AppConfig appConfig;
+
+    private String renderResetFormPage(String magic) {
+        var str = """
+                <!DOCTYPE html>
+                <html lang="en">
+                <head>
+                    <meta charset="UTF-8">
+                    <title>Reset Password</title>
+                    <meta name="viewport" content="width=device-width, initial-scale=1">
+                    <style>
+                        body {
+                            font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+                            background: #f5f6f8;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            height: 100vh;
+                            margin: 0;
+                        }
+                        .card {
+                            background: white;
+                            width: 100%;
+                            max-width: 420px;
+                            padding: 32px;
+                            border-radius: 12px;
+                            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+                        }
+                        h1 {
+                            margin: 0 0 16px;
+                            font-size: 22px;
+                            text-align: center;
+                        }
+                        p {
+                            color: #666;
+                            font-size: 14px;
+                            text-align: center;
+                        }
+                        label {
+                            display: block;
+                            margin-top: 20px;
+                            font-weight: 500;
+                        }
+                        input {
+                            width: 100%;
+                            padding: 12px;
+                            margin-top: 8px;
+                            border-radius: 8px;
+                            border: 1px solid #ccc;
+                            font-size: 14px;
+                        }
+                        button {
+                            width: 100%;
+                            margin-top: 24px;
+                            padding: 12px;
+                            border: none;
+                            border-radius: 8px;
+                            background: #1f2937;
+                            color: white;
+                            font-size: 15px;
+                            cursor: pointer;
+                        }
+                        button:hover {
+                            background: #111827;
+                        }
+                    </style>
+                </head>
+                <body>
+                <div class="card">
+                    <h1>Reset your password</h1>
+                    <p>Please enter a new password for your account.</p>
+                
+                    <form method="post" action="/forgot-password/verify-update-magic/%s"
+                          onsubmit="return validatePasswords()">
+                
+                        <label for="password">New password</label>
+                        <input type="password" id="password" name="password" minlength="8" required>
+                
+                        <label for="confirmPassword">Confirm password</label>
+                        <input type="password" id="confirmPassword" name="confirmPassword" minlength="8" required>
+                
+                        <button type="submit">Update password</button>
+                    </form>
+                </div>
+                
+                <script>
+                    function validatePasswords() {
+                        const p1 = document.getElementById('password').value;
+                        const p2 = document.getElementById('confirmPassword').value;
+                        if (p1 !== p2) {
+                            alert("Passwords do not match.");
+                            return false;
+                        }
+                        return true;
+                    }
+                </script>
+                </body>
+                </html>
+                """;
+        return String.format(str, magic);
+    }
 
     @ApiResponse(responseCode = "201", description = "Login successful")
     @ApiResponse(responseCode = "202", description = "Multi factor authentication required")
@@ -273,13 +373,14 @@ public class AuthController {
     }
 
     @Operation(description = "Returns the password reset page for given magic link")
-    @Get("/forgot-password/verify-update-magic/{magic}")
-    public InfoResponse getMagicPasswordResetPage(
+    @Get(value = "/forgot-password/verify-update-magic/{magic}",
+            produces = MediaType.TEXT_HTML)
+    public HttpResponse<String> getMagicPasswordResetPage(
             @PathVariable
             String magic
-            ) {
-        // return the reset page...
-        return new InfoResponse("Password updated successfully");
+    ) {
+        return HttpResponse.ok(renderResetFormPage(magic))
+                .contentType(MediaType.TEXT_HTML);
     }
 
     @Operation(description = "Update password via given reset link")
