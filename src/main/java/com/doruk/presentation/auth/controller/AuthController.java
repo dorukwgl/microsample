@@ -5,12 +5,14 @@ import com.doruk.application.auth.dto.JwtResponse;
 import com.doruk.application.auth.dto.LoginResponse;
 import com.doruk.application.auth.dto.SessionDto;
 import com.doruk.application.auth.service.AuthService;
+import com.doruk.domain.shared.enums.MultiAuthType;
 import com.doruk.infrastructure.config.AppConfig;
 import com.doruk.infrastructure.dto.InfoResponse;
 import com.doruk.infrastructure.util.Constants;
 import com.doruk.presentation.auth.dto.DeviceInfoRequest;
 import com.doruk.presentation.auth.dto.LoginRequest;
 import com.doruk.presentation.auth.mappers.DeviceInfoMapper;
+import io.micronaut.context.annotation.Requires;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.*;
@@ -290,5 +292,50 @@ public class AuthController {
             String password) {
         service.verifyAndResetPasswordMagic(magic, password);
         return new InfoResponse("Password updated successfully");
+    }
+
+    @Operation(description = "Resend Email/Phone verification OTP")
+    @CustomHttpMethod(value = "/otp/resend-verification{?tid}", method = "repeat")
+    public InfoResponse resendOtp(String tid) {
+        service.resendVerificationOtp(tid);
+        return new InfoResponse("OTP sent successfully");
+    }
+
+    @Operation(description = "Resend MFA Phone/Email OTP")
+    @CustomHttpMethod(value = "/otp/resend-mfa", method = "repeat")
+    public InfoResponse resendMfaOtp(String tid) {
+        service.resendMfaOtp(tid);
+        return new InfoResponse("MFA otp sent successfully");
+    }
+
+    @Operation(description = "Resend Email or Phone update OTP")
+    @CustomHttpMethod(value = "/otp/resend-auth-update", method = "repeat")
+    public InfoResponse resendAuthUpdateOtp(String tid) {
+        service.resendAuthUpdateOtp(tid);
+        return new InfoResponse("OTP sent successfully");
+    }
+
+    @Operation(description = "Resend password reset OTP to Phone or Email")
+    @CustomHttpMethod(value = "/otp/resend-pw-reset", method = "repeat")
+    public InfoResponse resendPasswordResetOtp(String tid) {
+        service.resendPasswordResetOtp(tid);
+        return new InfoResponse("Password reset OTP sent successfully");
+    }
+
+    @Operation(description = "Enable Multi Factor Authorixation (MFA)")
+    @Post("/mfa/enable/{auth}")
+    public InfoResponse enableMultiFactorAuthorization(Authentication user, MultiAuthType auth) {
+        service.enableMfa(user.getName(), auth);
+        return new InfoResponse("MFA enabled successfully");
+    }
+
+    @Operation(description = "Disable MFA")
+    @Post("/fa/disable")
+    public InfoResponse disableMultiFactorAuthorization(Authentication user,
+                                                        @Body
+                                                        @Size(max = 50)
+                                                        String password) {
+        service.disableMfa(user.getName(), password);
+        return new InfoResponse("MFA disabled successfully");
     }
 }

@@ -2,6 +2,7 @@ package com.doruk.infrastructure.persistence.auth;
 
 import com.doruk.application.auth.dto.AuthDto;
 import com.doruk.application.auth.dto.SessionDto;
+import com.doruk.domain.shared.enums.MultiAuthType;
 import com.doruk.domain.shared.enums.Permissions;
 import com.doruk.infrastructure.persistence.auth.mapper.AuthMapper;
 import com.doruk.infrastructure.persistence.auth.mapper.SessionMapper;
@@ -266,5 +267,21 @@ public class AuthRepository {
                 .execute()
                 .getFirst();
         return new Pair<>(d.get_1(), d.get_2());
+    }
+
+    public void enableMfa(String userId, MultiAuthType authType) {
+        var t = UserTable.$;
+        sqlClient.createUpdate(t)
+                .where(t.id().eq(UUID.fromString(userId)))
+                .set(t.multiFactorAuth(), authType)
+                .execute();
+    }
+
+    public void disableMfa(String userId) {
+        var t = UserTable.$;
+        sqlClient.createUpdate(t)
+                .where(t.id().eq(UUID.fromString(userId)))
+                .set(t.multiFactorAuth(), MultiAuthType.NONE)
+                .execute();
     }
 }

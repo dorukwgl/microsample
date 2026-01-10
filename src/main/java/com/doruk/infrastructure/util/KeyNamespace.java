@@ -13,7 +13,7 @@ public class KeyNamespace {
         return prefix + ":magic:" + tid;
     }
 
-    public static String mfaTransactionPrefix() {
+    public static String mfaTransaction() {
         return "mfa:txn:";
     }
 

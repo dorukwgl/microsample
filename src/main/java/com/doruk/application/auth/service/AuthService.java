@@ -20,6 +20,7 @@ import com.doruk.infrastructure.util.GenerateRandom;
 import com.doruk.infrastructure.util.KeyNamespace;
 import com.doruk.infrastructure.util.StringUtil;
 import io.micronaut.context.annotation.Context;
+import io.micronaut.security.authentication.Authenticator;
 import javafx.util.Pair;
 import lombok.RequiredArgsConstructor;
 import nl.basjes.parse.useragent.UserAgentAnalyzer;
@@ -132,6 +133,30 @@ public class AuthService {
         return tid;
     }
 
+    private void resendExTransactionOtp(String prefix, String tid) {
+        var invalidException = new InvalidCredentialException("Invalid or Expired transaction session");
+
+        var txn = storage.get(KeyNamespace.getNamespacedId(prefix, tid), OtpTransaction.class)
+                .orElseThrow(() -> invalidException);
+
+        storage.get(KeyNamespace.cooldownPrefix(prefix, tid), Boolean.class)
+                .ifPresent(_ -> {
+                    throw new TooManyAttemptsException("Cooling down, sit back and relax for a while.");
+                });
+
+        // finally re-publish the event
+        eventPublisher.publish(OtpDeliveryEvent.builder()
+                .to(txn.target())
+                        .channel(txn.channel())
+                        .otp(txn.otp())
+                        .contentTemplate(TemplateType.GENERIC)
+                .build());
+
+        // reset the cooldown
+        storage.saveEx(KeyNamespace.cooldownPrefix(prefix, tid), Boolean.TRUE,
+                Duration.ofSeconds(Constants.RESEND_OTP_COOLDOWN_SECONDS));
+    }
+
     private void deleteOtpExTransaction(String prefix, String tid) {
         storage.delete(KeyNamespace.getNamespacedId(prefix, tid)); // main transaction object
         storage.delete(KeyNamespace.cooldownPrefix(prefix, tid));
@@ -154,7 +179,7 @@ public class AuthService {
     private LoginResponse createMfaTransaction(AuthDto user, String target, OtpChannel channel) {
         var duration = Duration.ofSeconds(Constants.MFA_VALIDITY_SECONDS);
         var tid = this.createAndPublishOtpExTransaction(
-                KeyNamespace.mfaTransactionPrefix(),
+                KeyNamespace.mfaTransaction(),
                 duration,
                 false,
                 OtpTransaction.builder()
@@ -256,7 +281,7 @@ public class AuthService {
     }
 
     public LoginResponse performMfa(String mfaToken, int otp, DeviceInfoObject deviceInfoObject) {
-        String prefix = KeyNamespace.mfaTransactionPrefix();
+        String prefix = KeyNamespace.mfaTransaction();
         var mfaTransaction = storage.get(KeyNamespace.getNamespacedId(prefix, mfaToken), OtpTransaction.class)
                 .orElseThrow(() -> new InvalidCredentialException("Invalid or expired MFA session."));
 
@@ -415,7 +440,7 @@ public class AuthService {
     public AuthUpdateResponse updatePhone(String userId, String phone) {
         var current = authRepo.getUserPhone(userId);
         if (!current.getValue()) {
-            authRepo.updateEmail(userId, phone, true);
+            authRepo.updateEmail(userId, phone, false);
             return new AuthUpdateResponse(null, false,
                     "Phone Number updated, please proceed to verify it.");
         }
@@ -508,5 +533,52 @@ public class AuthService {
 
     // ~~~~~~~~~~RESEND OTP~~~~~~~~~~~~~~~~~~
 
+    public void resendVerificationOtp(String tid) {
+        this.resendExTransactionOtp(KeyNamespace.verificationTransaction(), tid);
+    }
 
+    public void resendMfaOtp(String tid) {
+        this.resendExTransactionOtp(KeyNamespace.mfaTransaction(), tid);
+    }
+
+    public void resendAuthUpdateOtp(String tid) {
+        this.resendExTransactionOtp(KeyNamespace.updateAuthTransaction(), tid);
+    }
+
+    public void resendPasswordResetOtp(String tid) {
+        this.resendExTransactionOtp(KeyNamespace.resetPasswordTransaction(), tid);
+    }
+
+    // ~~~~~~~~~~~~~~~~~~~~ ENABLE / DISABLE MFA ~~~~~~~~~~~~~~~~~~~
+
+    public void enableMfa(String userId, MultiAuthType authType) {
+        // phone must not be null, check and through incomplete state
+        var user = authType == MultiAuthType.EMAIL ?
+                authRepo.getUserEmail(userId) :
+                authRepo.getUserPhone(userId);
+
+        var unverifiedMsg = "Please verify your " + (authType == MultiAuthType.PHONE ? "Phone" : "Email") +
+                " to enable Multi Factor Authorization in your account";
+
+        if (!user.getValue() || user.getKey() == null)
+            throw new IncompleteStateException(unverifiedMsg);
+
+        // enable the mfa
+        authRepo.enableMfa(userId, authType);
+    }
+
+    public void disableMfa(String userId, String password) {
+        var user = authRepo.findByUserId(userId).orElseThrow(() ->
+                new IllegalStateException("Disable MFA: user not found"));
+
+        if (!hasher.matches(password, user.password()))
+            throw new InvalidCredentialException("Incorrect password");
+
+        // check if mfa is enabled
+        if (user.multiFactorAuth() == MultiAuthType.NONE)
+            return;
+
+        // disable the mfa
+        authRepo.disableMfa(userId);
+    }
 }
