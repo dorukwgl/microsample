@@ -59,6 +59,30 @@ public class AuthRepository {
         return Optional.of(authMapper.toAuthDto(dt));
     }
 
+    public Optional<AuthDto> findByUserId(String userId) {
+        var t = UserTableEx.$;
+        var dt = sqlClient.filters(cfg -> cfg.setBehavior(LogicalDeletedBehavior.IGNORED))
+                .createQuery(UserTable.$)
+                .where(t.id().eq(UUID.fromString(userId)))
+                .select(
+                        t.id(),
+                        t.username(),
+                        t.password(),
+                        t.phone(),
+                        t.email(),
+                        t.emailVerified(),
+                        t.phoneVerified(),
+                        t.multiFactorAuth(),
+                        t.roles(JoinType.LEFT).permissions(JoinType.LEFT)
+                )
+                .execute();
+
+        if (dt.isEmpty())
+            return Optional.empty();
+
+        return Optional.of(authMapper.toAuthDto(dt));
+    }
+
     public void createSession(String userId,
                               String sessionId,
                               Set<Permissions> permissions,

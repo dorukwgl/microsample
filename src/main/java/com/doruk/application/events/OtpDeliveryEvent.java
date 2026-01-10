@@ -1,5 +1,6 @@
-package com.doruk.application.dto;
+package com.doruk.application.events;
 
+import com.doruk.application.enums.OtpChannel;
 import com.doruk.application.enums.TemplateType;
 import com.doruk.application.interfaces.EventDto;
 import io.micronaut.serde.annotation.Serdeable;
@@ -7,14 +8,15 @@ import lombok.Builder;
 
 @Serdeable
 @Builder
-public record EmailOtpDto(
-        String id,
-        String tempUrl,
+public record OtpDeliveryEvent(
+        OtpChannel channel,
+        String to,
         int otp,
-        TemplateType templateType
+        String magicLink,
+        TemplateType contentTemplate
 ) implements EventDto {
     @Override
     public String eventSubject() {
-        return "auth.mfa.email-otp";
+        return "event.otp.delivery";
     }
 }

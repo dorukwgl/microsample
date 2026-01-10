@@ -44,7 +44,7 @@ public class Templates {
                         <div class="header"><h1>YakshaSoft</h1></div>
                         <div class="content">
                             <h2>Verify your email address</h2>
-                            <p class="text-main">Hi {{params.name}},<br>Welcome to the community! To finalize your account setup and start exploring, please verify your email address using the code below:</p>
+                            <p class="text-main">Hey there,<br>Welcome to the community! To finalize your account setup and start exploring, please verify your email address using the code below:</p>
 
                             <div class="otp-label">Verification Code</div>
                             <div class="otp-box">
@@ -85,7 +85,7 @@ public class Templates {
                         <div class="header"><h1>YakshaSoft</h1></div>
                         <div class="content">
                             <h2>Password Reset Request</h2>
-                            <p class="text-main">Hi {{params.name}},<br>We received a request to reset your password. If this was you, please enter the code below in the app or click the button to continue:</p>
+                            <p class="text-main">Hey there,<br>We received a request to reset your password. If this was you, please enter the code below in the app or click the button to continue:</p>
 
                             <div class="otp-label">Password Reset Code</div>
                             <div class="otp-box">
@@ -127,7 +127,7 @@ public class Templates {
                         <div class="header"><h1>YakshaSoft</h1></div>
                         <div class="content" style="text-align: center;">
                             <h2>Identity Verification</h2>
-                            <p class="text-main">Hi {{params.name}},<br>Use the code below to complete your sign-in process. This code will expire shortly.</p>
+                            <p class="text-main">Dear User,<br>Please use the code below to complete your sign-in process. This code will expire shortly.</p>
 
                             <div class="otp-label">MFA Code</div>
                             <div class="otp-box">

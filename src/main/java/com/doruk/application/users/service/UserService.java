@@ -1,28 +1,15 @@
 package com.doruk.application.users.service;
 
 import com.doruk.application.auth.dto.UploadedFileResult;
-import com.doruk.application.dto.EmailOtpDto;
-import com.doruk.application.dto.SmsOtpDto;
-import com.doruk.application.enums.TemplateType;
 import com.doruk.application.events.ProfileImageUpload;
 import com.doruk.application.exception.ConflictingArgumentException;
-import com.doruk.application.exception.IncompleteStateException;
-import com.doruk.application.exception.InvalidCredentialException;
-import com.doruk.application.exception.TooManyAttemptsException;
 import com.doruk.application.interfaces.EventPublisher;
-import com.doruk.application.interfaces.MemoryStorage;
 import com.doruk.application.security.PasswordEncoder;
 import com.doruk.application.users.dto.*;
-import com.doruk.infrastructure.config.AppConfig;
 import com.doruk.infrastructure.persistence.users.repository.UserRepository;
-import com.doruk.infrastructure.util.Constants;
-import com.doruk.infrastructure.util.GenerateRandom;
-import com.doruk.infrastructure.util.KeyNamespace;
-import com.doruk.infrastructure.util.StringUtil;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 
-import java.time.Duration;
 import java.util.Map;
 
 @Singleton

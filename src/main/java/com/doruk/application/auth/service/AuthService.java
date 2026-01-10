@@ -1,9 +1,9 @@
 package com.doruk.application.auth.service;
 
 import com.doruk.application.auth.dto.*;
-import com.doruk.application.dto.EmailOtpDto;
-import com.doruk.application.dto.SmsOtpDto;
+import com.doruk.application.enums.OtpChannel;
 import com.doruk.application.enums.TemplateType;
+import com.doruk.application.events.OtpDeliveryEvent;
 import com.doruk.application.exception.IncompleteStateException;
 import com.doruk.application.exception.InvalidCredentialException;
 import com.doruk.application.exception.TooManyAttemptsException;
@@ -13,7 +13,6 @@ import com.doruk.application.security.PasswordEncoder;
 import com.doruk.domain.shared.enums.MultiAuthType;
 import com.doruk.domain.shared.enums.Permissions;
 import com.doruk.infrastructure.config.AppConfig;
-import com.doruk.infrastructure.config.AppExecutors;
 import com.doruk.infrastructure.persistence.auth.AuthRepository;
 import com.doruk.infrastructure.security.JwtIssuer;
 import com.doruk.infrastructure.util.Constants;
@@ -22,7 +21,6 @@ import com.doruk.infrastructure.util.KeyNamespace;
 import com.doruk.infrastructure.util.StringUtil;
 import io.micronaut.context.annotation.Context;
 import javafx.util.Pair;
-import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import nl.basjes.parse.useragent.UserAgentAnalyzer;
 
@@ -36,18 +34,6 @@ import java.util.function.Function;
 @Context
 @RequiredArgsConstructor
 public class AuthService {
-    @Builder
-    private record TransactionRecord(
-            String transactionId,
-            String tid,
-            String magicLink,
-            int otp
-    ) {
-    }
-
-    ;
-
-    private final AppExecutors executor;
     private final JwtIssuer issuer;
     private final AppConfig appConfig;
     private final AuthRepository authRepo;
@@ -57,7 +43,6 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final MemoryStorage storage;
     private final AppConfig config;
-    private final EventPublisher event;
 
     private final Map<MultiAuthType, Function<AuthDto, LoginResponse>> authInitializers = Map.of(
             MultiAuthType.PHONE, this::initPhoneFactorAuth,
@@ -106,7 +91,9 @@ public class AuthService {
         }
     }
 
-    private TransactionRecord createOtpExTransaction(String prefix, Duration duration, boolean createMagic) {
+    private String createAndPublishOtpExTransaction(
+            String prefix, Duration duration, boolean createMagic,
+            OtpTransaction.OtpTransactionBuilder transBuilder, TemplateType templateType) {
         // should return transactionId, tid separately (tid = internal id, sent to user, transactionId = full redis id)
         var cooldownDuration = Duration.ofSeconds(Constants.RESEND_OTP_COOLDOWN_SECONDS);
         var otp = GenerateRandom.generateOtp();
@@ -114,27 +101,35 @@ public class AuthService {
 
         var transactionId = KeyNamespace.getNamespacedId(prefix, tid);
 
+        // complete the builder
+        var txn = transBuilder.otp(otp).build();
+
         // create attempts, cooldown
+        storage.saveEx(KeyNamespace.getNamespacedId(prefix, transactionId), txn, duration);
         storage.saveEx(KeyNamespace.cooldownPrefix(prefix, tid), Boolean.TRUE, cooldownDuration);
         storage.saveEx(KeyNamespace.attemptPrefix(prefix, tid), 0, duration);
 
-        var transactionRecord = TransactionRecord.builder()
-                .transactionId(transactionId)
-                .tid(tid)
-                .otp(otp);
+        var event = OtpDeliveryEvent.builder()
+                .to(txn.target())
+                .channel(txn.channel())
+                .otp(otp)
+                .contentTemplate(templateType);
 
-        if (!createMagic)
-            return transactionRecord.build();
+        if (!createMagic) {
+            eventPublisher.publish(event.build());
+            return tid;
+        }
 
         var magicSuffix = GenerateRandom.generateSessionId();
         var magicLink = StringUtil.generateUrl(config, magicSuffix);
 
+        event.magicLink(magicLink);
+
         // save magic link
         storage.saveEx(KeyNamespace.magicLinkPrefix(prefix, magicSuffix), transactionId, duration);
+        eventPublisher.publish(event.build());
 
-        return transactionRecord
-                .magicLink(magicLink)
-                .build();
+        return tid;
     }
 
     private void deleteOtpExTransaction(String prefix, String tid) {
@@ -148,122 +143,97 @@ public class AuthService {
         this.deleteOtpExTransaction(prefix, KeyNamespace.extractTid(prefix, transactionId)); // main transaction object
     }
 
-    private void publishSmsOtpEvent(String userId, String phone, int otp, TemplateType template) {
-        eventPublisher.publish(new SmsOtpDto(
-                userId,
-                phone,
-                otp,
-                template
-        ));
+    private void limitOtpAttempts(String prefix, String tid, int limit) {
+        var attempts = storage.increment(KeyNamespace.attemptPrefix(prefix, tid));
+        if (attempts >= limit) {
+            this.deleteOtpExTransaction(prefix, tid);
+            throw new TooManyAttemptsException("Too Many Attempts");
+        }
     }
 
-    private void publishEmailOtpEvent(String userId, String magicLink, int otp, TemplateType template) {
-        eventPublisher.publish(new EmailOtpDto(
-                userId,
-                magicLink,
-                otp,
-                template
-        ));
-    }
-
-    private Pair<Integer, LoginResponse> createMfaTransaction(AuthDto user) {
+    private LoginResponse createMfaTransaction(AuthDto user, String target, OtpChannel channel) {
         var duration = Duration.ofSeconds(Constants.MFA_VALIDITY_SECONDS);
-        var record = this.createOtpExTransaction(KeyNamespace.mfaTransactionPrefix(), duration, false);
+        var tid = this.createAndPublishOtpExTransaction(
+                KeyNamespace.mfaTransactionPrefix(),
+                duration,
+                false,
+                OtpTransaction.builder()
+                        .userId(user.id())
+                        .target(target)
+                        .channel(channel),
+                TemplateType.MFA);
 
-        var response = createMfaResponse(user, record.tid());
-
-        storage.saveEx(record.transactionId(), new MfaTransaction(record.otp(), user.username()), duration);
-        return new Pair<>(record.otp(), response);
+        return createMfaResponse(user, tid);
     }
 
     private LoginResponse initPhoneFactorAuth(AuthDto user) {
-        var response = createMfaTransaction(user);
-        this.publishSmsOtpEvent(user.id(), user.phone(), response.getKey(), TemplateType.MFA);
-        return response.getValue();
+        return createMfaTransaction(user, user.phone(), OtpChannel.PHONE);
     }
 
     private LoginResponse initEmailFactorAuth(AuthDto user) {
-        var response = createMfaTransaction(user);
-        this.publishEmailOtpEvent(user.id(), null, response.getKey(), TemplateType.MFA);
-        return response.getValue();
+        return createMfaTransaction(user, user.email(), OtpChannel.EMAIL);
     }
 
-    private String createAndPublishEmailVerificationTransaction(String userId) {
+    private String createAndPublishEmailVerificationTransaction(String userId, String email) {
         var duration = Duration.ofSeconds(Constants.MAGIC_LINK_VALIDITY_SECONDS);
-        var record = this.createOtpExTransaction(
-                KeyNamespace.verificationTransaction(), duration, true);
-
-        // create otp transaction
-        var transaction = new EmailOtpDto(
-                userId,
-                null,
-                record.otp(),
-                null);
-
-        storage.saveEx(record.transactionId(), transaction, duration);
-
-        this.publishEmailOtpEvent(userId, record.magicLink(), record.otp(), TemplateType.EMAIL_VERIFICATION);
-
-        return record.tid();
+        return this.createAndPublishOtpExTransaction(
+                KeyNamespace.verificationTransaction(),
+                duration,
+                true,
+                OtpTransaction.builder()
+                        .target(email)
+                        .userId(userId)
+                        .channel(OtpChannel.EMAIL),
+                TemplateType.EMAIL_VERIFICATION);
     }
 
     private String createAndPublishPhoneVerificationTransaction(String userId, String phone) {
         var duration = Duration.ofSeconds(Constants.OTP_VALIDITY_SECONDS);
-        var record = this.createOtpExTransaction(KeyNamespace.verificationTransaction(), duration, false);
-
-        var transaction = new SmsOtpDto(
-                userId,
-                null,
-                0,
-                null);
-
-        storage.saveEx(record.transactionId(), transaction, duration);
-
-        this.publishSmsOtpEvent(userId, phone, record.otp, TemplateType.PHONE_VERIFICATION);
-
-        return record.tid();
+        return this.createAndPublishOtpExTransaction(
+                KeyNamespace.verificationTransaction(),
+                duration,
+                false,
+                OtpTransaction.builder()
+                        .target(phone)
+                        .userId(userId)
+                        .channel(OtpChannel.PHONE),
+                TemplateType.PHONE_VERIFICATION);
     }
 
-    private String createAndPublishAuthUpdateTransaction(String userId, String payload, AuthUpdateTransaction.Type type) {
+    private String createAndPublishAuthUpdateTransaction(String userId, String payload, OtpChannel type) {
         var duration = Duration.ofSeconds(Constants.AUTH_UPDATE_VALIDITY_SECONDS);
-        var record = this.createOtpExTransaction(KeyNamespace.updateAuthTransaction(), duration, false);
-
-        var txn = new AuthUpdateTransaction(
-                record.tid(),
-                userId,
-                record.otp(),
-                payload,
-                type
+        return this.createAndPublishOtpExTransaction(
+                KeyNamespace.updateAuthTransaction(),
+                duration,
+                false,
+                OtpTransaction.builder()
+                        .target(payload)
+                        .payload(payload)
+                        .channel(type)
+                        .userId(userId),
+                TemplateType.GENERIC
         );
-
-        storage.saveEx(record.transactionId(), txn, duration);
-        event.publish(txn);
-
-        return record.tid();
     }
 
-    private void verifyAuthUpdateTransaction(String userId, String tid, int otp, AuthUpdateTransaction.Type type) {
+    private void verifyAuthUpdateTransaction(String userId, String tid, int otp, OtpChannel channel) {
         var invalidCredentials = new InvalidCredentialException("Expired or Invalid otp session");
         var prefix = KeyNamespace.updateAuthTransaction();
-        var txn = storage.get(KeyNamespace.getNamespacedId(prefix, tid), AuthUpdateTransaction.class)
+
+        var txn = storage.get(KeyNamespace.getNamespacedId(prefix, tid), OtpTransaction.class)
                 .orElseThrow(() -> invalidCredentials);
         if (!(
-                txn.type() == type &&
+                txn.channel() == channel &&
                         txn.userId().equalsIgnoreCase(userId)
         ))
             throw invalidCredentials;
 
         // check for attempts
-        var attempts = storage.increment(KeyNamespace.attemptPrefix(prefix, tid));
-        if (attempts >= Constants.AUTH_UPDATE_ATTEMPT_LIMIT) {
-            this.deleteOtpExTransaction(prefix, tid);
-            throw new TooManyAttemptsException("Too Many Attempts");
-        }
+        this.limitOtpAttempts(prefix, tid, Constants.AUTH_UPDATE_ATTEMPT_LIMIT);
 
         if (txn.otp() != otp)
             throw invalidCredentials;
 
-        switch (type) {
+        switch (channel) {
             case EMAIL -> authRepo.updateEmail(txn.userId(), txn.payload(), true);
             case PHONE -> authRepo.updatePhone(txn.userId(), txn.payload(), true);
         }
@@ -287,22 +257,18 @@ public class AuthService {
 
     public LoginResponse performMfa(String mfaToken, int otp, DeviceInfoObject deviceInfoObject) {
         String prefix = KeyNamespace.mfaTransactionPrefix();
-        var mfaTransaction = storage.get(KeyNamespace.getNamespacedId(prefix, mfaToken), MfaTransaction.class)
+        var mfaTransaction = storage.get(KeyNamespace.getNamespacedId(prefix, mfaToken), OtpTransaction.class)
                 .orElseThrow(() -> new InvalidCredentialException("Invalid or expired MFA session."));
 
         // increment the attempt
-        var attempt = storage.increment(KeyNamespace.attemptPrefix(prefix, mfaToken));
-        if (attempt > Constants.MFA_ATTEMPT_LIMIT) {
-            this.deleteOtpExTransaction(prefix, mfaToken);
-            throw new TooManyAttemptsException("Too many attempts");
-        }
+        this.limitOtpAttempts(prefix, mfaToken, Constants.MFA_ATTEMPT_LIMIT);
 
         if (mfaTransaction.otp() != otp)
             throw new InvalidCredentialException("Invalid otp code");
 
         // create session
         var response = this.createLoginResponse(deviceInfoObject.deviceId(), deviceInfoObject.deviceInfo(uaa),
-                authRepo.findByUsernameOrEmail(mfaTransaction.username()).orElseThrow());
+                authRepo.findByUserId(mfaTransaction.userId()).orElseThrow());
 
         // remove the mfa transaction
         this.deleteOtpExTransaction(prefix, mfaToken);
@@ -348,7 +314,8 @@ public class AuthService {
     }
 
     public Map<String, String> initEmailVerification(String userId) {
-        var tid = this.createAndPublishEmailVerificationTransaction(userId);
+        var user = authRepo.getUserEmail(userId);
+        var tid = this.createAndPublishEmailVerificationTransaction(userId, user.getKey());
         return Map.of("tid", tid, "message", "OTP is sent to your email address");
     }
 
@@ -358,18 +325,15 @@ public class AuthService {
         var prefix = KeyNamespace.verificationTransaction();
 
         var transaction = storage.get(KeyNamespace.getNamespacedId(prefix, tid),
-                EmailOtpDto.class).orElseThrow(() -> expiredException);
+                OtpTransaction.class).orElseThrow(() -> expiredException);
 
         // check if the user id matches
-        if (!transaction.id().equals(userId))
+        if (!transaction.userId().equals(userId))
             throw expiredException;
 
         // finally proceed with otp matching and attempt counts.
-        var attempt = storage.increment(KeyNamespace.attemptPrefix(prefix, tid));
-        if (attempt >= Constants.MFA_ATTEMPT_LIMIT) {
-            this.deleteOtpExTransaction(prefix, tid);
-            throw new TooManyAttemptsException("Too many attempts");
-        }
+        this.limitOtpAttempts(prefix, tid, Constants.MFA_ATTEMPT_LIMIT);
+
         // check if the otp matches
         if (transaction.otp() != otp)
             throw expiredException;
@@ -389,14 +353,14 @@ public class AuthService {
 
         // check if the transaction exists, in case of otp attempt limit
         var transaction = storage.get(transactionId,
-                EmailOtpDto.class).orElseThrow(() -> {
+                OtpTransaction.class).orElseThrow(() -> {
             // delete the pointer
             storage.delete(pointer);
             return expiredException;
         });
 
         // finally validate the user
-        authRepo.verifyUserEmail(transaction.id());
+        authRepo.verifyUserEmail(transaction.userId());
         this.deleteOtpExTransactionFromMagic(prefix, magicLinkPointer, transactionId);
     }
 
@@ -415,34 +379,31 @@ public class AuthService {
         var expiredException = new InvalidCredentialException("Invalid or expired otp session");
         var prefix = KeyNamespace.verificationTransaction();
         var transaction = storage.get(KeyNamespace.getNamespacedId(prefix, tid),
-                SmsOtpDto.class).orElseThrow(() -> expiredException);
+                OtpTransaction.class).orElseThrow(() -> expiredException);
 
         // check for attempts
-        var attempt = storage.increment(KeyNamespace.attemptPrefix(prefix, tid));
-        if (attempt >= Constants.MFA_ATTEMPT_LIMIT) {
-            this.deleteOtpExTransaction(prefix, tid);
-            throw new TooManyAttemptsException("Too many attempts");
-        }
+        this.limitOtpAttempts(prefix, tid, Constants.MFA_ATTEMPT_LIMIT);
 
         // check otp
         if (transaction.otp() != otp)
             throw expiredException;
 
         // finally validate the user
-        authRepo.verifyUserPhone(transaction.id());
+        authRepo.verifyUserPhone(transaction.userId());
         this.deleteOtpExTransaction(prefix, tid);
     }
 
     // ~~~~~~~~~Update Email / Phone~~~~~~~~~
+
     public AuthUpdateResponse updateEmail(String userId, String email) {
         var current = authRepo.getUserEmail(userId);
         if (!current.getValue()) {
-            authRepo.updateEmail(userId, email, true);
+            authRepo.updateEmail(userId, email, false);
             return new AuthUpdateResponse(null, false,
                     "Email address updated, please proceed to verify it.");
         }
 
-        var tid = createAndPublishAuthUpdateTransaction(userId, email, AuthUpdateTransaction.Type.EMAIL);
+        var tid = createAndPublishAuthUpdateTransaction(userId, email, OtpChannel.EMAIL);
 
         return new AuthUpdateResponse(
                 tid,
@@ -459,36 +420,34 @@ public class AuthService {
                     "Phone Number updated, please proceed to verify it.");
         }
 
-        var tid = createAndPublishAuthUpdateTransaction(userId, phone, AuthUpdateTransaction.Type.PHONE);
+        var tid = createAndPublishAuthUpdateTransaction(userId, phone, OtpChannel.PHONE);
 
         return new AuthUpdateResponse(tid, true,
                 "OTP is sent to your new phone number, please enter the OTP to complete the process.");
     }
 
     public void verifyUpdatePhoneTransaction(String userId, String tid, int otp) {
-        verifyAuthUpdateTransaction(userId, tid, otp, AuthUpdateTransaction.Type.PHONE);
+        verifyAuthUpdateTransaction(userId, tid, otp, OtpChannel.PHONE);
     }
 
     public void verifyUpdateEmailTransaction(String userId, String tid, int otp) {
-        verifyAuthUpdateTransaction(userId, tid, otp, AuthUpdateTransaction.Type.EMAIL);
+        verifyAuthUpdateTransaction(userId, tid, otp, OtpChannel.EMAIL);
     }
 
-    private String createAndPublishPasswordResetTransaction(String userId, String phone, boolean isPhone) {
+    private String createAndPublishPasswordResetTransaction(String userId, String payload, boolean isPhone) {
         var duration = Duration.ofSeconds(Constants.PW_RESET_VALIDITY_SECONDS);
         var prefix = KeyNamespace.resetPasswordTransaction();
 
-        var record = this.createOtpExTransaction(prefix, duration, !isPhone);
-        var txn = new PasswordResetTransaction(userId, record.otp());
-
-        // store in redis
-        storage.saveEx(record.transactionId(), txn, duration);
-
-        if (isPhone)
-            this.publishSmsOtpEvent(userId, phone, record.otp(), TemplateType.PASSWORD_RESET);
-        else
-            this.publishEmailOtpEvent(userId, record.magicLink(), record.otp(), TemplateType.PASSWORD_RESET);
-
-        return record.tid();
+        return this.createAndPublishOtpExTransaction(
+                prefix,
+                duration,
+                !isPhone,
+                OtpTransaction.builder()
+                        .target(payload)
+                        .channel(isPhone ? OtpChannel.PHONE : OtpChannel.EMAIL)
+                        .userId(userId),
+                TemplateType.PASSWORD_RESET
+        );
     }
 
     public Map<String, String> initPasswordReset(String identifier, boolean usePhone) {
@@ -513,14 +472,10 @@ public class AuthService {
         var invalidException = new InvalidCredentialException("Invalid or Expired otp session");
         var prefix = KeyNamespace.resetPasswordTransaction();
 
-        var txn = storage.get(KeyNamespace.getNamespacedId(prefix, tid), PasswordResetTransaction.class)
+        var txn = storage.get(KeyNamespace.getNamespacedId(prefix, tid), OtpTransaction.class)
                 .orElseThrow(() -> invalidException);
 
-        var attempts = storage.increment(KeyNamespace.attemptPrefix(prefix, tid));
-        if (attempts >= Constants.PW_UPDATE_OTP_ATTEMPT_LIMIT) {
-            this.deleteOtpExTransaction(prefix, tid);
-            throw new TooManyAttemptsException("Too many attempts");
-        }
+        this.limitOtpAttempts(prefix, tid, Constants.PW_UPDATE_OTP_ATTEMPT_LIMIT);
 
         if (txn.otp() != otp)
             throw invalidException;
@@ -534,12 +489,12 @@ public class AuthService {
 
     public void verifyAndResetPasswordMagic(String magicLink, String password) {
         var invalidException = new InvalidCredentialException("Invalid or Expired otp session");
-        var  prefix = KeyNamespace.resetPasswordTransaction();
+        var prefix = KeyNamespace.resetPasswordTransaction();
 
         var reference = storage.get(KeyNamespace.magicLinkPrefix(prefix, magicLink), String.class)
                 .orElseThrow(() -> invalidException);
 
-        var txn = storage.get(reference, PasswordResetTransaction.class)
+        var txn = storage.get(reference, OtpTransaction.class)
                 .orElseThrow(() -> {
                     storage.delete(reference);
                     return invalidException;
@@ -550,4 +505,8 @@ public class AuthService {
 
         this.deleteOtpExTransactionFromMagic(prefix, magicLink, reference);
     }
+
+    // ~~~~~~~~~~RESEND OTP~~~~~~~~~~~~~~~~~~
+
+
 }
