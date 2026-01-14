@@ -36,17 +36,6 @@ public class BiometricService {
     private final UserAgentAnalyzer uaa;
     private final LoginHelper loginHelper;
 
-    /**
-     * only allow keys used within last 18 days,
-     * expires in 60 sec,
-     * only one attempt, delete on failure
-     * on success: also update the last_used on biometrics, for later verification
-     * <p>
-     * lock transaction, concurrency not allowed, create redis key with deviceId and userId
-     * check if deviceId exists, then check if userId exists, then block
-     * also store ip hash, and user-agent hash, must verify from same context
-     */
-
     private byte[] validateAndGetPublicKey(String rawKey) {
         try {
             byte[] raw = Base64.getDecoder().decode(rawKey);
@@ -217,8 +206,9 @@ public class BiometricService {
             throw invalidException;
         }
 
-        // on success: delete txn, create session, return refresh/access tokens
         this.removeBiometricTxn(deviceId, txn.userId());
+        // update last used
+        authRepo.updateLastUsedBiometric(deviceId);
 
         return loginHelper.createLoginResponse(Optional.of(notifId), deviceInfoObject.deviceInfo(uaa), authRepo.findByUserId(txn.userId()).orElseThrow());
     }

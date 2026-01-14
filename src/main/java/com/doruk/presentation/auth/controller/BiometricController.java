@@ -53,6 +53,7 @@ public class BiometricController {
         return HttpResponse.status(202, "Signature Required").body(Map.of("challenge", challenge));
     }
 
+    @Operation(description = "Second step to the biometric, sign the challenge and submit the signature here to verify")
     @Post("/perform/verify")
     public LoginResponse performBiometrics(HttpRequest<?> request,
                                            @Valid
