@@ -17,9 +17,8 @@ public class PermissionSeeder {
     private final JSqlClient sqlClient;
 
     public void seedPermissions() {
-        var per1 = PermissionDraft.$.produce(p -> p.setName("GHOST_PERMISSION").setDeletedAt(LocalDateTime.now()));
-        var per2 = PermissionDraft.$.produce(p -> p.setName("DICTATOR_PERMISSION").setDeletedAt(LocalDateTime.now()));
-        sqlClient.saveEntitiesCommand(List.of(per1, per2)).execute();
+        var permission = PermissionDraft.$.produce(p -> p.setName("DICTATOR_PERMISSION").setDeletedAt(LocalDateTime.now()));
+        sqlClient.saveCommand(permission).execute();
 
         System.out.println("Permissions seeded...");
     }

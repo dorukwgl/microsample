@@ -1,4 +1,4 @@
-package com.doruk.infrastructure.persistence.users.repository;
+package com.doruk.infrastructure.persistence.users;
 
 import com.doruk.application.users.dto.*;
 import com.doruk.infrastructure.persistence.entity.*;

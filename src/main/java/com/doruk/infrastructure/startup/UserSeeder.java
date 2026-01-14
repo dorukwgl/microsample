@@ -19,15 +19,6 @@ public class UserSeeder {
     private final PasswordEncoder hasher;
 
     public void seedUsers() {
-        var ghost = UserDraft.$.produce(u -> u.setUsername("ghost")
-                .setEmail("ghost@gmail.com")
-                .setEmailVerified(true)
-                .setPhoneVerified(true)
-                .setPhone("9829293466")
-                .setMultiFactorAuth(MultiAuthType.PHONE)
-                .setRoles(List.of(RoleDraft.$.produce(r -> r.setName("GHOST"))))
-                .setPassword(hasher.encode("ghost@ihbibicdff"))
-        );
         var dictator = UserDraft.$.produce(u -> u.setUsername("dorukwgl")
                 .setEmail("dorukwagle@gmail.com")
                 .setEmailVerified(true)
@@ -58,7 +49,7 @@ public class UserSeeder {
                 .setPassword(hasher.encode("password"))
         );
 
-        client.saveEntitiesCommand(List.of(ghost, dictator, sysAdmin, user))
+        client.saveEntitiesCommand(List.of(dictator, sysAdmin, user))
                 .execute();
 
         System.out.println("Users seeded...");

@@ -6,7 +6,7 @@ import com.doruk.application.exception.ConflictingArgumentException;
 import com.doruk.application.interfaces.EventPublisher;
 import com.doruk.application.security.PasswordEncoder;
 import com.doruk.application.users.dto.*;
-import com.doruk.infrastructure.persistence.users.repository.UserRepository;
+import com.doruk.infrastructure.persistence.users.UserRepository;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 

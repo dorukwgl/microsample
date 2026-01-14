@@ -1,8 +1,7 @@
 package com.doruk;
 
 import com.doruk.infrastructure.config.AppExecutors;
-import com.doruk.infrastructure.persistence.auth.AuthRepository;
-import com.doruk.infrastructure.persistence.users.repository.UserRepository;
+import com.doruk.infrastructure.persistence.users.UserRepository;
 import io.micronaut.runtime.Micronaut;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
