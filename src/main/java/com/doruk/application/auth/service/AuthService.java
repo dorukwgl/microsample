@@ -19,8 +19,7 @@ import com.doruk.infrastructure.util.Constants;
 import com.doruk.infrastructure.util.GenerateRandom;
 import com.doruk.infrastructure.util.KeyNamespace;
 import com.doruk.infrastructure.util.StringUtil;
-import io.micronaut.context.annotation.Context;
-import io.micronaut.security.authentication.Authenticator;
+import jakarta.inject.Singleton;
 import javafx.util.Pair;
 import lombok.RequiredArgsConstructor;
 import nl.basjes.parse.useragent.UserAgentAnalyzer;
@@ -32,7 +31,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 import java.util.function.Function;
 
-@Context
+@Singleton
 @RequiredArgsConstructor
 public class AuthService {
     private final JwtIssuer issuer;
@@ -44,6 +43,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final MemoryStorage storage;
     private final AppConfig config;
+    private final LoginHelper loginHelper;
 
     private final Map<MultiAuthType, Function<AuthDto, LoginResponse>> authInitializers = Map.of(
             MultiAuthType.PHONE, this::initPhoneFactorAuth,
@@ -59,37 +59,6 @@ public class AuthService {
                 .mfaToken(mfaToken)
                 .mfaExpiresIn(Constants.MFA_VALIDITY_SECONDS)
                 .build();
-    }
-
-    private LoginResponse createLoginResponse(Optional<String> deviceId, Optional<String> deviceInfo, AuthDto user) {
-        // sign jwt, and also create refresh token
-        var tokens = this.createSessionTokens(user.id(), user.permissions(), deviceId, deviceInfo);
-        return LoginResponse.builder()
-                .accessToken(tokens.getValue().accessToken())
-                .accessTokenType(tokens.getValue().tokenType())
-                .accessTokenExpiresIn(tokens.getValue().expiresIn())
-                .refreshToken(tokens.getKey())
-                .isEmailVerified(user.emailVerified())
-                .isPhoneVerified(user.phoneVerified())
-                .mfaRequired(false)
-                .build();
-    }
-
-    private Pair<String, JwtResponse> createSessionTokens(String userId, Set<Permissions> permissions, Optional<String> deviceId, Optional<String> deviceInfo) {
-        var sessionId = GenerateRandom.generateSessionId();
-        var sessionExpiration = LocalDateTime.now().plusDays(appConfig.sessionExpiration());
-
-        try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
-            var accessTokenFuture = CompletableFuture.supplyAsync(() -> issuer.issueToken(
-                    new JwtRequest(userId, appConfig.appId(), permissions)), executor);
-
-            var refreshTokenFuture = CompletableFuture.runAsync(() ->
-                    authRepo.createSession(userId, sessionId, permissions, sessionExpiration,
-                            deviceId, deviceInfo), executor);
-            CompletableFuture.allOf(accessTokenFuture, refreshTokenFuture).join();
-
-            return new Pair<>(sessionId, accessTokenFuture.resultNow());
-        }
     }
 
     private String createAndPublishOtpExTransaction(
@@ -147,9 +116,9 @@ public class AuthService {
         // finally re-publish the event
         eventPublisher.publish(OtpDeliveryEvent.builder()
                 .to(txn.target())
-                        .channel(txn.channel())
-                        .otp(txn.otp())
-                        .contentTemplate(TemplateType.GENERIC)
+                .channel(txn.channel())
+                .otp(txn.otp())
+                .contentTemplate(TemplateType.GENERIC)
                 .build());
 
         // reset the cooldown
@@ -277,7 +246,7 @@ public class AuthService {
         if (user.multiFactorAuth() != MultiAuthType.NONE)
             return this.authInitializers.get(user.multiFactorAuth()).apply(user);
 
-        return createLoginResponse(deviceInfoObject.deviceId(), deviceInfoObject.deviceInfo(uaa), user);
+        return loginHelper.createLoginResponse(deviceInfoObject.deviceId(), deviceInfoObject.deviceInfo(uaa), user);
     }
 
     public LoginResponse performMfa(String mfaToken, int otp, DeviceInfoObject deviceInfoObject) {
@@ -292,7 +261,7 @@ public class AuthService {
             throw new InvalidCredentialException("Invalid otp code");
 
         // create session
-        var response = this.createLoginResponse(deviceInfoObject.deviceId(), deviceInfoObject.deviceInfo(uaa),
+        var response = loginHelper.createLoginResponse(deviceInfoObject.deviceId(), deviceInfoObject.deviceInfo(uaa),
                 authRepo.findByUserId(mfaTransaction.userId()).orElseThrow());
 
         // remove the mfa transaction
@@ -302,11 +271,8 @@ public class AuthService {
 
     public JwtResponse refreshAccessToken(String sessionId) {
         var invalidException = new InvalidCredentialException("Invalid or expired session. Please login again.");
-        var session = authRepo.getSession(sessionId)
+        var session = authRepo.getActiveSession(sessionId)
                 .orElseThrow(() -> invalidException);
-
-        if (session.expiresAt().isBefore(LocalDateTime.now()))
-            throw invalidException;
 
         return issuer.issueToken(new JwtRequest(
                 session.userId(),

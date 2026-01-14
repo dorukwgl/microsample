@@ -32,6 +32,8 @@ micronaut:
       n-threads: 4
 
   server:
+    proxy:
+      enabled: true
     cors:
       enabled: true
       configurations:

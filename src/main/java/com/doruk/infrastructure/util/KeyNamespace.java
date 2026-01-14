@@ -13,6 +13,13 @@ public class KeyNamespace {
         return prefix + ":magic:" + tid;
     }
 
+    public static String extractTid(String prefix, String transactionId) {
+        if (!transactionId.startsWith(prefix))
+            throw new IllegalArgumentException("Transaction Id doesn't start with the given prefix.");
+
+        return transactionId.substring(prefix.length());
+    }
+
     public static String mfaTransaction() {
         return "mfa:txn:";
     }
@@ -33,10 +40,15 @@ public class KeyNamespace {
         return prefix + tid;
     }
 
-    public static String extractTid(String prefix, String transactionId) {
-        if (!transactionId.startsWith(prefix))
-            throw new IllegalArgumentException("Transaction Id doesn't start with the given prefix.");
+    public static String biometricTransaction() {
+        return "bmt:txn:device:";
+    }
 
-        return transactionId.substring(prefix.length());
+    public static String biometricTxnUserLock() {
+        return "bmt:txn:lock:user:";
+    }
+
+    public static String biometricTxnDeviceLock() {
+        return "bmt:txn:lock:device:";
     }
 }

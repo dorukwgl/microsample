@@ -19,4 +19,6 @@ public final class Constants {
     public final static int PW_UPDATE_OTP_ATTEMPT_LIMIT = 2;
     public final static int RESEND_OTP_COOLDOWN_SECONDS = 40;
     public final static int PW_RESET_VALIDITY_SECONDS = 300;
+    public final static int BIOMETRIC_TXN_VALIDITY_SECONDS = 45;
+    public final static int BIOMETRIC_MAX_STALE_DAYS = 18;
 }

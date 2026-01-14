@@ -19,14 +19,11 @@ public interface Biometric {
     User user();
 
     @Key
-    String publicKey();
+    byte[] publicKey();
 
     @Key
     String deviceId();
 
     @Nullable
-    LocalDateTime createdAt();
-
-    @Nullable
-    LocalDateTime deletedAt();
+    LocalDateTime lastUsedAt();
 }

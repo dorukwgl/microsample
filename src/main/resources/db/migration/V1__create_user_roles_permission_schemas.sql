@@ -15,8 +15,7 @@ CREATE TABLE users
     is_phone_verified boolean DEFAULT false,
     status       USER_STATUS DEFAULT 'ACTIVE',
     created_at timestamp with time zone default now(),
-    updated_at    TIMESTAMP with time zone default now(),
-    deleted_at    TIMESTAMP
+    updated_at    TIMESTAMP with time zone default now()
 );
 
 -- profile
@@ -32,8 +31,7 @@ create table user_profiles
     country varchar(255),
     postal_code varchar(255),
     created_at timestamp with time zone default now(),
-    updated_at timestamp with time zone default now(),
-    deleted_at timestamp with time zone
+    updated_at timestamp with time zone default now()
 );
 
 -- roles
@@ -83,12 +81,14 @@ create table biometrics
 (
     id uuid primary key default uuidv7(),
     user_id uuid not null references users (id) on delete cascade,
-    public_key varchar(255) not null unique,
+    public_key bytea not null unique,
     device_id varchar(255) not null unique,
-    created_at timestamp with time zone default now()
+    last_used_at timestamp with time zone
 );
 
 
 -- index all foreign keys
 create index idx_sessions_user_id on sessions (user_id);
 create index idx_biometrics_user_id on biometrics (user_id);
+create index idx_sessions_active_devices on sessions(user_id, expires_at);
+create index idx_user_email on users(username, email);

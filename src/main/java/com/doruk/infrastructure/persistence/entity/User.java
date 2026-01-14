@@ -50,11 +50,6 @@ public interface User {
     LocalDateTime updatedAt();
 
     @Nullable
-    @LogicalDeleted("now")
-    @Column(name = "deleted_at")
-    LocalDateTime deletedAt();
-
-    @Nullable
     LocalDateTime createdAt();
 
     // --- Relationships ---

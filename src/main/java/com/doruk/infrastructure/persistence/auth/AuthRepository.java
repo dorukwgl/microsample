@@ -1,18 +1,24 @@
 package com.doruk.infrastructure.persistence.auth;
 
 import com.doruk.application.auth.dto.AuthDto;
+import com.doruk.application.auth.dto.BiometricDto;
 import com.doruk.application.auth.dto.SessionDto;
 import com.doruk.domain.shared.enums.MultiAuthType;
 import com.doruk.domain.shared.enums.Permissions;
 import com.doruk.infrastructure.persistence.auth.mapper.AuthMapper;
+import com.doruk.infrastructure.persistence.auth.mapper.BiometricMapper;
 import com.doruk.infrastructure.persistence.auth.mapper.SessionMapper;
 import com.doruk.infrastructure.persistence.entity.*;
+import com.doruk.infrastructure.util.Constants;
 import jakarta.inject.Singleton;
 import javafx.util.Pair;
+import kotlin.reflect.jvm.internal.impl.descriptors.Visibilities;
 import lombok.RequiredArgsConstructor;
 import org.babyfish.jimmer.sql.JSqlClient;
 import org.babyfish.jimmer.sql.JoinType;
 import org.babyfish.jimmer.sql.ast.Predicate;
+import org.babyfish.jimmer.sql.ast.mutation.SaveMode;
+import org.babyfish.jimmer.sql.ast.mutation.UpsertMask;
 import org.babyfish.jimmer.sql.runtime.LogicalDeletedBehavior;
 
 import java.time.LocalDateTime;
@@ -27,6 +33,7 @@ public class AuthRepository {
     private final JSqlClient sqlClient;
     private final SessionMapper sessionMapper;
     private final AuthMapper authMapper;
+    private final BiometricMapper biometricMapper;
 
     private String getDeviceId(String sessionId) {
         return sqlClient.createQuery(SessionTable.$)
@@ -101,10 +108,11 @@ public class AuthRepository {
         ).execute();
     }
 
-    public Optional<SessionDto> getSession(String sessionId) {
+    public Optional<SessionDto> getActiveSession(String sessionId) {
         var t = SessionTable.$;
         var dt = sqlClient.createQuery(t)
-                .where(t.sessionId().eq(sessionId))
+                .where(Predicate.and(t.sessionId().eq(sessionId),
+                        t.expiresAt().gt(LocalDateTime.now())))
                 .select(t)
                 .execute();
 
@@ -237,9 +245,9 @@ public class AuthRepository {
      *
      * @param userId the ID of the user
      * @return a Pair containing the user's email and verification status.
-     *         The first element is a String representing the email address,
-     *         and the second element is a boolean indicating whether the
-     *         email has been verified.
+     * The first element is a String representing the email address,
+     * and the second element is a boolean indicating whether the
+     * email has been verified.
      */
     public Pair<String, Boolean> getUserEmail(String userId) {
         var t = UserTable.$;
@@ -253,11 +261,12 @@ public class AuthRepository {
 
     /**
      * Retrieves the phone and phone verification status of a user
+     *
      * @param userId
      * @return a Pair containing the user's phone and verification status.
-     *         The first element is a String representing the phone number,
-     *         and the second element is a boolean indicating whether the
-     *         phone has been verified.
+     * The first element is a String representing the phone number,
+     * and the second element is a boolean indicating whether the
+     * phone has been verified.
      */
     public Pair<String, Boolean> getUserPhone(String userId) {
         var t = UserTable.$;
@@ -282,6 +291,55 @@ public class AuthRepository {
         sqlClient.createUpdate(t)
                 .where(t.id().eq(UUID.fromString(userId)))
                 .set(t.multiFactorAuth(), MultiAuthType.NONE)
+                .execute();
+    }
+
+    public void updateBiometricLastUsed(String deviceId) {
+        var t = BiometricTable.$;
+        sqlClient.createUpdate(t)
+                .where(t.deviceId().eq(deviceId))
+                .set(t.lastUsedAt(), LocalDateTime.now())
+                .execute();
+    }
+
+    public void createOrUpdateBiometrics(String deviceId, String userId, byte[] publicKey) {
+        var draft = BiometricDraft.$.produce(b -> b
+                .setDeviceId(deviceId)
+                .setUserId(UUID.fromString(userId))
+                .setPublicKey(publicKey)
+        );
+
+        sqlClient.saveCommand(draft)
+                .setMode(SaveMode.UPSERT)
+                .execute();
+    }
+
+    public Optional<BiometricDto> getActiveBiometric(String deviceId) {
+        var t = BiometricTable.$;
+        var dt = sqlClient.createQuery(t)
+                .where(Predicate.and(
+                        t.deviceId().eq(deviceId),
+                        t.lastUsedAt().gt(LocalDateTime.now().minusDays(Constants.BIOMETRIC_MAX_STALE_DAYS))))
+                .select(t.fetch(BiometricFetcher.$.allScalarFields()))
+                .execute();
+
+        if (dt.isEmpty())
+            return Optional.empty();
+        return Optional.of(biometricMapper.toDto(dt.getFirst()));
+    }
+
+    public void updateLastUsedBiometric(String deviceId) {
+        var t = BiometricTable.$;
+        sqlClient.createUpdate(t)
+                .where(t.deviceId().eq(deviceId))
+                .set(t.lastUsedAt(), LocalDateTime.now())
+                .execute();
+    }
+
+    public void removeBiometric(String deviceId) {
+        var t = BiometricTable.$;
+        sqlClient.createDelete(t)
+                .where(t.deviceId().eq(deviceId))
                 .execute();
     }
 }
