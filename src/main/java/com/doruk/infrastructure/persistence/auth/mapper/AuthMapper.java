@@ -1,6 +1,6 @@
 package com.doruk.infrastructure.persistence.auth.mapper;
 
-import com.doruk.application.auth.dto.AuthDto;
+import com.doruk.application.app.auth.dto.AuthDto;
 import com.doruk.domain.shared.enums.MultiAuthType;
 import com.doruk.domain.shared.enums.Permissions;
 import com.doruk.infrastructure.persistence.entity.Permission;

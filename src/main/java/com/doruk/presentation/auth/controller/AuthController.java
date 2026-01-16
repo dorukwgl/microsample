@@ -1,10 +1,10 @@
 package com.doruk.presentation.auth.controller;
 
-import com.doruk.application.auth.dto.AuthUpdateResponse;
-import com.doruk.application.auth.dto.JwtResponse;
-import com.doruk.application.auth.dto.LoginResponse;
-import com.doruk.application.auth.dto.SessionDto;
-import com.doruk.application.auth.service.AuthService;
+import com.doruk.application.app.auth.dto.AuthUpdateResponse;
+import com.doruk.application.app.auth.dto.JwtResponse;
+import com.doruk.application.app.auth.dto.LoginResponse;
+import com.doruk.application.app.auth.dto.SessionDto;
+import com.doruk.application.app.auth.service.AuthService;
 import com.doruk.domain.shared.enums.MultiAuthType;
 import com.doruk.infrastructure.config.AppConfig;
 import com.doruk.infrastructure.dto.InfoResponse;
@@ -396,7 +396,7 @@ public class AuthController {
     }
 
     @Operation(description = "Resend Email/Phone verification OTP")
-    @CustomHttpMethod(value = "/otp/resend-verification{?tid}", method = "repeat")
+    @CustomHttpMethod(value = "/otp/resend-verification/{tid}", method = "repeat")
     public InfoResponse resendOtp(String tid) {
         service.resendVerificationOtp(tid);
         return new InfoResponse("OTP sent successfully");

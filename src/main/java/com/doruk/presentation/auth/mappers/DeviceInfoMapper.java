@@ -1,6 +1,6 @@
 package com.doruk.presentation.auth.mappers;
 
-import com.doruk.application.auth.dto.DeviceInfoObject;
+import com.doruk.application.app.auth.dto.DeviceInfoObject;
 import com.doruk.presentation.auth.dto.DeviceInfoRequest;
 import io.micronaut.context.annotation.Mapper;
 

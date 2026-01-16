@@ -11,7 +11,6 @@ import java.util.List;
 @Entity
 @Table(name = "sessions")
 public interface Session {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     long id();

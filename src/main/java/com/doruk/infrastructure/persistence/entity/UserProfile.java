@@ -9,7 +9,6 @@ import java.util.UUID;
 @Entity
 @Table(name = "user_profiles")
 public interface UserProfile {
-
     // The ID matches the User ID exactly
     @Id
     UUID id();
@@ -22,18 +21,28 @@ public interface UserProfile {
     @Nullable
     String fullName();
 
-    @Nullable
-    String profilePicture();
+    @OneToOne
+    @JoinColumn(name = "profile_icon")
+    MediaStore profileIcon();
 
     // Address fields...
-    @Nullable String address();
-    @Nullable String city();
-    @Nullable String state();
-    @Nullable String country();
+    @Nullable
+    String address();
+
+    @Nullable
+    String city();
+
+    @Nullable
+    String state();
+
+    @Nullable
+    String country();
 
     @Column(name = "postal_code")
-    @Nullable String postalCode();
+    @Nullable
+    String postalCode();
 
     LocalDateTime createdAt();
+
     LocalDateTime updatedAt();
 }

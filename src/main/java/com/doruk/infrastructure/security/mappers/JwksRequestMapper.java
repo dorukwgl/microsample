@@ -2,7 +2,7 @@ package com.doruk.infrastructure.security.mappers;
 
 import com.doruk.domain.shared.enums.Permissions;
 import com.doruk.infrastructure.apiclient.dto.JwksRequest;
-import com.doruk.application.auth.dto.JwtRequest;
+import com.doruk.application.app.auth.dto.JwtRequest;
 import io.micronaut.context.annotation.Mapper.Mapping;
 
 import java.util.List;

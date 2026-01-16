@@ -1,6 +1,6 @@
 package com.doruk.infrastructure.persistence.users.mapper;
 
-import com.doruk.application.users.dto.ProfileDto;
+import com.doruk.application.app.users.dto.ProfileDto;
 import com.doruk.infrastructure.persistence.entity.UserProfile;
 import io.micronaut.context.annotation.Mapper;
 

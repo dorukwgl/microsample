@@ -1,8 +1,8 @@
 package com.doruk.presentation.auth.controller;
 
-import com.doruk.application.auth.dto.DeviceInfoObject;
-import com.doruk.application.auth.dto.LoginResponse;
-import com.doruk.application.auth.service.BiometricService;
+import com.doruk.application.app.auth.dto.DeviceInfoObject;
+import com.doruk.application.app.auth.dto.LoginResponse;
+import com.doruk.application.app.auth.service.BiometricService;
 import com.doruk.infrastructure.dto.InfoResponse;
 import com.doruk.presentation.auth.dto.BiometricEnrollRequest;
 import com.doruk.presentation.auth.dto.BiometricVerifyRequest;

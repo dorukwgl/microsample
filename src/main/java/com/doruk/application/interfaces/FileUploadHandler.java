@@ -1,6 +1,6 @@
 package com.doruk.application.interfaces;
 
-import com.doruk.application.auth.dto.UploadedFileResult;
+import com.doruk.application.app.auth.dto.UploadedFileResult;
 import com.doruk.application.enums.FileType;
 import io.micronaut.http.multipart.StreamingFileUpload;
 

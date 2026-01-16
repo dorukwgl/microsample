@@ -1,8 +1,8 @@
 package com.doruk.infrastructure.persistence.users.mapper;
 
-import com.doruk.application.users.dto.CurrentUserDto;
-import com.doruk.application.users.dto.ProfileDto;
-import com.doruk.application.users.dto.UserResponseDto;
+import com.doruk.application.app.users.dto.CurrentUserDto;
+import com.doruk.application.app.users.dto.ProfileDto;
+import com.doruk.application.app.users.dto.UserResponseDto;
 import com.doruk.infrastructure.persistence.entity.Role;
 import com.doruk.infrastructure.persistence.entity.User;
 import jakarta.inject.Singleton;

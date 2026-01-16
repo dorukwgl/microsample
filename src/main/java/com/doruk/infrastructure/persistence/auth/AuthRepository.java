@@ -1,8 +1,8 @@
 package com.doruk.infrastructure.persistence.auth;
 
-import com.doruk.application.auth.dto.AuthDto;
-import com.doruk.application.auth.dto.BiometricDto;
-import com.doruk.application.auth.dto.SessionDto;
+import com.doruk.application.app.auth.dto.AuthDto;
+import com.doruk.application.app.auth.dto.BiometricDto;
+import com.doruk.application.app.auth.dto.SessionDto;
 import com.doruk.domain.shared.enums.MultiAuthType;
 import com.doruk.domain.shared.enums.Permissions;
 import com.doruk.infrastructure.persistence.auth.mapper.AuthMapper;
@@ -12,13 +12,11 @@ import com.doruk.infrastructure.persistence.entity.*;
 import com.doruk.infrastructure.util.Constants;
 import jakarta.inject.Singleton;
 import javafx.util.Pair;
-import kotlin.reflect.jvm.internal.impl.descriptors.Visibilities;
 import lombok.RequiredArgsConstructor;
 import org.babyfish.jimmer.sql.JSqlClient;
 import org.babyfish.jimmer.sql.JoinType;
 import org.babyfish.jimmer.sql.ast.Predicate;
 import org.babyfish.jimmer.sql.ast.mutation.SaveMode;
-import org.babyfish.jimmer.sql.ast.mutation.UpsertMask;
 import org.babyfish.jimmer.sql.runtime.LogicalDeletedBehavior;
 
 import java.time.LocalDateTime;

@@ -1,14 +1,12 @@
 package com.doruk.presentation.users.controller;
 
-import com.doruk.application.users.dto.CurrentUserDto;
-import com.doruk.application.users.dto.ProfileDto;
+import com.doruk.application.app.users.dto.CurrentUserDto;
+import com.doruk.application.app.users.dto.ProfileDto;
 import com.doruk.application.enums.FileType;
 import com.doruk.application.interfaces.FileUploadHandler;
-import com.doruk.application.security.UserScope;
-import com.doruk.application.users.dto.UserResponseDto;
-import com.doruk.application.users.service.UserService;
+import com.doruk.application.app.users.dto.UserResponseDto;
+import com.doruk.application.app.users.service.UserService;
 import com.doruk.infrastructure.config.AppConfig;
-import com.doruk.infrastructure.dto.InfoResponse;
 import com.doruk.presentation.users.dto.ProfileUpdateRequest;
 import com.doruk.presentation.users.dto.RegistrationRequest;
 import com.doruk.presentation.users.mapper.ProfileMapper;
@@ -22,7 +20,6 @@ import io.micronaut.security.rules.SecurityRule;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.*;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Map;

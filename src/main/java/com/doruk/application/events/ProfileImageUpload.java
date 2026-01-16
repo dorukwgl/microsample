@@ -1,6 +1,6 @@
 package com.doruk.application.events;
 
-import com.doruk.application.auth.dto.UploadedFileResult;
+import com.doruk.application.app.auth.dto.UploadedFileResult;
 import com.doruk.application.interfaces.EventDto;
 import io.micronaut.serde.annotation.Serdeable;
 

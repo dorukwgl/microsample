@@ -1,6 +1,6 @@
 package com.doruk.infrastructure.persistence.users;
 
-import com.doruk.application.users.dto.*;
+import com.doruk.application.app.users.dto.*;
 import com.doruk.infrastructure.persistence.entity.*;
 import com.doruk.infrastructure.persistence.users.mapper.ProfileMapper;
 import com.doruk.infrastructure.persistence.users.mapper.UserMapper;
@@ -95,12 +95,12 @@ public class UserRepository {
         var t = UserProfileTable.$;
         var profilePics = sqlClient.createQuery(t)
                 .where(t.userId().eq(UUID.fromString(userId)))
-                .select(t.profilePicture())
+                .select(t.profileIcon())
                 .execute();
 
         sqlClient.createUpdate(t)
                 .where(t.user().id().eq(UUID.fromString(userId)))
-                .set(t.profilePicture(), profilePicId)
+                .set(t.profileIcon(), profilePicId)
                 .execute();
 
         return profilePics.isEmpty() ? null : profilePics.getFirst();

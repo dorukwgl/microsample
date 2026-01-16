@@ -1,6 +1,6 @@
 package com.doruk.infrastructure.fileio;
 
-import com.doruk.application.auth.dto.UploadedFileResult;
+import com.doruk.application.app.auth.dto.UploadedFileResult;
 import com.doruk.application.enums.FileType;
 import com.doruk.application.exception.FileUploadException;
 import com.doruk.application.interfaces.FileUploadHandler;

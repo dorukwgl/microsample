@@ -1,6 +1,6 @@
 package com.doruk.infrastructure.persistence.auth.mapper;
 
-import com.doruk.application.auth.dto.BiometricDto;
+import com.doruk.application.app.auth.dto.BiometricDto;
 import com.doruk.infrastructure.persistence.entity.Biometric;
 import io.micronaut.context.annotation.Mapper;
 

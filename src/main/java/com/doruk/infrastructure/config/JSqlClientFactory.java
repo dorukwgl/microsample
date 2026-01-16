@@ -13,15 +13,11 @@ import org.babyfish.jimmer.sql.dialect.MySqlDialect;
 import org.babyfish.jimmer.sql.dialect.PostgresDialect;
 import org.babyfish.jimmer.sql.fetcher.ReferenceFetchType;
 import org.babyfish.jimmer.sql.runtime.*;
-import org.babyfish.jimmer.sql.transaction.Propagation;
-import org.babyfish.jimmer.sql.transaction.TxConnectionManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.function.Function;
 
 
 @Factory
@@ -47,6 +43,7 @@ public class JSqlClientFactory {
             builder.setExecutor(createLoggingExecutor(config));
         else
             builder.setExecutor(DefaultExecutor.INSTANCE);
+
         return builder.build();
     }
 
@@ -72,9 +69,6 @@ public class JSqlClientFactory {
         };
     }
 
-    /**
-     * Create dialect based on configuration
-     */
     private Dialect createDialect(String dialectName) {
         return switch (dialectName.toLowerCase()) {
             case "mysql" -> new MySqlDialect();

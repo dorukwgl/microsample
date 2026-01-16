@@ -1,6 +1,6 @@
 package com.doruk.infrastructure.messaging.handler;
 
-import com.doruk.application.auth.dto.UploadedFileResult;
+import com.doruk.application.app.auth.dto.UploadedFileResult;
 import com.doruk.application.events.ProfileImageUpload;
 import com.doruk.infrastructure.config.AppConfig;
 import com.doruk.infrastructure.config.AppExecutors;
