@@ -1,6 +1,7 @@
 package com.doruk.infrastructure.persistence.users;
 
 import com.doruk.application.app.users.dto.*;
+import com.doruk.application.dto.UploadedFile;
 import com.doruk.infrastructure.persistence.entity.*;
 import com.doruk.infrastructure.persistence.users.mapper.ProfileMapper;
 import com.doruk.infrastructure.persistence.users.mapper.UserMapper;
@@ -91,19 +92,29 @@ public class UserRepository {
         return profileMapper.toProfileDto(res.getModifiedEntity());
     }
 
-    public String updateProfileIconReturningOld(String userId, String profilePicId) {
-        var t = UserProfileTable.$;
-        var profilePics = sqlClient.createQuery(t)
-                .where(t.userId().eq(UUID.fromString(userId)))
-                .select(t.profileIcon())
-                .execute();
+    public Optional<String> updateProfileIconReturningOld(String userId, UploadedFile icon) {
+        return sqlClient.transaction(() -> {
+            var t = UserProfileTable.$;
+            var oldPic = sqlClient.createQuery(t)
+                    .where(t.userId().eq(UUID.fromString(userId)))
+                    .select(t.profileIcon())
+                    .execute();
 
-        sqlClient.createUpdate(t)
-                .where(t.user().id().eq(UUID.fromString(userId)))
-                .set(t.profileIcon(), profilePicId)
-                .execute();
+            // update with new file id
+            sqlClient.createUpdate(t)
+                    .where(t.user().id().eq(UUID.fromString(userId)))
+                    .set(t.profileIconId(), icon.id())
+                    .execute();
 
-        return profilePics.isEmpty() ? null : profilePics.getFirst();
+            if (oldPic.isEmpty())
+                return Optional.empty();
+
+            var oldFile = oldPic.getFirst();
+            // delete old file if exists
+            sqlClient.deleteById(MediaStore.class, oldFile.id());
+
+            return Optional.of(oldFile.objectKey());
+        });
     }
 
     public CurrentUserDto getCurrentUser(String userId) {

@@ -12,13 +12,6 @@ import java.util.Map;
 
 @Singleton
 public class RbacPermissionEvaluator implements PermissionEvaluator {
-    private final Map<Permissions, Integer> roleDynamics = new EnumMap<>(Permissions.class);
-
-    public RbacPermissionEvaluator () {
-        roleDynamics.put(Permissions.GHOST_PERMISSION, 0);
-        roleDynamics.put(Permissions.DICTATOR_PERMISSION, 1);
-    }
-
     @Override
     public boolean evaluate(
             UserScope scope,
@@ -29,23 +22,20 @@ public class RbacPermissionEvaluator implements PermissionEvaluator {
             return true;
         }
 
+        if (isDictator(scope))
+            return true;
+
+        if (isDictatorRequired(required))
+            return false;
+
         return switch (logical) {
             case AND -> hasAll(scope, required);
             case OR -> hasAny(scope, required);
         };
     }
 
-    private boolean isGhost(UserScope scope) {
-        return scope.permissions().contains(Permissions.GHOST_PERMISSION);
-    }
-
     private boolean isDictator(UserScope scope) {
-        return scope.permissions().contains(Permissions.DICTATOR_PERMISSION) ||
-                scope.permissions().contains(Permissions.GHOST_PERMISSION);
-    }
-
-    private boolean isGhostRequired(Permissions[] required) {
-        return Arrays.stream(required).anyMatch(p -> p == Permissions.GHOST_PERMISSION);
+        return scope.permissions().contains(Permissions.DICTATOR_PERMISSION);
     }
 
     private boolean isDictatorRequired(Permissions[] required) {
@@ -53,34 +43,10 @@ public class RbacPermissionEvaluator implements PermissionEvaluator {
     }
 
     private boolean hasAll(UserScope scope, Permissions[] required) {
-        if (isGhost(scope))
-            return true;
-
-        if (isGhostRequired(required))
-            return false;
-
-        if (isDictator(scope))
-            return true;
-
-        if (isDictatorRequired(required))
-            return false;
-
         return scope.permissions().containsAll(Arrays.stream(required).toList());
     }
 
     private boolean hasAny(UserScope scope, Permissions[] required) {
-        if (isGhost(scope))
-            return true;
-
-        if (isDictator(scope))
-            return true;
-
-        if (isGhostRequired(required))
-            return false;
-
-        if (isDictatorRequired(required))
-            return true;
-
         return Arrays.stream(required)
                 .anyMatch(scope.permissions()::contains);
     }

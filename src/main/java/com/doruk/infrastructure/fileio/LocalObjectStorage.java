@@ -14,9 +14,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
+import java.nio.file.*;
 import java.time.Duration;
 import java.util.Locale;
 import java.util.UUID;
@@ -35,7 +33,6 @@ public class LocalObjectStorage implements ObjectStorage {
             ObjectVisibility visibility,
             long maxSize
     ) {
-
         validate(source, type, maxSize);
 
         String original = source.originalFilename();
@@ -45,21 +42,15 @@ public class LocalObjectStorage implements ObjectStorage {
         String shard1 = uuid.substring(0, 2);
         String shard2 = uuid.substring(2, 4);
 
-        String objectKey = Path.of(shard1, shard2, uuid + ext).toString();
-
-        Path baseDir = visibility == ObjectVisibility.PUBLIC
-                ? Path.of(config.publicUploadPath())
-                : Path.of(config.privateUploadPath());
-
-        Path target = baseDir.resolve(objectKey);
+        String prefix = visibility == ObjectVisibility.PUBLIC ? config.publicPathPrefix() : config.privatePathPrefix();
+        String objectKey = Path.of(prefix, shard1, shard2, uuid + ext).toString();
+        Path target = Path.of(config.localStorageDir(), objectKey);
 
         try {
             Files.createDirectories(target.getParent());
-
             try (InputStream in = source.openStream()) {
                 Files.copy(in, target, StandardCopyOption.REPLACE_EXISTING);
             }
-
         } catch (IOException e) {
             throw new RuntimeException("Failed to store file", e);
         }
@@ -74,12 +65,42 @@ public class LocalObjectStorage implements ObjectStorage {
     }
 
     @Override
+    public InputStream open(String objectKey) {
+        try {
+            Path path = Path.of(config.localStorageDir(), objectKey);
+            return Files.newInputStream(path, StandardOpenOption.READ);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to open local object: ", e);
+        }
+    }
+
+    @Override
+    public void put(String objectKey, InputStream data, long size, String mimeType) {
+        try {
+            Path target = Paths.get(config.localStorageDir(), objectKey);
+            Files.copy(data, target, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to write local object: " + objectKey, e);
+        }
+    }
+
+    @Override
+    public void delete(String objectKey) {
+        try {
+            Path target = Paths.get(config.localStorageDir(), objectKey);
+            Files.deleteIfExists(target);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to delete local object: " + objectKey, e);
+        }
+    }
+
+    @Override
     public String resolveUrl(StoredObject storedObject) {
         if (storedObject.visibility() != ObjectVisibility.PUBLIC) {
             throw new IllegalStateException("Private objects cannot be resolved directly");
         }
 
-        return Path.of(config.publicUploadPath(), storedObject.objectKey()).toString();
+        return config.appUrl() + config.resourceApiPath() + storedObject.objectKey();
     }
 
     @Override
@@ -87,7 +108,7 @@ public class LocalObjectStorage implements ObjectStorage {
         if (storedObject.visibility() != ObjectVisibility.PRIVATE) {
             return resolveUrl(storedObject);
         }
-        return "/protected/" + storedObject.objectKey();
+        return config.appUrl() + config.resourceApiPath() + storedObject.objectKey();
     }
 
     private void validate(UploadSource source, FileType type, long maxSize) {

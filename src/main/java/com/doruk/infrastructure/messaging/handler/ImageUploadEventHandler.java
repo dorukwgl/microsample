@@ -1,10 +1,10 @@
 package com.doruk.infrastructure.messaging.handler;
 
-import com.doruk.application.app.auth.dto.UploadedFileResult;
-import com.doruk.application.events.ProfileImageUpload;
-import com.doruk.infrastructure.config.AppConfig;
+import com.doruk.application.enums.ImageVariant;
+import com.doruk.application.events.ProfileImageUploadEvent;
+import com.doruk.application.interfaces.ObjectStorage;
 import com.doruk.infrastructure.config.AppExecutors;
-import com.doruk.infrastructure.util.Constants;
+import com.doruk.infrastructure.util.ImageVariantKey;
 import io.micronaut.nats.annotation.NatsListener;
 import io.micronaut.nats.annotation.Subject;
 import jakarta.inject.Singleton;
@@ -12,11 +12,10 @@ import javafx.util.Pair;
 import lombok.RequiredArgsConstructor;
 import net.coobird.thumbnailator.Thumbnails;
 
-import java.io.File;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.List;
+import java.io.InputStream;
 import java.util.concurrent.CompletableFuture;
 
 @Singleton
@@ -24,64 +23,66 @@ import java.util.concurrent.CompletableFuture;
 @RequiredArgsConstructor
 public class ImageUploadEventHandler {
     private final AppExecutors executors;
-    private final AppConfig config;
+    private final ObjectStorage storage;
 
-    private void scaleAndCompress(File file, int size, File dest) {
-        var t = Thumbnails.of(file)
-                .outputQuality(0.7f);
+    private Pair<Integer, InputStream> scaleAndCompress(InputStream stream, ImageVariant variant) {
+        var t = Thumbnails.of(stream)
+                .outputQuality(variant == ImageVariant.ORIGINAL ? 0.95f : 0.7f);
 
-        if (size != Constants.FULL_SIZE)
-            t.size(size, size);
+        if (variant != ImageVariant.ORIGINAL)
+            t.size(variant.maxSize(), variant.maxSize());
 
+        var out = new ByteArrayOutputStream(64 * 1024);
         try {
-            t.toFile(dest);
+            t.toOutputStream(out);
+            var bytes = out.toByteArray();
+
+            return new Pair<>(bytes.length, new ByteArrayInputStream(bytes));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private File createDestFile(String storedName, String scale) {
-        return Path.of(config.publicUploadPath(), scale, storedName).toFile();
-    }
+    private void deleteOldVariantFiles(ProfileImageUploadEvent event) {
+        if (event.oldObjectKey().isEmpty())
+            return;
 
-    private void storeFile(UploadedFileResult file) {
-        try {
-            List.of(
-                    new Pair<>(Constants.PICO_SIZE, Constants.PICO_DIR),
-                    new Pair<>(Constants.SMALL_SIZE, Constants.SMALL_DIR),
-                    new Pair<>(Constants.MEDIUM_SIZE, Constants.MEDIUM_DIR),
-                    new Pair<>(Constants.FULL_SIZE, Constants.FULL_DIR)
-            ).forEach(p -> scaleAndCompress(
-                    file.fullPath().toFile(),
-                    p.getKey(),
-                    createDestFile(file.storedName(), p.getValue())
-            ));
-            Files.delete(file.fullPath());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        var objectKey = event.oldObjectKey().get();
+        for (var variant : ImageVariant.values()) {
+            String variantKey = ImageVariantKey.of(objectKey, variant);
+            storage.delete(variantKey);
         }
     }
 
-    private void deleteFile(String storedName) {
+    private void handleScaling(ProfileImageUploadEvent event) {
+        for (ImageVariant variant : ImageVariant.values()) {
+            try (InputStream imgVariants = storage.open(event.objectKey())) {
 
-        List.of(
-                Constants.PICO_DIR,
-                Constants.SMALL_DIR,
-                Constants.MEDIUM_DIR,
-                Constants.FULL_DIR
-        ).forEach(dir -> {
-            try {
-                Files.deleteIfExists(Path.of(config.publicUploadPath(), dir, storedName));
+                var data = CompletableFuture.supplyAsync(() ->
+                                this.scaleAndCompress(imgVariants, variant), executors.CPU())
+                        .join();
+
+                String variantKey = ImageVariantKey.of(event.objectKey(), variant);
+
+                storage.put(
+                        variantKey,
+                        data.getValue(),
+                        data.getKey(),
+                        event.mimeType()
+                );
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                throw new RuntimeException("Variant generation failed", e);
             }
-        });
+        }
     }
 
-    @Subject(value = "image.profile.upload", queue = "image-upload-queue")
-    public void handle(ProfileImageUpload event) {
-        CompletableFuture.runAsync(() -> storeFile(event.file()), executors.CPU())
-                .thenRunAsync(() -> deleteFile(event.file().storedName()), executors.VIRTUAL());
+    @Subject(value = "profile.image.upload.event", queue = "profile-image-upload-queue")
+    public void handle(ProfileImageUploadEvent event) {
+        CompletableFuture.runAsync(() -> {
+            handleScaling(event);
+            // delete files
+            deleteOldVariantFiles(event);
+        }, executors.VIRTUAL());
     }
 
 //    @Subject(value = "file.image.upload.multi", queue = "image-upload-multi-queue")

@@ -1,14 +1,15 @@
 micronaut:
   application:
     name: microsample
-    public-upload-path: "/var/www/microsample/public"
-    private-upload-path: "/var/www/microsample/private"
-    temp-dir: "/var/www/microsample/temp"
+    local-storage-dir: "/var/www/microsample"
+    public-path-prefix: "pub"
+    private-path-prefix: "drk"
     sociair-api-key: ${SOCIAIR_KEY}
     app-id: ${APP_ID}
     session-expiration: ${SESSION_EXPIRATION:7} # days
     app-url: http://localhost:${MICROSAMPLE_PORT}
-    profile-icon-max-size: 5242880 # 5MB
+    resource-api-path: "res"
+    image-max-size: 5242880 # 5MB
     cookie-secure: false
   security:
     enabled: true

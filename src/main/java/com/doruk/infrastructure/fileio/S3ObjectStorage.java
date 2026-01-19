@@ -6,6 +6,7 @@ import com.doruk.application.enums.ObjectVisibility;
 import com.doruk.application.exception.FileUploadException;
 import com.doruk.application.interfaces.ObjectStorage;
 import com.doruk.application.interfaces.UploadSource;
+import com.doruk.infrastructure.config.AppConfig;
 import com.doruk.infrastructure.config.S3Config;
 import io.micronaut.context.annotation.Bean;
 import io.micronaut.context.annotation.Requires;
@@ -13,6 +14,7 @@ import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
@@ -33,6 +35,7 @@ public class S3ObjectStorage implements ObjectStorage {
     private final S3Client s3;
     private final S3Presigner preSigner;
     private final S3Config config;
+    private final AppConfig appConfig;
 
     @Override
     public StoredObject store(
@@ -70,6 +73,39 @@ public class S3ObjectStorage implements ObjectStorage {
                 visibility,
                 source.contentType().toLowerCase(Locale.ROOT)
         );
+    }
+
+    public InputStream open(String objectKey) {
+        GetObjectRequest request = GetObjectRequest.builder()
+                .bucket(config.bucket())
+                .key(objectKey)
+                .build();
+
+//        ResponseInputStream<GetObjectResponse> response =
+        return s3.getObject(request);
+
+    }
+
+    @Override
+    public void put(String objectKey, InputStream data, long size, String mimeType) {
+        PutObjectRequest request = PutObjectRequest.builder()
+                .bucket(config.bucket())
+                .key(objectKey)
+                .contentType(mimeType)
+                .contentLength(size)
+                .build();
+
+        s3.putObject(request, RequestBody.fromInputStream(data, size));
+    }
+
+    @Override
+    public void delete(String objectKey) {
+        DeleteObjectRequest request = DeleteObjectRequest.builder()
+                .bucket(config.bucket())
+                .key(objectKey)
+                .build();
+
+        s3.deleteObject(request);
     }
 
     @Override
@@ -118,7 +154,8 @@ public class S3ObjectStorage implements ObjectStorage {
         String uuid = UUID.randomUUID().toString();
         String hash = uuid.replace("-", "").substring(0, 4);
 
-        return visibility.name().toLowerCase()
+        return visibility == ObjectVisibility.PUBLIC ?
+                appConfig.publicPathPrefix() : appConfig.privatePathPrefix()
                 + "/" + hash.substring(0, 2)
                 + "/" + hash.substring(2)
                 + "/" + uuid + ext;

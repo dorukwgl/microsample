@@ -5,12 +5,14 @@ import io.micronaut.context.annotation.ConfigurationProperties;
 
 @ConfigurationProperties("micronaut.application")
 public record AppConfig(String name,
-                        String publicUploadPath,
-                        String privateUploadPath,
+                        String publicPathPrefix,
+                        String privatePathPrefix,
+                        String localStorageDir,
                         String appId,
                         int sessionExpiration,
                         String appUrl,
                         boolean cookieSecure,
                         String tempDir,
-                        long profileIconMaxSize) {
+                        long imageMaxSize,
+                        String resourceApiPath) {
 }

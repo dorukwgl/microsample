@@ -1,7 +1,9 @@
 package com.doruk.infrastructure.persistence.files;
 
 import com.doruk.application.dto.StoredObject;
+import com.doruk.infrastructure.persistence.entity.MediaStore;
 import com.doruk.infrastructure.persistence.entity.MediaStoreDraft;
+import com.doruk.infrastructure.persistence.entity.MediaStoreTable;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import org.babyfish.jimmer.sql.JSqlClient;
@@ -20,5 +22,16 @@ public class FileRepository {
         );
 
         return client.saveCommand(draft).execute().getModifiedEntity().id();
+    }
+
+    public String deleteReturningObjectKey(long id) {
+        var t = MediaStoreTable.$;
+        var objectId = client.createQuery(t)
+                .select(t.objectKey())
+                .execute();
+
+        client.deleteById(MediaStore.class, id);
+
+        return objectId.getFirst();
     }
 }

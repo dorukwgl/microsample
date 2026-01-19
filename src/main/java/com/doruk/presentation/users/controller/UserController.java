@@ -3,10 +3,13 @@ package com.doruk.presentation.users.controller;
 import com.doruk.application.app.users.dto.CurrentUserDto;
 import com.doruk.application.app.users.dto.ProfileDto;
 import com.doruk.application.enums.FileType;
-import com.doruk.application.interfaces.FileUploadHandler;
 import com.doruk.application.app.users.dto.UserResponseDto;
 import com.doruk.application.app.users.service.UserService;
+import com.doruk.application.enums.ObjectVisibility;
+import com.doruk.application.files.FileService;
+import com.doruk.application.interfaces.ObjectStorage;
 import com.doruk.infrastructure.config.AppConfig;
+import com.doruk.infrastructure.fileio.StreamingUploadSource;
 import com.doruk.presentation.users.dto.ProfileUpdateRequest;
 import com.doruk.presentation.users.dto.RegistrationRequest;
 import com.doruk.presentation.users.mapper.ProfileMapper;
@@ -32,7 +35,7 @@ public class UserController {
     private final UserService service;
     private final RegistrationMapper registrationMapper;
     private final ProfileMapper profileMapper;
-    private final FileUploadHandler fileUploadHandler;
+    private final FileService fileService;
     private final AppConfig appConfig;
 
     @Secured(SecurityRule.IS_ANONYMOUS)
@@ -57,8 +60,7 @@ public class UserController {
     public Map<String, String> updateProfileIcon(Authentication auth,
                                                  @Part("profile-icon")
                                                  StreamingFileUpload file) {
-        var uploaded = fileUploadHandler.uploadSingle(file, FileType.IMAGE, appConfig.profileIconMaxSize());
-
+        var uploaded = fileService.imageUploadPublic(file);
         return service.updateProfileIcon(auth.getName(), uploaded);
     }
 }

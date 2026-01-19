@@ -18,15 +18,8 @@ public class DirSeeder {
 
     @EventListener
     public void seedDirs(StartupEvent e) throws Exception {
-        Files.createDirectories(Path.of(config.publicUploadPath()));
-        Files.createDirectories(Path.of(config.privateUploadPath()));
+        Files.createDirectories(Path.of(config.localStorageDir()));
         Files.createDirectories(Path.of(config.tempDir()));
-
-        // sub folders
-        Files.createDirectories(Path.of(config.publicUploadPath(), "pico"));
-        Files.createDirectories(Path.of(config.publicUploadPath(), "small"));
-        Files.createDirectories(Path.of(config.publicUploadPath(), "medium"));
-        Files.createDirectories(Path.of(config.publicUploadPath(), "full"));
 
         IO.println("Directories Created...");
     }
