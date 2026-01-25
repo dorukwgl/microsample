@@ -34,7 +34,7 @@ public class UserSeeder {
                 .setEmailVerified(true)
                 .setPhoneVerified(true)
                 .setPhone("9829293466")
-                .setRoles(List.of(RoleDraft.$.produce(r -> r.setName("SYS_ADMIN"))))
+                .setRoles(List.of(RoleDraft.$.produce(r -> r.setName("SYS_ADMIN_ROLE"))))
                 .setMultiFactorAuth(MultiAuthType.NONE)
                 .setPassword(hasher.encode("chd@ihbibicdff"))
         );

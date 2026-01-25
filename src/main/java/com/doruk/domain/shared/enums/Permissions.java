@@ -4,9 +4,10 @@ import com.doruk.domain.exception.DomainException;
 
 public enum Permissions {
     DICTATOR_PERMISSION(0),
-    USER_STATUS_UPDATE (1),
-    DELETE_USERS (2),
-    UPDATE_OWN_PROFILE (3);
+    MANAGE_SYSTEM_USER_ROLES(1),
+    CREATE_ROLES (3),
+    ALTER_USER_ACCOUNT_STATUS(4),
+    UPDATE_OWN_PROFILE (5);
 
     private final int value;
 

@@ -2,14 +2,9 @@ package com.doruk.presentation.users.controller;
 
 import com.doruk.application.app.users.dto.CurrentUserDto;
 import com.doruk.application.app.users.dto.ProfileDto;
-import com.doruk.application.enums.FileType;
 import com.doruk.application.app.users.dto.UserResponseDto;
 import com.doruk.application.app.users.service.UserService;
-import com.doruk.application.enums.ObjectVisibility;
 import com.doruk.application.files.FileService;
-import com.doruk.application.interfaces.ObjectStorage;
-import com.doruk.infrastructure.config.AppConfig;
-import com.doruk.infrastructure.fileio.StreamingUploadSource;
 import com.doruk.presentation.users.dto.ProfileUpdateRequest;
 import com.doruk.presentation.users.dto.RegistrationRequest;
 import com.doruk.presentation.users.mapper.ProfileMapper;
@@ -36,7 +31,6 @@ public class UserController {
     private final RegistrationMapper registrationMapper;
     private final ProfileMapper profileMapper;
     private final FileService fileService;
-    private final AppConfig appConfig;
 
     @Secured(SecurityRule.IS_ANONYMOUS)
     @Status(HttpStatus.CREATED)
