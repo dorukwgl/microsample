@@ -19,7 +19,6 @@ public class DirSeeder {
     @EventListener
     public void seedDirs(StartupEvent e) throws Exception {
         Files.createDirectories(Path.of(config.localStorageDir()));
-        Files.createDirectories(Path.of(config.tempDir()));
 
         IO.println("Directories Created...");
     }

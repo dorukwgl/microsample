@@ -3,6 +3,7 @@ package com.doruk.infrastructure.persistence.entity;
 import com.doruk.application.enums.ObjectVisibility;
 import jakarta.validation.constraints.NotNull;
 import org.babyfish.jimmer.sql.*;
+import org.jspecify.annotations.Nullable;
 
 import java.time.LocalDateTime;
 
@@ -27,6 +28,7 @@ public interface MediaStore {
     @NotNull
     LocalDateTime createdAt();
 
+    @Nullable
     @LogicalDeleted("now")
     LocalDateTime deletedAt();
 }

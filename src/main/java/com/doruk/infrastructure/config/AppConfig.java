@@ -12,7 +12,6 @@ public record AppConfig(String name,
                         int sessionExpiration,
                         String appUrl,
                         boolean cookieSecure,
-                        String tempDir,
                         long imageMaxSize,
                         String resourceApiPath) {
 }
