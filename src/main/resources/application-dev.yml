@@ -12,7 +12,7 @@ micronaut:
     image-max-size: 5242880 # 5MB
     cookie-secure: false
   security:
-    enabled: false
+    enabled: true
     reject-not-found: false
     redirect:
       enabled: false

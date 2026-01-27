@@ -9,6 +9,7 @@ import io.micronaut.context.annotation.Requires;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import org.babyfish.jimmer.sql.JSqlClient;
+import org.babyfish.jimmer.sql.runtime.LogicalDeletedBehavior;
 
 import java.util.List;
 
@@ -50,7 +51,9 @@ public class UserSeeder {
                 .setPassword(hasher.encode("password"))
         );
 
-        client.saveEntitiesCommand(List.of(dictator, sysAdmin, user))
+        client
+                .filters(c -> c.setBehavior(LogicalDeletedBehavior.IGNORED))
+                .saveEntitiesCommand(List.of(dictator, sysAdmin, user))
                 .execute();
 
         System.out.println("Users seeded...");
