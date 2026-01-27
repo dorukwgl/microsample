@@ -12,6 +12,13 @@ micronaut:
     image-max-size: 5242880 # 5MB
     cookie-secure: false
   security:
+    intercept-url-map:
+      - pattern: /control-panel
+        access:
+          - isAnonymous()
+      - pattern: /control-panel/*
+        access:
+          - isAnonymous()
     enabled: true
     reject-not-found: false
     redirect:
