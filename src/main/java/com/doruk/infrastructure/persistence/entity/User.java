@@ -4,6 +4,7 @@ import com.doruk.domain.shared.enums.MultiAuthType;
 import com.doruk.domain.shared.enums.UserAccountStatus;
 import com.doruk.infrastructure.util.V7Generator;
 import io.micronaut.core.annotation.Introspected;
+import jdk.jfr.Timestamp;
 import org.babyfish.jimmer.sql.*;
 import org.babyfish.jimmer.sql.meta.UUIDIdGenerator;
 import org.babyfish.jimmer.sql.meta.UserIdGenerator;
