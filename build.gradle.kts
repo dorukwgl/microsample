@@ -91,7 +91,7 @@ dependencies {
     runtimeOnly("org.yaml:snakeyaml")
     // Native transport
     runtimeOnly("io.netty:netty-transport-native-io_uring::linux-x86_64")
-//    runtimeOnly("io.netty:netty-transport-native-epoll::linux-x86_64")
+    runtimeOnly("io.netty:netty-transport-native-epoll::linux-x86_64")
 
     developmentOnly("io.micronaut.controlpanel:micronaut-control-panel-management")
     developmentOnly("io.micronaut.controlpanel:micronaut-control-panel-ui")
