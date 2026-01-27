@@ -12,7 +12,7 @@ micronaut:
     image-max-size: 5242880 # 5MB
     cookie-secure: false
   security:
-    enabled: true
+    enabled: false
     reject-not-found: false
     redirect:
       enabled: false
@@ -88,6 +88,11 @@ micronaut:
       swagger-ui-default:
         paths: classpath:META-INF/swagger/views/swagger-ui
         mapping: /swagger-ui/**
+  control-panel:
+    enabled: true
+    title: micro-panel
+    path: /control-panel
+    log-url: true
 
 
 

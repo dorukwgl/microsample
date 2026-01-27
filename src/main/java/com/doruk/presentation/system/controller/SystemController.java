@@ -15,7 +15,9 @@ import com.doruk.presentation.dto.PageQueryRequest;
 import com.doruk.presentation.system.dto.UserQueryRequest;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.http.annotation.*;
+import io.micronaut.security.annotation.Secured;
 import io.micronaut.security.authentication.Authentication;
+import io.micronaut.security.rules.SecurityRule;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.info.Info;
@@ -27,6 +29,7 @@ import org.babyfish.jimmer.Page;
 import java.util.Set;
 
 @Tag(name = "System, Users, Roles & Permissions management")
+@Secured(SecurityRule.IS_AUTHENTICATED)
 @RequiresPermission(
         value = {
                 Permissions.CREATE_ROLES,

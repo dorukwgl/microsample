@@ -68,7 +68,7 @@ public class LoggingFilter implements HttpServerFilter {
                     if (respBody != null) {
                         var bodyColor = status > 400 ? RED_BOLD : CYAN_DIM;
                         try {
-                            if (!(respBody instanceof SystemFile))
+                            if (!(respBody instanceof SystemFile || route.contains("control-panel")))
                                 System.out.printf("%s: %s%s", bodyColor, jsonMapper.writeValueAsString(respBody), RESET);
                         } catch (IOException e) {
                             throw new RuntimeException(e);
