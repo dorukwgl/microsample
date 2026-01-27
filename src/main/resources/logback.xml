@@ -2,7 +2,7 @@
 <configuration scan="true">
 
     <!-- Define a property for log directory -->
-    <property name="LOG_DIR" value="logs"/>
+    <property name="LOG_DIR" value="${LOG_DIR}"/>
 
     <!-- Console appender (for development / testing) -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
@@ -17,7 +17,7 @@
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- daily rollover -->
             <fileNamePattern>${LOG_DIR}/application.%d{yyyy-MM-dd}.log</fileNamePattern>
-            <!-- keep 30 days -->
+            <!-- keep 3 days -->
             <maxHistory>3</maxHistory>
             <!-- total size cap -->
             <totalSizeCap>10MB</totalSizeCap>

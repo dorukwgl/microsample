@@ -61,6 +61,7 @@ micronaut:
       default-bootstrap:
       event-loop-shutdown-quiet-period: 0ms
       event-loop-shutdown-timeout: 0ms
+
     thread-selection: blocking # for loom carrier
     context-path: /app
   http:

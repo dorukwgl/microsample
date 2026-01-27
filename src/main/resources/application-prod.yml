@@ -53,6 +53,9 @@ micronaut:
           prefer-native-transport: true
           transport: io_uring
           loom-carrier: true  # for loom carrier
+#      parent:
+#        prefer-native-transport: true
+#        transport: io_uring
 
       default-bootstrap:
       event-loop-shutdown-quiet-period: 0ms
