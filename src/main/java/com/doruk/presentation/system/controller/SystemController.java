@@ -6,7 +6,6 @@ import com.doruk.application.app.system.dto.UserQuery;
 import com.doruk.application.app.system.dto.UserResponse;
 import com.doruk.application.app.system.service.SystemService;
 import com.doruk.application.dto.PageResponse;
-import com.doruk.application.security.UserScope;
 import com.doruk.domain.shared.enums.Permissions;
 import com.doruk.infrastructure.dto.InfoResponse;
 import com.doruk.infrastructure.security.annotation.RequiresPermission;
@@ -26,6 +25,8 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Set;
 
+import static com.doruk.presentation.utils.AuthUtils.extractPermissions;
+
 @Tag(name = "System, Users, Roles & Permissions management")
 @Secured(SecurityRule.IS_AUTHENTICATED)
 @RequiresPermission(
@@ -39,10 +40,6 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class SystemController {
     private final SystemService service;
-
-    private Set<Permissions> extractPermissions(Authentication auth) {
-        return (Set<Permissions>) auth.getAttributes().get(UserScope.KEY);
-    }
 
     @Operation(description = "returns a sorted pagination list of users with given filters")
     @Get("/")
