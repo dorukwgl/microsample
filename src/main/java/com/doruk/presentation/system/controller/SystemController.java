@@ -5,7 +5,6 @@ import com.doruk.application.app.system.dto.RolesResponse;
 import com.doruk.application.app.system.dto.UserQuery;
 import com.doruk.application.app.system.dto.UserResponse;
 import com.doruk.application.app.system.service.SystemService;
-import com.doruk.application.dto.PageQuery;
 import com.doruk.application.dto.PageResponse;
 import com.doruk.application.security.UserScope;
 import com.doruk.domain.shared.enums.Permissions;
@@ -21,11 +20,9 @@ import io.micronaut.security.authentication.Authentication;
 import io.micronaut.security.rules.SecurityRule;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
-import org.babyfish.jimmer.Page;
 
 import java.util.Set;
 
@@ -50,7 +47,7 @@ public class SystemController {
     @Operation(description = "returns a sorted pagination list of users with given filters")
     @Get("/")
     public PageResponse<UserResponse> getUsers(UserQueryRequest userQueryRequest, PageQueryRequest pageable) {
-        return service.getUsers(PageQueryMapper.toPageQuery(pageable),
+        return service.getUsers(PageQueryMapper.toQuery(pageable),
                 new UserQuery(userQueryRequest.email()));
     }
 
