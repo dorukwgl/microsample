@@ -11,6 +11,7 @@ import com.doruk.application.security.UserScope;
 import com.doruk.domain.shared.enums.Permissions;
 import com.doruk.infrastructure.dto.InfoResponse;
 import com.doruk.infrastructure.security.annotation.RequiresPermission;
+import com.doruk.presentation.dto.PageQueryMapper;
 import com.doruk.presentation.dto.PageQueryRequest;
 import com.doruk.presentation.system.dto.UserQueryRequest;
 import io.micronaut.core.annotation.Nullable;
@@ -49,7 +50,7 @@ public class SystemController {
     @Operation(description = "returns a sorted pagination list of users with given filters")
     @Get("/")
     public PageResponse<UserResponse> getUsers(UserQueryRequest userQueryRequest, PageQueryRequest pageable) {
-        return service.getUsers(new PageQuery(pageable.page(), pageable.size(), pageable.order()),
+        return service.getUsers(PageQueryMapper.toPageQuery(pageable),
                 new UserQuery(userQueryRequest.email()));
     }
 
