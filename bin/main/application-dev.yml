@@ -1,17 +1,26 @@
 micronaut:
   application:
-    name: Microsample
-    localStorageDir: "/var/www/microsample"
-    publicPathPrefix: "pub"
-    privatePathPrefix: "drk"
-    sociairApiKey: ${SOCIAIR_KEY}
+    name: Ledger
+    local-storage-dir: "/var/www/ledger"
+    public-path-prefix: "pub"
+    private-path-prefix: "drk"
+    sociair-api-key: ${SOCIAIR_KEY}
     app-id: ${APP_ID}
     session-expiration: ${SESSION_EXPIRATION:7} # days
-    image-max-size: 5242880 # 5MB
-    cookie-secure: true
     app-url: http://localhost:${LEDGER_PORT}
     resource-api-path: "res"
+    image-max-size: 5242880 # 5MB
+    cookie-secure: false
   security:
+    intercept-url-map:
+      -
+        pattern: /control-panel
+        access:
+          - isAnonymous()
+      -
+        pattern: /control-panel/*
+        access:
+          - isAnonymous()
     enabled: true
     reject-not-found: false
     redirect:
@@ -36,6 +45,9 @@ micronaut:
   server:
     proxy:
       enabled: true
+    multipart:
+      max-file-size: 10
+      max-request-size: 52MB
     cors:
       enabled: true
       configurations:
@@ -58,6 +70,7 @@ micronaut:
       default-bootstrap:
       event-loop-shutdown-quiet-period: 0ms
       event-loop-shutdown-timeout: 0ms
+
     thread-selection: blocking # for loom carrier
     context-path: /app
   http:
@@ -84,6 +97,11 @@ micronaut:
       swagger-ui-default:
         paths: classpath:META-INF/swagger/views/swagger-ui
         mapping: /swagger-ui/**
+  control-panel:
+    enabled: true
+    title: micro-panel
+    path: /control-panel
+    log-url: true
 
 
 
@@ -105,7 +123,7 @@ datasources:
       auto-commit: true
 
 jimmer:
-  show-sql: false
+  show-sql: true
   dialect: postgres
 
 nats:
@@ -156,13 +174,22 @@ storage:
 # ==========================
 logger:
   levels:
-    ROOT: INFO
+    ROOT: TRACE
     io.micronaut: INFO
-    io.netty: WARN
-    io.micronaut.http.server.netty: INFO
+    io.netty: ALL
+    io.micronaut.http.server.netty: ALL
     io.micronaut.context: WARN
 
     org.flywaydb: INFO
     io.micronaut.flyway: INFO
 
-    org.babyfish.jimmer.sql: WARN
+    org.babyfish.jimmer.sql: TRACE
+
+endpoints:
+  all:
+    enabled: true
+    sensitive: false
+  health:
+    details-visible: ANONYMOUS
+  loggers:
+    write-sensitive: false

@@ -5,33 +5,32 @@ import com.doruk.application.app.auth.dto.BiometricDto;
 import com.doruk.application.app.auth.dto.SessionDto;
 import com.doruk.domain.shared.enums.MultiAuthType;
 import com.doruk.domain.shared.enums.Permissions;
-import com.doruk.infrastructure.persistence.auth.mapper.AuthMapper;
 import com.doruk.infrastructure.persistence.auth.mapper.BiometricMapper;
 import com.doruk.infrastructure.persistence.auth.mapper.SessionMapper;
 import com.doruk.infrastructure.persistence.entity.*;
 import com.doruk.infrastructure.util.Constants;
+import com.doruk.jooq.tables.Biometrics;
+import com.doruk.jooq.tables.RolePermissions;
+import com.doruk.jooq.tables.UserRoles;
+import com.doruk.jooq.tables.Users;
 import jakarta.inject.Singleton;
 import javafx.util.Pair;
 import lombok.RequiredArgsConstructor;
 import org.babyfish.jimmer.sql.JSqlClient;
-import org.babyfish.jimmer.sql.JoinType;
 import org.babyfish.jimmer.sql.ast.Predicate;
-import org.babyfish.jimmer.sql.ast.mutation.SaveMode;
-import org.babyfish.jimmer.sql.runtime.LogicalDeletedBehavior;
+import org.jooq.DSLContext;
+import org.jooq.impl.DSL;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.time.OffsetDateTime;
+import java.util.*;
 
 @Singleton
 @RequiredArgsConstructor
 public class AuthRepository {
     private final JSqlClient sqlClient;
     private final SessionMapper sessionMapper;
-    private final AuthMapper authMapper;
     private final BiometricMapper biometricMapper;
+    private final DSLContext dsl;
 
     private String getDeviceId(String sessionId) {
         return sqlClient.createQuery(SessionTable.$)
@@ -41,58 +40,59 @@ public class AuthRepository {
                 .getFirst();
     }
 
-    public Optional<AuthDto> findByUsernameOrEmail(String field) {
-        var t = UserTableEx.$;
-        var dt = sqlClient.filters(cfg -> cfg.setBehavior(LogicalDeletedBehavior.IGNORED))
-                .createQuery(UserTable.$)
-                .where(Predicate.or(UserTable.$.username().eq(field), UserTable.$.email().eq(field)))
-                .select(
-                        t.id(),
-                        t.username(),
-                        t.password(),
-                        t.phone(),
-                        t.email(),
-                        t.emailVerified(),
-                        t.phoneVerified(),
-                        t.multiFactorAuth(),
-                        t.roles(JoinType.LEFT).permissions(JoinType.LEFT)
+    private Optional<AuthDto> findUserWithPermissions(org.jooq.Condition whereCondition) {
+        var u = Users.USERS;
+        var r = UserRoles.USER_ROLES;
+        var p = RolePermissions.ROLE_PERMISSIONS;
+        var rec = dsl.select(
+                        u.ID,
+                        u.USERNAME,
+                        u.PASSWORD,
+                        u.PHONE,
+                        u.EMAIL,
+                        u.IS_EMAIL_VERIFIED,
+                        u.IS_PHONE_VERIFIED,
+                        u.MULTI_FACTOR_AUTH,
+                        // fetch list of permissions
+                        DSL.multiset(
+                                dsl.selectDistinct(p.PERMISSION_NAME)
+                                        .from(r)
+                                        .join(p).on(p.ROLE_NAME.eq(r.NAME))
+                                        .where(r.USER_ID.eq(u.ID))
+                        ).convertFrom(rs -> new HashSet<>(rs.map(perm -> Permissions.valueOf(perm.value1()))))
                 )
-                .execute();
+                .from(u)
+                .where(whereCondition)
+                .fetchOne(rs -> AuthDto.builder()
+                        .id(rs.value1().toString())
+                        .username(rs.value2())
+                        .password(rs.value3())
+                        .phone(rs.value4())
+                        .email(rs.value5())
+                        .emailVerified(rs.value6())
+                        .phoneVerified(rs.value7())
+                        .multiFactorAuth(rs.value8())
+                        .permissions(rs.value9())
+                        .build()
+                );
 
-        if (dt.isEmpty())
-            return Optional.empty();
+        return Optional.ofNullable(rec);
+    }
 
-        return Optional.of(authMapper.toAuthDto(dt));
+    public Optional<AuthDto> findByUsernameOrEmail(String field) {
+        var u = Users.USERS;
+        return this.findUserWithPermissions(u.USERNAME.eq(field).or(u.EMAIL.eq(field)));
     }
 
     public Optional<AuthDto> findByUserId(String userId) {
-        var t = UserTableEx.$;
-        var dt = sqlClient.filters(cfg -> cfg.setBehavior(LogicalDeletedBehavior.IGNORED))
-                .createQuery(UserTable.$)
-                .where(t.id().eq(UUID.fromString(userId)))
-                .select(
-                        t.id(),
-                        t.username(),
-                        t.password(),
-                        t.phone(),
-                        t.email(),
-                        t.emailVerified(),
-                        t.phoneVerified(),
-                        t.multiFactorAuth(),
-                        t.roles(JoinType.LEFT).permissions(JoinType.LEFT)
-                )
-                .execute();
-
-        if (dt.isEmpty())
-            return Optional.empty();
-
-        return Optional.of(authMapper.toAuthDto(dt));
+        var u = Users.USERS;
+        return this.findUserWithPermissions(u.USERNAME.eq(userId));
     }
 
     public void createSession(String userId,
                               String sessionId,
                               Set<Permissions> permissions,
-                              LocalDateTime expiration,
+                              OffsetDateTime expiration,
                               Optional<String> deviceId,
                               Optional<String> deviceInfo) {
 
@@ -108,17 +108,14 @@ public class AuthRepository {
 
     public Optional<SessionDto> getActiveSession(String sessionId) {
         var t = SessionTable.$;
-        var dt = sqlClient.createQuery(t)
+        return sqlClient.createQuery(t)
                 .where(Predicate.and(t.sessionId().eq(sessionId),
-                        t.expiresAt().gt(LocalDateTime.now())))
+                        t.expiresAt().gt(OffsetDateTime.now())))
                 .select(t)
-                .execute();
-
-        if (dt.isEmpty())
-            return Optional.empty();
-
-        var session = sessionMapper.toDto(dt.getFirst());
-        return Optional.of(session);
+                .execute()
+                .stream()
+                .map(sessionMapper::toDto)
+                .findFirst();
     }
 
     public List<SessionDto> getActiveDevices(String userId) {
@@ -126,7 +123,7 @@ public class AuthRepository {
         return sqlClient.createQuery(t)
                 .where(Predicate.and(
                                 t.userId().eq(UUID.fromString(userId))),
-                        t.expiresAt().gt(LocalDateTime.now())
+                        t.expiresAt().gt(OffsetDateTime.now())
                 )
                 .select(t.id(), t.deviceId(), t.deviceInfo(), t.createdAt())
                 .execute()
@@ -292,45 +289,37 @@ public class AuthRepository {
                 .execute();
     }
 
-    public void updateBiometricLastUsed(String deviceId) {
-        var t = BiometricTable.$;
-        sqlClient.createUpdate(t)
-                .where(t.deviceId().eq(deviceId))
-                .set(t.lastUsedAt(), LocalDateTime.now())
-                .execute();
-    }
-
     public void createOrUpdateBiometrics(String deviceId, String userId, byte[] publicKey) {
-        var draft = BiometricDraft.$.produce(b -> b
-                .setDeviceId(deviceId)
-                .setUserId(UUID.fromString(userId))
-                .setPublicKey(publicKey)
-        );
-
-        sqlClient.saveCommand(draft)
-                .setMode(SaveMode.UPSERT)
+        var b = Biometrics.BIOMETRICS;
+        dsl.insertInto(b)
+                .set(b.DEVICE_ID, deviceId)
+                .set(b.USER_ID, UUID.fromString(userId))
+                .set(b.PUBLIC_KEY, publicKey)
+                .onConflict(b.DEVICE_ID)
+                .doUpdate()
+                .set(b.USER_ID, DSL.excluded(b.USER_ID))
+                .set(b.PUBLIC_KEY, DSL.excluded(b.PUBLIC_KEY))
                 .execute();
     }
 
     public Optional<BiometricDto> getActiveBiometric(String deviceId) {
         var t = BiometricTable.$;
-        var dt = sqlClient.createQuery(t)
+        return sqlClient.createQuery(t)
                 .where(Predicate.and(
                         t.deviceId().eq(deviceId),
-                        t.lastUsedAt().gt(LocalDateTime.now().minusDays(Constants.BIOMETRIC_MAX_STALE_DAYS))))
+                        t.lastUsedAt().gt(OffsetDateTime.now().minusDays(Constants.BIOMETRIC_MAX_STALE_DAYS))))
                 .select(t.fetch(BiometricFetcher.$.allScalarFields()))
-                .execute();
-
-        if (dt.isEmpty())
-            return Optional.empty();
-        return Optional.of(biometricMapper.toDto(dt.getFirst()));
+                .execute()
+                .stream()
+                .map(biometricMapper::toDto)
+                .findFirst();
     }
 
     public void updateLastUsedBiometric(String deviceId) {
         var t = BiometricTable.$;
         sqlClient.createUpdate(t)
                 .where(t.deviceId().eq(deviceId))
-                .set(t.lastUsedAt(), LocalDateTime.now())
+                .set(t.lastUsedAt(), OffsetDateTime.now())
                 .execute();
     }
 

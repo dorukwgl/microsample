@@ -1,7 +1,7 @@
 micronaut:
   application:
-    name: Microsample
-    localStorageDir: "/var/www/microsample"
+    name: Ledger
+    localStorageDir: "/var/www/ledger"
     publicPathPrefix: "pub"
     privatePathPrefix: "drk"
     sociairApiKey: ${SOCIAIR_KEY}

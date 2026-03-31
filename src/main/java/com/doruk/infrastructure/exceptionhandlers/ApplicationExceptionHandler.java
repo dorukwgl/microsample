@@ -42,6 +42,7 @@ public class ApplicationExceptionHandler implements ExceptionHandler<Application
             case IncompleteStateException _ -> new Pair<>(422, "Partial Content");
             case InvalidInputException _ -> new Pair<>(400, "Bad Request");
             case RateLimitException _ -> new Pair<>(429, "Cooling Down");
+            case NotFoundException _ -> new Pair<>(404, "Oops! Not Found");
             default -> throw exception; // let the global exception handler handle the server error
         };
     }
@@ -60,6 +61,8 @@ public class ApplicationExceptionHandler implements ExceptionHandler<Application
                     "You are not supposed to perform this action." : msg;
             case RateLimitException _ -> "Slowdown, take a break! Try again after a while.";
             case SuspiciousIntrusionException _ -> getSuspiciousMessage();
+            case NotFoundException _ -> msg == null || msg.isBlank() ?
+                        "The resource you are trying to perform this action on, does not exists." : msg;
             default -> msg;
         };
     }

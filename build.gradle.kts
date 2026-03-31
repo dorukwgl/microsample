@@ -1,7 +1,11 @@
-val awssdkVersion = "2.31.66"
-val postgresVersion = "42.7.9"
-val flywayPostgresVersion = "11.20.3"
-val jimmerVersion = "0.9.120"
+import org.jooq.meta.jaxb.ForcedType
+
+val awssdkVersion = "2.42.23"
+val postgresVersion = "42.7.10"
+val flywayPostgresVersion = "12.2.0"
+val jimmerVersion = "0.10.6"
+val jooqVersion = "3.21.1"
+val lombokVersion = "1.18.44"
 
 buildscript {
     repositories {
@@ -9,8 +13,8 @@ buildscript {
     }
     dependencies {
         // Defines the JDBC driver and Flyway extension for the Gradle build tool itself
-        classpath("org.postgresql:postgresql:42.7.9")
-        classpath("org.flywaydb:flyway-database-postgresql:11.20.3")
+        classpath("org.postgresql:postgresql:42.7.10")
+        classpath("org.flywaydb:flyway-database-postgresql:12.2.0")
     }
 }
 
@@ -19,7 +23,8 @@ plugins {
     id("com.gradleup.shadow") version "8.3.9"
     id("io.micronaut.test-resources") version "4.6.1"
     id("io.micronaut.aot") version "4.6.1"
-    id("org.flywaydb.flyway") version "11.20.3"
+    id("org.flywaydb.flyway") version "12.2.0"
+    id("nu.studer.jooq") version "10.2"
 }
 
 version = "1.0.0"
@@ -30,7 +35,11 @@ repositories {
 }
 
 dependencies {
-    annotationProcessor("org.projectlombok:lombok")
+    // lombok
+    compileOnly("org.projectlombok:lombok:${lombokVersion}")
+    annotationProcessor("org.projectlombok:lombok:$lombokVersion")
+
+    annotationProcessor("io.micronaut:micronaut-inject-java")
     annotationProcessor("io.micronaut:micronaut-http-validation")
     annotationProcessor("io.micronaut.openapi:micronaut-openapi")
     annotationProcessor("io.micronaut.security:micronaut-security-annotations")
@@ -62,13 +71,19 @@ dependencies {
 
     // Jimmer
     implementation("org.babyfish.jimmer:jimmer-sql:$jimmerVersion")
+    // JOOQ
+    implementation("io.micronaut.sql:micronaut-jooq")
+    implementation("org.jooq:jooq:$jooqVersion")
+    jooqGenerator("org.jooq:jooq-codegen:$jooqVersion")
+    jooqGenerator("org.postgresql:postgresql:$postgresVersion")
+    // for native image, flat mapping
+    implementation("org.simpleflatmapper:sfm-jdbc:9.0.2")
 
     // Utilities
     implementation("nl.basjes.parse.useragent:yauaa:7.32.0")
     implementation("net.coobird:thumbnailator:0.4.21")
     implementation("software.amazon.awssdk:s3")
     implementation("de.mkammerer:argon2-jvm:2.12")
-    implementation("com.fasterxml.uuid:java-uuid-generator:5.2.0")
     // compression
     implementation("com.aayushatharva.brotli4j:brotli4j:1.20.0")
     runtimeOnly("com.aayushatharva.brotli4j:native-linux-x86_64:1.20.0")
@@ -81,7 +96,6 @@ dependencies {
 
     // --- Compile Only / Provided ---
     compileOnly("io.micronaut.openapi:micronaut-openapi-annotations")
-    compileOnly("org.projectlombok:lombok")
 
     compileOnly("io.micronaut.validation:micronaut-validation-processor")
 
@@ -96,7 +110,7 @@ dependencies {
     developmentOnly("io.micronaut.controlpanel:micronaut-control-panel-management")
     developmentOnly("io.micronaut.controlpanel:micronaut-control-panel-ui")
 
-    aotPlugins(platform("io.micronaut.platform:micronaut-platform:4.10.7"))
+    aotPlugins(platform("io.micronaut.platform:micronaut-platform:4.10.10"))
     aotPlugins("io.micronaut.security:micronaut-security-aot")
 
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
@@ -107,8 +121,8 @@ application {
     mainClass = "com.doruk.Application"
 }
 java {
-    sourceCompatibility = JavaVersion.toVersion("25")
-    targetCompatibility = JavaVersion.toVersion("25")
+    sourceCompatibility = JavaVersion.toVersion("26")
+    targetCompatibility = JavaVersion.toVersion("26")
 }
 
 // Logic to replicate Maven Profiles:
@@ -132,8 +146,60 @@ flyway {
     url = "jdbc:postgresql://localhost:5432/microsample"
     user = "doruk"
     password = "dorukdb"
-    schemas = arrayOf("sample")
+    schemas = arrayOf("main")
     locations = arrayOf("filesystem:src/main/resources/db/migration")
+}
+
+jooq {
+    version.set(jooqVersion)
+
+    configurations {
+        create("main") {
+            generateSchemaSourceOnCompilation.set(true)
+
+            jooqConfiguration.apply {
+                jdbc.apply {
+                    driver = "org.postgresql.Driver"
+                    url = "jdbc:postgresql://localhost:5432/microsample"
+                    user = "doruk"
+                    password = "dorukdb"
+                }
+
+                generator.apply {
+                    name = "org.jooq.codegen.JavaGenerator"
+
+                    database.apply {
+                        name = "org.jooq.meta.postgres.PostgresDatabase"
+                        inputSchema = "main"
+
+                        forcedTypes = listOf(
+                            ForcedType()
+                                .withUserType(" com.doruk.domain.shared.enums.MultiAuthType")
+                                .withEnumConverter(true)
+                                .withIncludeTypes("multi_auth_type"),
+
+                            ForcedType()
+                                .withUserType("com.doruk.domain.shared.enums.UserAccountStatus")
+                                .withEnumConverter(true)
+                                .withIncludeTypes("user_status"),
+                        )
+                    }
+
+                    generate.apply {
+                        isImmutablePojos = true
+                        isFluentSetters = true
+                        isJavaTimeTypes = true
+                        isJpaAnnotations = true
+                    }
+
+                    target.apply {
+                        packageName = "com.doruk.jooq"
+                        directory = "build/generated-src/jooq"
+                    }
+                }
+            }
+        }
+    }
 }
 
 graalvmNative.toolchainDetection = false
@@ -164,9 +230,41 @@ micronaut {
     }
 }
 
+tasks.shadowJar {
+    // Output filename (no "shadow" suffix)
+    archiveClassifier.set("")
+    archiveFileName.set("${project.name}-${project.version}-all.jar")
 
-tasks.named<io.micronaut.gradle.docker.NativeImageDockerfile>("dockerfileNative") {
-    jdkVersion = "25"
+    // Merge META-INF/services, spring.factories, etc.
+    mergeServiceFiles()
+
+    // Keep the entry point
+    manifest {
+        attributes["Main-Class"] = application.mainClass.get()
+    }
+}
+
+// Disable plain jar task (we only want the shadow/obfuscated one)
+tasks.named<Jar>("jar") {
+    enabled = true
+}
+
+// Make assemble depend on shadowJar
+tasks.assemble {
+    dependsOn(tasks.shadowJar)
+}
+
+tasks.named("compileJava") {
+    dependsOn("generateJooq")
+}
+
+tasks.named<JavaExec>("run") {
+    jvmArgs(
+        // Allow Netty to optimize NIO Selectors
+        "--add-opens", "java.base/sun.nio.ch=ALL-UNNAMED",
+        "--add-opens", "java.base/java.nio=ALL-UNNAMED",
+        "--enable-native-access=ALL-UNNAMED"
+    )
 }
 
 

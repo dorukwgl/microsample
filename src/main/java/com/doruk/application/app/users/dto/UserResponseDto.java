@@ -5,7 +5,7 @@ import com.doruk.domain.shared.enums.UserAccountStatus;
 import io.micronaut.serde.annotation.Serdeable;
 import lombok.Builder;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Serdeable
@@ -19,8 +19,8 @@ public record UserResponseDto(
         boolean emailVerified,
         boolean phoneVerified,
         MultiAuthType multiFactorAuth,
-        LocalDateTime createdAt,
-        LocalDateTime updatedAt
+        OffsetDateTime createdAt,
+        OffsetDateTime updatedAt
 ) {
 
 }
