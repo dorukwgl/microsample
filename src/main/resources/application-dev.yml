@@ -1,0 +1,64 @@
+# ==========================
+# Development Environment Configuration
+# ==========================
+
+micronaut:
+  application:
+    local-storage-dir: "/var/www/kendra"
+    public-path-prefix: "pub"
+    private-path-prefix: "drk"
+    sociair-api-key: ${SOCIAIR_KEY}
+    app-url: http://localhost:${LEDGER_PORT}
+    resource-api-path: "res"
+    cookie-secure: false
+
+  security:
+    intercept-url-map:
+      -
+        pattern: /control-panel
+        access:
+          - isAnonymous()
+      -
+        pattern: /control-panel/*
+        access:
+          - isAnonymous()
+
+  server:
+    multipart:
+      max-file-size: 10
+      max-request-size: 52MB
+
+  control-panel:
+    enabled: true
+    title: micro-panel
+    path: /control-panel
+    log-url: true
+
+# ==========================
+# Development Settings
+# ==========================
+jimmer:
+  show-sql: true
+
+# ==========================
+# Development Logging
+# ==========================
+logger:
+  levels:
+    ROOT: TRACE
+    io.micronaut: INFO
+    io.netty: ALL
+    io.micronaut.http.server.netty: ALL
+    io.micronaut.context: WARN
+    org.flywaydb: INFO
+    io.micronaut.flyway: INFO
+    org.babyfish.jimmer.sql: TRACE
+
+endpoints:
+  all:
+    enabled: true
+    sensitive: false
+  health:
+    details-visible: ANONYMOUS
+  loggers:
+    write-sensitive: false

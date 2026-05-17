@@ -1,0 +1,31 @@
+# ==========================
+# Production Environment Configuration
+# ==========================
+
+micronaut:
+  application:
+    localStorageDir: "/var/www/kendra"
+    publicPathPrefix: "pub"
+    privatePathPrefix: "drk"
+    sociairApiKey: ${SOCIAIR_KEY}
+    cookie-secure: true
+
+# ==========================
+# Production Settings
+# ==========================
+jimmer:
+  show-sql: false
+
+# ==========================
+# Production Logging
+# ==========================
+logger:
+  levels:
+    ROOT: INFO
+    io.micronaut: INFO
+    io.netty: WARN
+    io.micronaut.http.server.netty: INFO
+    io.micronaut.context: WARN
+    org.flywaydb: INFO
+    io.micronaut.flyway: INFO
+    org.babyfish.jimmer.sql: WARN
