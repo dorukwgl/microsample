@@ -4,7 +4,7 @@
 
 micronaut:
   application:
-    local-storage-dir: "/var/www/kendra"
+    local-storage-dir: "/var/www/microsample"
     public-path-prefix: "pub"
     private-path-prefix: "drk"
     sociair-api-key: ${SOCIAIR_KEY}

@@ -173,7 +173,7 @@ public interface LicensesDraft extends Licenses, Draft {
 
         public static final ImmutableType TYPE = ImmutableType
             .newBuilder(
-                "0.10.6",
+                "0.10.7",
                 Licenses.class,
                 Collections.emptyList(),
                 (ctx, base) -> new DraftImpl(ctx, (Licenses)base)

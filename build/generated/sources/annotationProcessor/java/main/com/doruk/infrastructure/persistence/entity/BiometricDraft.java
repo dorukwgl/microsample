@@ -91,7 +91,7 @@ public interface BiometricDraft extends Biometric, Draft {
 
         public static final ImmutableType TYPE = ImmutableType
             .newBuilder(
-                "0.10.6",
+                "0.10.7",
                 Biometric.class,
                 Collections.emptyList(),
                 (ctx, base) -> new DraftImpl(ctx, (Biometric)base)

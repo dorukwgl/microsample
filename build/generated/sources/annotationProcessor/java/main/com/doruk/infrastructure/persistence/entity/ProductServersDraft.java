@@ -83,7 +83,7 @@ public interface ProductServersDraft extends ProductServers, Draft {
 
         public static final ImmutableType TYPE = ImmutableType
             .newBuilder(
-                "0.10.6",
+                "0.10.7",
                 ProductServers.class,
                 Collections.emptyList(),
                 (ctx, base) -> new DraftImpl(ctx, (ProductServers)base)

@@ -114,7 +114,7 @@ public interface SessionDraft extends Session, Draft {
 
         public static final ImmutableType TYPE = ImmutableType
             .newBuilder(
-                "0.10.6",
+                "0.10.7",
                 Session.class,
                 Collections.emptyList(),
                 (ctx, base) -> new DraftImpl(ctx, (Session)base)

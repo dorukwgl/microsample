@@ -130,7 +130,7 @@ public interface LicenseAddonsDraft extends LicenseAddons, Draft {
 
         public static final ImmutableType TYPE = ImmutableType
             .newBuilder(
-                "0.10.6",
+                "0.10.7",
                 LicenseAddons.class,
                 Collections.emptyList(),
                 (ctx, base) -> new DraftImpl(ctx, (LicenseAddons)base)

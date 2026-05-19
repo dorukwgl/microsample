@@ -3,10 +3,10 @@ package com.doruk.infrastructure.filters;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.core.annotation.Order;
 import io.micronaut.http.HttpRequest;
-import io.micronaut.http.HttpStatus;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.MutableHttpResponse;
 import io.micronaut.http.annotation.Filter;
+import io.micronaut.core.async.publisher.Publishers;
 import io.micronaut.http.filter.HttpServerFilter;
 import io.micronaut.http.filter.ServerFilterChain;
 import io.micronaut.http.server.types.files.SystemFile;
@@ -14,7 +14,6 @@ import io.micronaut.json.JsonMapper;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import org.reactivestreams.Publisher;
-import reactor.core.publisher.Flux;
 
 import java.io.IOException;
 
@@ -55,8 +54,7 @@ public class LoggingFilter implements HttpServerFilter {
         });
 
         // Proceed with request response
-        return Flux.from(chain.proceed(request))
-                .map(response -> {
+        return Publishers.map(chain.proceed(request), response -> {
                     // Log response status and body
                     int status = response.code();
                     Object respBody = response.getBody().orElse(null);

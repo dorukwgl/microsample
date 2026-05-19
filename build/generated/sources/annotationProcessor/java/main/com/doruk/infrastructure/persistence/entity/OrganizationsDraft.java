@@ -104,7 +104,7 @@ public interface OrganizationsDraft extends Organizations, Draft {
 
         public static final ImmutableType TYPE = ImmutableType
             .newBuilder(
-                "0.10.6",
+                "0.10.7",
                 Organizations.class,
                 Collections.emptyList(),
                 (ctx, base) -> new DraftImpl(ctx, (Organizations)base)

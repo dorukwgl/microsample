@@ -1,11 +1,11 @@
 import org.jooq.meta.jaxb.ForcedType
 
-val awssdkVersion = "2.42.23"
-val postgresVersion = "42.7.10"
-val flywayPostgresVersion = "12.2.0"
-val jimmerVersion = "0.10.6"
-val jooqVersion = "3.21.1"
-val lombokVersion = "1.18.44"
+val awssdkVersion = "2.44.8"
+val postgresVersion = "42.7.11"
+val flywayPostgresVersion = "12.6.1"
+val jimmerVersion = "0.10.7"
+val jooqVersion = "3.21.4"
+val lombokVersion = "1.18.46"
 
 buildscript {
     repositories {
@@ -13,18 +13,18 @@ buildscript {
     }
     dependencies {
         // Defines the JDBC driver and Flyway extension for the Gradle build tool itself
-        classpath("org.postgresql:postgresql:42.7.10")
-        classpath("org.flywaydb:flyway-database-postgresql:12.2.0")
+        classpath("org.postgresql:postgresql:42.7.11")
+        classpath("org.flywaydb:flyway-database-postgresql:12.6.1")
     }
 }
 
 plugins {
-    id("io.micronaut.application") version "4.6.1"
-    id("com.gradleup.shadow") version "8.3.9"
-    id("io.micronaut.test-resources") version "4.6.1"
-    id("io.micronaut.aot") version "4.6.1"
-    id("org.flywaydb.flyway") version "12.2.0"
-    id("nu.studer.jooq") version "10.2"
+    id("io.micronaut.application") version "4.6.2"
+    id("com.gradleup.shadow") version "9.4.1"
+    id("io.micronaut.test-resources") version "4.6.2"
+    id("io.micronaut.aot") version "4.6.2"
+    id("org.flywaydb.flyway") version "12.6.1"
+    id("nu.studer.jooq") version "10.2.1"
 }
 
 version = "1.0.0"
@@ -58,7 +58,6 @@ dependencies {
     implementation("io.micronaut:micronaut-management")
     implementation("io.micronaut.flyway:micronaut-flyway")
     implementation("io.micronaut.nats:micronaut-nats")
-    implementation("io.micronaut.reactor:micronaut-reactor")
     implementation("io.micronaut.redis:micronaut-redis-lettuce")
     implementation("io.micronaut.security:micronaut-security-jwt")
     implementation("io.micronaut.serde:micronaut-serde-jackson")
@@ -76,23 +75,21 @@ dependencies {
     implementation("org.jooq:jooq:$jooqVersion")
     jooqGenerator("org.jooq:jooq-codegen:$jooqVersion")
     jooqGenerator("org.postgresql:postgresql:$postgresVersion")
-    // for native image, flat mapping
-    implementation("org.simpleflatmapper:sfm-jdbc:9.0.2")
 
     // Utilities
-    implementation("nl.basjes.parse.useragent:yauaa:7.32.0")
+    implementation("nl.basjes.parse.useragent:yauaa:8.1.1")
     implementation("net.coobird:thumbnailator:0.4.21")
     implementation("software.amazon.awssdk:s3")
     implementation("de.mkammerer:argon2-jvm:2.12")
     // compression
-    implementation("com.aayushatharva.brotli4j:brotli4j:1.20.0")
-    runtimeOnly("com.aayushatharva.brotli4j:native-linux-x86_64:1.20.0")
+    implementation("com.aayushatharva.brotli4j:brotli4j:1.23.0")
+    runtimeOnly("com.aayushatharva.brotli4j:native-linux-x86_64:1.23.0")
 
     // logging
     runtimeOnly("ch.qos.logback:logback-classic")
     // Log4j 2 Bridge (Required for Yauaa to log via Logback)
-    implementation("org.apache.logging.log4j:log4j-to-slf4j:2.25.3")
-    implementation("org.apache.logging.log4j:log4j-api:2.25.3")
+    implementation("org.apache.logging.log4j:log4j-to-slf4j:2.26.0")
+    implementation("org.apache.logging.log4j:log4j-api:2.26.0")
 
     // --- Compile Only / Provided ---
     compileOnly("io.micronaut.openapi:micronaut-openapi-annotations")
@@ -110,7 +107,7 @@ dependencies {
     developmentOnly("io.micronaut.controlpanel:micronaut-control-panel-management")
     developmentOnly("io.micronaut.controlpanel:micronaut-control-panel-ui")
 
-    aotPlugins(platform("io.micronaut.platform:micronaut-platform:4.10.10"))
+    aotPlugins(platform("io.micronaut.platform:micronaut-platform:4.10.14"))
     aotPlugins("io.micronaut.security:micronaut-security-aot")
 
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
@@ -133,7 +130,7 @@ tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
     options.compilerArgs.addAll(listOf(
         "-Amicronaut.processing.group=com.doruk",
-        "-Amicronaut.processing.module=kendra"
+        "-Amicronaut.processing.module=microsample"
     ))
 
     if (generateDocs) {

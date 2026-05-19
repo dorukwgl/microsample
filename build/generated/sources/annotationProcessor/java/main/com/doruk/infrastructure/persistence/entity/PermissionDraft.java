@@ -73,7 +73,7 @@ public interface PermissionDraft extends Permission, Draft {
 
         public static final ImmutableType TYPE = ImmutableType
             .newBuilder(
-                "0.10.6",
+                "0.10.7",
                 Permission.class,
                 Collections.emptyList(),
                 (ctx, base) -> new DraftImpl(ctx, (Permission)base)

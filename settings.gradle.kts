@@ -1,4 +1,4 @@
 
 
-rootProject.name="Kendra"
+rootProject.name="microsample"
 

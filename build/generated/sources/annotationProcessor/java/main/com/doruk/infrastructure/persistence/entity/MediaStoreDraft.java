@@ -86,7 +86,7 @@ public interface MediaStoreDraft extends MediaStore, Draft {
 
         public static final ImmutableType TYPE = ImmutableType
             .newBuilder(
-                "0.10.6",
+                "0.10.7",
                 MediaStore.class,
                 Collections.emptyList(),
                 (ctx, base) -> new DraftImpl(ctx, (MediaStore)base)
@@ -201,7 +201,6 @@ public interface MediaStoreDraft extends MediaStore, Draft {
                 return createdAt();
             }
 
-            @Nullable
             public final OffsetDateTime getDeletedAt() {
                 return deletedAt();
             }

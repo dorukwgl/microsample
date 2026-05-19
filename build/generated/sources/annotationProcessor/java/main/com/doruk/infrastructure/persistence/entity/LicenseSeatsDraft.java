@@ -119,7 +119,7 @@ public interface LicenseSeatsDraft extends LicenseSeats, Draft {
 
         public static final ImmutableType TYPE = ImmutableType
             .newBuilder(
-                "0.10.6",
+                "0.10.7",
                 LicenseSeats.class,
                 Collections.emptyList(),
                 (ctx, base) -> new DraftImpl(ctx, (LicenseSeats)base)

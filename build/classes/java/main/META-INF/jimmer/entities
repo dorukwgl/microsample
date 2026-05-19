@@ -1,0 +1,12 @@
+com.doruk.infrastructure.persistence.entity.Biometric
+com.doruk.infrastructure.persistence.entity.LicenseAddons
+com.doruk.infrastructure.persistence.entity.LicenseSeats
+com.doruk.infrastructure.persistence.entity.Licenses
+com.doruk.infrastructure.persistence.entity.MediaStore
+com.doruk.infrastructure.persistence.entity.Organizations
+com.doruk.infrastructure.persistence.entity.Permission
+com.doruk.infrastructure.persistence.entity.ProductServers
+com.doruk.infrastructure.persistence.entity.Role
+com.doruk.infrastructure.persistence.entity.Session
+com.doruk.infrastructure.persistence.entity.User
+com.doruk.infrastructure.persistence.entity.UserProfile

@@ -4,7 +4,7 @@
 
 micronaut:
   application:
-    name: Kendra
+    name: microsample
     app-id: ${APP_ID}
     session-expiration: ${SESSION_EXPIRATION:7} # days
     image-max-size: 5242880 # 5MB
@@ -98,7 +98,7 @@ datasources:
     password: ${DATASOURCE_PASSWORD}
     driverClassName: org.postgresql.Driver
     dialect: POSTGRES
-    schema: kendra
+    schema: microsample
 
     hikari:
       maximum-pool-size: 30
@@ -137,7 +137,7 @@ flyway:
       baseline-description: "Initial migration"
       out-of-order: false
       locations: classpath:db/migration
-      schemas: kendra
+      schemas: microsample
 
 # ==================================
 # S3 Storage Configuration

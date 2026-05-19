@@ -86,7 +86,7 @@ public interface RoleDraft extends Role, Draft {
 
         public static final ImmutableType TYPE = ImmutableType
             .newBuilder(
-                "0.10.6",
+                "0.10.7",
                 Role.class,
                 Collections.emptyList(),
                 (ctx, base) -> new DraftImpl(ctx, (Role)base)
