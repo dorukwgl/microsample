@@ -7,11 +7,9 @@ import com.doruk.infrastructure.security.annotation.RequiresPermission;
 import jakarta.inject.Singleton;
 
 import java.util.Arrays;
-import java.util.EnumMap;
-import java.util.Map;
 
 @Singleton
-public class RbacPermissionEvaluator implements PermissionEvaluator {
+public class PermissionEvaluatorImpl implements PermissionEvaluator {
     @Override
     public boolean evaluate(
             UserScope scope,

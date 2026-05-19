@@ -41,7 +41,7 @@ public class CustomJwtAuthenticationFactory implements JwtAuthenticationFactory 
                             sub.toString(),
                             Map.of(
                                     UserScope.KEY,
-                                    permissions
+                                    new UserScope(sub.toString(), permissions)
                             )
                     )
             );

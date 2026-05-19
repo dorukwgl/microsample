@@ -94,10 +94,11 @@ PageQueryRequest (presentation/dto/, validated DTO with swagger)
 - No `var` if it obscures the type — prefer explicit types at public boundaries.
 - Swagger on DTO fields is mandatory. Use `@Schema(description = "...")`.
 
-## Tool Usage
-- **context-mode**: always use ctx_batch_execute, ctx_search, ctx_execute for codebase navigation before reading files directly
-- **graphify**: navigate codebase graph before writing code to understand relationships
-- **context7**: fetch latest docs when doing anything new or non-repeatitive — technologies evolve fast, don't rely on training data
+## Tool Usage — Priority Chain
+1. **graphify** — navigate codebase graph first, if feasible, before writing code to understand relationships
+2. **context-mode** — always use ctx_batch_execute, ctx_search, ctx_execute for codebase navigation (primary/default tool; fallback when graphify isn't available)
+3. **Read files directly** — last resort, only when the above two can't answer the question
+4. **context7** — fetch latest docs when doing anything new or non-repeatitive — technologies evolve fast, don't rely on training data
 
 
 # Project: Microsample
