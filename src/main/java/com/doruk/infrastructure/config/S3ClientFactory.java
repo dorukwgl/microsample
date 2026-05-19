@@ -33,6 +33,7 @@ public class S3ClientFactory {
     }
 
     @Bean
+    @Requires(env = "object-storage-s3")
     @Singleton
     S3Presigner s3Presigner(S3Config config) {
         return S3Presigner.builder()

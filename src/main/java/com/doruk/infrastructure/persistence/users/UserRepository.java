@@ -1,10 +1,15 @@
 package com.doruk.infrastructure.persistence.users;
 
 import com.doruk.application.app.users.dto.*;
+import com.doruk.application.dto.StoredObject;
 import com.doruk.application.dto.UploadedFile;
+import com.doruk.application.enums.ObjectVisibility;
+import com.doruk.domain.shared.enums.MultiAuthType;
+import com.doruk.domain.shared.enums.UserAccountStatus;
 import com.doruk.infrastructure.persistence.entity.*;
+import com.doruk.jooq.enums.FileVisibility;
 import com.doruk.infrastructure.persistence.users.mapper.ProfileMapper;
-import com.doruk.infrastructure.persistence.users.mapper.UserMapper;
+import com.doruk.jooq.tables.MediaStore;
 import com.doruk.jooq.tables.UserProfiles;
 import com.doruk.jooq.tables.UserRoles;
 import com.doruk.jooq.tables.Users;
@@ -18,6 +23,7 @@ import org.jooq.Record1;
 import org.jooq.impl.DSL;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
@@ -27,7 +33,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class UserRepository {
     private final JSqlClient sqlClient;
-    private final UserMapper userMapper;
     private final ProfileMapper profileMapper;
     private final DSLContext dsl;
 
@@ -122,6 +127,39 @@ public class UserRepository {
         var u = Users.USERS;
         var r = UserRoles.USER_ROLES;
         var p = UserProfiles.USER_PROFILES;
+        var m = MediaStore.MEDIA_STORE;
+
+        var profileField = DSL.row(
+                p.USER_ID.cast(String.class),
+                p.FULL_NAME,
+                p.ADDRESS,
+                p.CITY,
+                p.STATE,
+                p.COUNTRY,
+                p.POSTAL_CODE,
+                p.CREATED_AT,
+                p.UPDATED_AT
+        ).mapping(ProfileDto::new);
+
+        var iconField = DSL.row(
+                m.OBJECT_KEY,
+                m.MIME_TYPE,
+                m.SIZE,
+                m.VISIBILITY
+        ).mapping((String objectKey, String mimeType, Long size, FileVisibility visibility) ->
+                objectKey == null ? null : StoredObject.builder()
+                        .objectKey(objectKey)
+                        .originalName(null)
+                        .size(size != null ? size : 0)
+                        .visibility(ObjectVisibility.valueOf(visibility.name()))
+                        .mimeType(mimeType)
+                        .build()
+        );
+
+        var rolesField = DSL.multiset(
+                DSL.select(r.NAME)
+                        .where(r.USER_ID.eq(u.ID))
+        ).convertFrom(rs -> rs.stream().map(Record1::value1).toList());
 
         return dsl.select(
                         u.ID.cast(String.class),
@@ -134,28 +172,29 @@ public class UserRepository {
                         u.STATUS,
                         u.CREATED_AT,
                         u.UPDATED_AT,
-
-                        DSL.row(
-                                p.USER_ID.cast(String.class),
-                                p.FULL_NAME,
-                                p.ADDRESS,
-                                p.CITY,
-                                p.STATE,
-                                p.COUNTRY,
-                                p.POSTAL_CODE,
-                                p.CREATED_AT,
-                                p.UPDATED_AT
-                        ).mapping(ProfileDto::new),
-
-                        // fetch roles
-                        DSL.multiset(
-                                DSL.select(r.NAME)
-                                        .where(r.USER_ID.eq(u.ID))
-                        ).convertFrom(rs -> rs.stream().map(Record1::value1).toList())
+                        profileField,
+                        iconField,
+                        rolesField
                 )
                 .from(u)
                 .leftJoin(p).on(u.ID.eq(p.USER_ID))
+                .leftJoin(m).on(p.PROFILE_ICON.eq(m.ID))
                 .where(u.ID.eq(UUID.fromString(userId)))
-                .fetchOne(userMapper::toCurrentUserDto);
+                .fetchOne(rs -> CurrentUserDto.builder()
+                        .id(rs.get(0, String.class))
+                        .username(rs.get(1, String.class))
+                        .email(rs.get(2, String.class))
+                        .phone(rs.get(3, String.class))
+                        .emailVerified(rs.get(4, Boolean.class))
+                        .phoneVerified(rs.get(5, Boolean.class))
+                        .multiFactorAuth(rs.get(6, MultiAuthType.class))
+                        .status(rs.get(7, UserAccountStatus.class))
+                        .createdAt(rs.get(8, OffsetDateTime.class))
+                        .updatedAt(rs.get(9, OffsetDateTime.class))
+                        .profile(rs.get(10, ProfileDto.class))
+                        .profileIcon(rs.get(11, StoredObject.class))
+                        .roles(rs.get(12, List.class))
+                        .build()
+                );
     }
 }

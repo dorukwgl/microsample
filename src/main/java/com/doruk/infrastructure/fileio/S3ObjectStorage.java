@@ -153,10 +153,11 @@ public class S3ObjectStorage implements ObjectStorage {
 
         String uuid = UUID.randomUUID().toString();
         String hash = uuid.replace("-", "").substring(0, 4);
+        String prefix = visibility == ObjectVisibility.PUBLIC
+                ? appConfig.publicPathPrefix()
+                : appConfig.privatePathPrefix();
 
-        return visibility == ObjectVisibility.PUBLIC ?
-                appConfig.publicPathPrefix() : appConfig.privatePathPrefix()
-                + "/" + hash.substring(0, 2)
+        return prefix + "/" + hash.substring(0, 2)
                 + "/" + hash.substring(2)
                 + "/" + uuid + ext;
     }
