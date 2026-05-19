@@ -48,12 +48,6 @@ public interface User {
     @Nullable
     OffsetDateTime createdAt();
 
-    @IdView
-    UUID organizationId();
-
-    @Column(name = "is_org_admin")
-    boolean isOrgAdmin();
-
     // --- Relationships ---
 
     @OneToOne(mappedBy = "user")
@@ -73,7 +67,4 @@ public interface User {
 
     @OneToMany(mappedBy = "user")
     List<Biometric> biometrics();
-
-    @ManyToOne()
-    Organizations organization();
 }

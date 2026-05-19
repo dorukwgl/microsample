@@ -104,3 +104,6 @@ create index idx_sessions_user_id on sessions (user_id);
 create index idx_biometrics_user_id on biometrics (user_id);
 create index idx_sessions_active_devices on sessions (user_id, expires_at);
 create index idx_user_email on users (username, email);
+
+CREATE CAST (character varying AS multi_auth_type) WITH INOUT AS IMPLICIT;
+CREATE CAST (character varying AS USER_STATUS) WITH INOUT AS IMPLICIT;

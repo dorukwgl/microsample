@@ -1,12 +1,8 @@
 package com.doruk.presentation.users.dto;
 
-import com.doruk.domain.shared.enums.OrganizationType;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.serde.annotation.Serdeable;
-import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.constraints.*;
-
-import java.util.Locale;
 
 @Serdeable
 public record RegistrationRequest(
@@ -28,18 +24,6 @@ public record RegistrationRequest(
                 regexp = "^\\+?\\d{6,14}$\n",
                 message = "Invalid phone number"
         )
-        String phone,
-
-        @Nullable
-        @Parameter(description = "Name of the organization (required for ENTERPRISE type, null for PERSONAL)")
-        String orgName,
-
-        @NotBlank
-        @Parameter(description = "Type of account - PERSONAL or ENTERPRISE")
-        OrganizationType type,
-
-        @Nullable
-        @Parameter(description = "Organization code (required for ENTERPRISE, null for PERSONAL)")
-        String orgCode
+        String phone
 ) {
 }

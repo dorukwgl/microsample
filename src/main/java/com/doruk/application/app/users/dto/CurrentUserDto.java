@@ -1,6 +1,5 @@
 package com.doruk.application.app.users.dto;
 
-import com.doruk.application.dto.OrganizationDto;
 import com.doruk.domain.shared.enums.MultiAuthType;
 import com.doruk.domain.shared.enums.UserAccountStatus;
 import io.micronaut.serde.annotation.Serdeable;
@@ -19,8 +18,6 @@ public record CurrentUserDto(
         boolean emailVerified,
         boolean phoneVerified,
         MultiAuthType multiFactorAuth,
-        OrganizationDto organization,
-        boolean isOrgAdmin,
         UserAccountStatus status,
         OffsetDateTime createdAt,
         OffsetDateTime updatedAt,

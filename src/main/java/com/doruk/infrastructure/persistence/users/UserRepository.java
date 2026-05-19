@@ -1,9 +1,7 @@
 package com.doruk.infrastructure.persistence.users;
 
 import com.doruk.application.app.users.dto.*;
-import com.doruk.application.dto.OrganizationDto;
 import com.doruk.application.dto.UploadedFile;
-import com.doruk.domain.shared.enums.OrganizationType;
 import com.doruk.infrastructure.persistence.entity.*;
 import com.doruk.infrastructure.persistence.users.mapper.ProfileMapper;
 import com.doruk.infrastructure.persistence.users.mapper.UserMapper;
@@ -45,51 +43,16 @@ public class UserRepository {
                 .findFirst();
     }
 
-    public boolean orgCodeExists(String orgCode) {
-        return sqlClient.createQuery(OrganizationsTable.$)
-                .where(OrganizationsTable.$.orgCode().eq(orgCode))
-                .exists();
-    }
-
-    private OrganizationDto createOrganization(String orgName, OrganizationType type, String orgCode) {
-        var o = com.doruk.jooq.tables.Organizations.ORGANIZATIONS;
-        return dsl.insertInto(o)
-                .set(o.NAME, orgName)
-                .set(o.TYPE, type)
-                .set(o.ORG_CODE, orgCode)
-                .returning()
-                .fetchOne(rs -> OrganizationDto.builder()
-                        .name(rs.getName())
-                        .orgCode(rs.getOrgCode())
-                        .type(rs.getType())
-                        .id(rs.getId())
-                        .build());
-
-    }
-
     public UserResponseDto createUser(CreateUserCmd dto, String hashedPassword) {
         var u = Users.USERS;
         var r = UserRoles.USER_ROLES;
 
         return dsl.transactionResult(() -> {
-            // Create organization based on account type
-            boolean isOrgAdmin = dto.type() == OrganizationType.ENTERPRISE;
-            OrganizationDto org = switch(dto.type()) {
-                case PERSONAL -> createOrganization(null, OrganizationType.PERSONAL, null);
-                case ENTERPRISE -> createOrganization(dto.orgName(), OrganizationType.ENTERPRISE, dto.orgCode());
-            };
-
-
-            UUID orgId = org.id();
-
-            // Create user linked to organization
             var usr = dsl.insertInto(u)
                     .set(u.USERNAME, dto.username())
                     .set(u.EMAIL, dto.email())
                     .set(u.PASSWORD, hashedPassword)
                     .set(u.PHONE, dto.phone())
-                    .set(u.ORGANIZATION_ID, orgId)
-                    .set(u.IS_ORG_ADMIN, isOrgAdmin)
                     .returning()
                     .fetchOne(rs -> UserResponseDto.builder()
                             .id(rs.getId())
@@ -101,9 +64,7 @@ public class UserRepository {
                             .phoneVerified(rs.getIsPhoneVerified())
                             .multiFactorAuth(rs.getMultiFactorAuth())
                             .createdAt(rs.getCreatedAt())
-                            .isOrgAdmin(rs.getIsOrgAdmin())
                             .updatedAt(rs.getUpdatedAt())
-                            .organization(org)
                             .build()
                     );
 
@@ -161,7 +122,6 @@ public class UserRepository {
         var u = Users.USERS;
         var r = UserRoles.USER_ROLES;
         var p = UserProfiles.USER_PROFILES;
-        var o = com.doruk.jooq.tables.Organizations.ORGANIZATIONS;
 
         return dsl.select(
                         u.ID.cast(String.class),
@@ -172,7 +132,6 @@ public class UserRepository {
                         u.IS_PHONE_VERIFIED,
                         u.MULTI_FACTOR_AUTH,
                         u.STATUS,
-                        u.IS_ORG_ADMIN,
                         u.CREATED_AT,
                         u.UPDATED_AT,
 
@@ -188,14 +147,6 @@ public class UserRepository {
                                 p.UPDATED_AT
                         ).mapping(ProfileDto::new),
 
-                        // fetch organization
-                        DSL.row(
-                                o.ID,
-                                o.NAME,
-                                o.ORG_CODE,
-                                o.TYPE
-                        ).mapping(OrganizationDto::new),
-
                         // fetch roles
                         DSL.multiset(
                                 DSL.select(r.NAME)
@@ -204,7 +155,6 @@ public class UserRepository {
                 )
                 .from(u)
                 .leftJoin(p).on(u.ID.eq(p.USER_ID))
-                .leftJoin(o).on(o.ID.eq(u.ORGANIZATION_ID))
                 .where(u.ID.eq(UUID.fromString(userId)))
                 .fetchOne(userMapper::toCurrentUserDto);
     }

@@ -1,6 +1,5 @@
 package com.doruk.presentation.users.dto;
 
-import com.doruk.domain.shared.enums.OrganizationType;
 import io.micronaut.core.annotation.Nullable;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.constraints.NotBlank;
