@@ -1,6 +1,106 @@
-Follow `/home/doruk/.claude/CLAUDE.md` for all global Java/Micronaut/DDD rules.
+# graphify
+- **graphify** (`~/.claude/skills/graphify/SKILL.md`) - any input to knowledge graph. Trigger: `/graphify`
+  When the user types `/graphify`, invoke the Skill tool with `skill: "graphify"` before doing anything else.
 
-# Project: Kendra
+# Global Java/Micronaut Backend Rules
+
+## Tech Stack
+- Java, Micronaut, Gradle Kotlin DSL
+- PostgreSQL (database), Flyway (migrations)
+- NATS (messaging), Redis (cache)
+- Jimmer + JOOQ (dual ORM), no reflections anywhere
+
+## Concurrency — Virtual Threads (Loom)
+- I/O intensive tasks → Virtual threads (Micronaut loom carrier)
+- CPU intensive tasks → CPU platform threads
+- **No reactive programming** — blocking I/O on VTs is fine
+- Use Micronaut's loom carrier config, never `Reactive` APIs
+
+## ORM Strategy
+- **Jimmer**: Simple CRUD, complex paginations, `whereIf`, conditional queries, flexible querying. Default choice.
+- **JOOQ**: Critical/optimal paths where Jimmer can't do it:
+    - DB-specific operations (e.g., `gen_random_uuid()` default from DB)
+    - Half joins (join table A + junction AB without joining B — Jimmer always navigates full entity graph)
+    - Direct join table modifications (Jimmer can't modify junction tables directly)
+    - Any query needing DB-specific SQL optimization
+- **No reflections**: Both Jimmer and JOOQ must be compile-time only. No entity scanning, no runtime reflection.
+
+## Base Package
+All code under `com.doruk` (e.g., `com.doruk.presentation`, `com.doruk.application`).
+
+## Architecture — Custom DDD (Compile-Time, No Reflections)
+Three-tier with strict boundary mapping. No persistence annotations on domain objects, no runtime proxies.
+
+### Layer Structure
+```
+com.doruk.presentation/<module>/{controller, dto, mappers}
+com.doruk.application/app/<module>/{dto, service}
+com.doruk.application/{dto, enums, events, exception, files, interfaces, policies, security}
+com.doruk.domain/{exception, shared/enums}
+com.doruk.infrastructure/{apiclient, caching, config, errors, exceptionhandlers, fileio, filters, logging, mail, messaging/{handler, publisher}, persistence, security, sms, startup, util}
+```
+
+### Layer Responsibilities
+- **Controller** (`presentation`): Swagger docs (`@Operation`, `@Schema`), request validation (annotations on DTO), forward to application service, return response. Nothing else. Controllers in `controller/` subfolder.
+- **Application** (`application`): Modules under `app/<module>/{dto, service}`. Orchestration, ABAC policies, call domain policies, call infrastructure, utilities, NATS, Redis, events, etc. Maps at boundaries. No mappers folder — mapping done inline or at infra level.
+- **Domain** (`domain`): Business logic + policies. Simplified DDD — no domain interfaces, no entities, no repositories. Contains `exception/` and `shared/enums/`. Services call domain policies by passing data/DTOs. Services decide how to invoke policies.
+- **Infrastructure** (`infrastructure`): DDD-style — persistence, security, messaging, caching, mail, SMS, API clients, file I/O, config, filters, exception handlers, util. Persistence layer implements service-layer interfaces (in `application/interfaces/`). No infra interfaces leaking upward.
+
+### Persistence Sub-structure
+```
+infrastructure/persistence/
+├── entity/              # Jimmer entities (User, Role, Session, etc.)
+├── auth/                # auth repos + mappers/
+├── system/              # system repos + mappers/
+├── users/               # user repos + mappers/
+├── files/               # file repos
+└── exception/           # PersistenceException
+```
+
+### Pagination Pattern (strict)
+```
+PageQueryRequest (presentation/dto/, validated DTO with swagger)
+  → PageQueryMapper maps to PageQuery (application/dto/, no swagger no validation)
+    → Application asks infra/persistence
+      → returns PageResponse<DTO> (application/dto/PageResponse)
+```
+
+### Mapping Rules
+- Presentation: `mappers/` folder per module maps presentation DTO ↔ application DTO
+- Application: no mappers — infra maps to application DTOs, or maps inline when needed
+- Infra persistence: `mappers/` subfolder per module maps Jimmer entities → application DTOs
+- Map at boundaries — each caller maps to the format the next layer expects
+
+## Infrastructure Reusables (use these, don't reinvent)
+| Concern | Class/Location |
+|---|---|
+| Logging | `LoggingService` in `infrastructure/logging` |
+| Security (Argon2) | `ArgonEncoder` in `infrastructure/security` |
+| Messaging (NATS) | `infrastructure/messaging/{handler, publisher}` |
+| Cache (Redis) | `RedisMemoryStorage` in `infrastructure/caching` |
+| API Client | `infrastructure/apiclient/{BrevoClient, JwksClient, SociairClient}` |
+| SMS | `infrastructure/sms/` |
+| Mail | `BrevoMailService` in `infrastructure/mail` |
+| File I/O | `S3ObjectStorage` / `LocalObjectStorage` in `infrastructure/fileio` |
+| Utilities | `infrastructure/util/{StringUtil, ErrorBuilder, Constants, ...}` |
+| Config | `infrastructure/config/` — JimmerConfig, DatabaseConfig, etc. |
+
+## Code Rules
+- Controller: swagger docs on endpoint + DTO fields, only forward to application, return service output
+- Application: orchestrate, enforce ABAC, call domain/infra/utilities — no business logic inline
+- Domain: plain Java, no framework annotations, no reflections, focus on business rules
+- Infra: framework annotations OK (Jimmer entities, JOOQ, Micronaut `@Singleton` etc.)
+- No unnecessary comments. Only add when WHY is non-obvious.
+- No `var` if it obscures the type — prefer explicit types at public boundaries.
+- Swagger on DTO fields is mandatory. Use `@Schema(description = "...")`.
+
+## Tool Usage
+- **context-mode**: always use ctx_batch_execute, ctx_search, ctx_execute for codebase navigation before reading files directly
+- **graphify**: navigate codebase graph before writing code to understand relationships
+- **context7**: fetch latest docs when doing anything new or non-repeatitive — technologies evolve fast, don't rely on training data
+
+
+# Project: Microsample
 
 - **Main class**: `com.doruk.Application`
 - **Java 26**, Micronaut 4.6.1, Gradle Kotlin DSL
@@ -11,7 +111,7 @@ Follow `/home/doruk/.claude/CLAUDE.md` for all global Java/Micronaut/DDD rules.
 
 ```
 -Amicronaut.processing.group=com.doruk
--Amicronaut.processing.module=kendra
+-Amicronaut.processing.module=microsample
 ```
 
 ## Build Commands
