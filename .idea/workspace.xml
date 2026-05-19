@@ -6,6 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="aab6598c-58c9-4923-8f50-d967e52efd88" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/doruk/domain/license/entity/License.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/doruk/domain/license/enums/LicenseEventType.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -251,7 +253,7 @@
       <workItem from="1774945865069" duration="82000" />
       <workItem from="1774946434299" duration="5848000" />
       <workItem from="1779096376549" duration="5589000" />
-      <workItem from="1779161451515" duration="3408000" />
+      <workItem from="1779161451515" duration="7177000" />
     </task>
     <servers />
   </component>
