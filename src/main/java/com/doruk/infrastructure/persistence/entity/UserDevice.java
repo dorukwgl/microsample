@@ -18,7 +18,7 @@ public interface UserDevice {
     @JoinColumn(name = "user_id")
     User user();
 
-    @Key
+    // Unique enforced by partial index (nullable column) — see V4 migration
     @Column(name = "notification_device_id")
     String notificationDeviceId();
 

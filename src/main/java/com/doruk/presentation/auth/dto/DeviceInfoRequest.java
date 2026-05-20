@@ -5,7 +5,6 @@ import io.micronaut.core.annotation.Nullable;
 import io.micronaut.http.annotation.Header;
 import io.micronaut.serde.annotation.Serdeable;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.info.Info;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -17,8 +16,7 @@ public record DeviceInfoRequest(
         @Parameter(description = "Not to be confused with X-Fingerprint-Id (biometric hardware device ID)")
         @Nullable
         @Header("X-Device-Id")
-        @Size(max = 200, min = 32)
-        @Pattern(regexp = "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$")
+        @Size(max = 255, min = 32) @Pattern(regexp = "^[a-zA-Z0-9:_-]{32,255}$")
         String deviceId,
 
         @Parameter(description = "Biometric/fingerprint hardware device identifier. " +

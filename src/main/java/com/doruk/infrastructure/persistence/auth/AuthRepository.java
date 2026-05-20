@@ -32,12 +32,13 @@ public class AuthRepository {
     private final BiometricMapper biometricMapper;
     private final DSLContext dsl;
 
-    private String getDeviceId(String sessionId) {
+    private Optional<String> getDeviceId(String sessionId) {
         return sqlClient.createQuery(SessionTable.$)
                 .where(SessionTable.$.sessionId().eq(sessionId))
                 .select(SessionTable.$.deviceId())
                 .execute()
-                .getFirst();
+                .stream()
+                .findFirst();
     }
 
     private Optional<AuthDto> findUserWithPermissions(org.jooq.Condition whereCondition) {
@@ -96,6 +97,16 @@ public class AuthRepository {
                               Optional<String> deviceId,
                               Optional<String> deviceInfo) {
 
+        // delete any existing session for the same user+device (one active session per device)
+        deviceId.ifPresent(did -> {
+            var t = SessionTable.$;
+            sqlClient.createDelete(t)
+                    .where(Predicate.and(
+                            t.userId().eq(UUID.fromString(userId)),
+                            t.deviceId().eq(did)))
+                    .execute();
+        });
+
         sqlClient.saveCommand(SessionDraft.$.produce(s ->
                 s.setUserId(UUID.fromString(userId))
                         .setSessionId(sessionId)
@@ -144,6 +155,26 @@ public class AuthRepository {
                 .execute();
     }
 
+    /** Deletes the session AND nullifies the notification_device_id in user_devices
+     *  so push notifications stop, but biometric link is preserved for re-login. */
+    public void deleteSessionAndDevice(String sessionId) {
+        var t = SessionTable.$;
+        var row = sqlClient.createQuery(t)
+                .where(t.sessionId().eq(sessionId))
+                .select(t.userId(), t.deviceId())
+                .execute()
+                .stream()
+                .findFirst()
+                .orElse(null);
+
+        sqlClient.createDelete(t)
+                .where(t.sessionId().eq(sessionId))
+                .execute();
+
+        if (row != null && row.get_2() != null)
+            nullifyNotificationDevice(row.get_1().toString(), row.get_2());
+    }
+
     public void deleteAllSessions(String userId, boolean deleteBiometrics) {
         var t = SessionTable.$;
         sqlClient.createDelete(t)
@@ -160,9 +191,19 @@ public class AuthRepository {
     }
 
     public void deleteOtherSessions(String userId, String sessionId, boolean deleteBiometrics) {
-        String deviceId = null;
-        if (deleteBiometrics)
-            deviceId = getDeviceId(sessionId);
+        var currentNotifId = getDeviceId(sessionId);
+
+        // Look up the biometric hardware ID for the current device to preserve it
+        String bioDeviceId = null;
+        if (deleteBiometrics) {
+            if (currentNotifId.isPresent()) {
+                bioDeviceId = dsl.select(DSL.field("bio_device_id", String.class))
+                        .from(DSL.table("user_devices"))
+                        .where(DSL.field("user_id", UUID.class).eq(UUID.fromString(userId)))
+                        .and(DSL.field("notification_device_id", String.class).eq(currentNotifId.get()))
+                        .fetchOne(rs -> rs.get(0, String.class));
+            }
+        }
 
         var t = SessionTable.$;
         sqlClient.createDelete(t)
@@ -172,16 +213,41 @@ public class AuthRepository {
                 ))
                 .execute();
 
-        if (deviceId == null)
-            return;
+        // Nullify notification_device_id for other devices (stop push to logged-out devices).
+        // Preserve the current device's notification ID.
+        var tbl = DSL.table("user_devices");
+        var uidField = DSL.field("user_id", UUID.class);
+        var notifField = DSL.field("notification_device_id", String.class);
+        if (currentNotifId.isPresent()) {
+            dsl.update(tbl)
+                    .setNull(notifField)
+                    .where(uidField.eq(UUID.fromString(userId)))
+                    .and(notifField.ne(currentNotifId.get()))
+                    .execute();
+        } else {
+            dsl.update(tbl)
+                    .setNull(notifField)
+                    .where(uidField.eq(UUID.fromString(userId)))
+                    .execute();
+        }
 
-        var bt = BiometricTable.$;
-        sqlClient.createDelete(bt)
-                .where(Predicate.and(
-                        bt.userId().eq(UUID.fromString(userId)),
-                        bt.deviceId().ne(deviceId)
-                ))
-                .execute();
+        // Delete biometrics for other devices (or all if current has no biometric)
+        if (deleteBiometrics) {
+            var bt = BiometricTable.$;
+            if (bioDeviceId != null) {
+                sqlClient.createDelete(bt)
+                        .where(Predicate.and(
+                                bt.userId().eq(UUID.fromString(userId)),
+                                bt.deviceId().ne(bioDeviceId)
+                        ))
+                        .execute();
+            } else {
+                // No biometric on current device → delete all biometrics for user
+                sqlClient.createDelete(bt)
+                        .where(bt.userId().eq(UUID.fromString(userId)))
+                        .execute();
+            }
+        }
     }
 
     public String getUserPassword(String userId) {
@@ -337,28 +403,62 @@ public class AuthRepository {
         var tbl = DSL.table("user_devices");
         var uidField = DSL.field("user_id", UUID.class);
         var notifField = DSL.field("notification_device_id", String.class);
-        var bioField = DSL.field("bio_device_id", String.class);
         var infoField = DSL.field("device_info", String.class);
         var loginField = DSL.field("last_login_at", OffsetDateTime.class);
 
-        dsl.insertInto(tbl)
-                .set(uidField, UUID.fromString(userId))
-                .set(notifField, notificationDeviceId)
-                .set(bioField, bioDeviceId)
-                .set(infoField, deviceInfo)
-                .set(loginField, OffsetDateTime.now())
-                .onConflict(uidField, notifField)
-                .doUpdate()
-                .set(bioField, bioDeviceId)
-                .set(infoField, deviceInfo)
-                .set(loginField, OffsetDateTime.now())
+        if (bioDeviceId != null) {
+            var bioField = DSL.field("bio_device_id", String.class);
+            dsl.insertInto(tbl)
+                    .set(uidField, UUID.fromString(userId))
+                    .set(notifField, notificationDeviceId)
+                    .set(bioField, bioDeviceId)
+                    .set(infoField, deviceInfo)
+                    .set(loginField, OffsetDateTime.now())
+                    .onConflict(uidField, notifField)
+                    .doUpdate()
+                    .set(bioField, bioDeviceId)
+                    .set(infoField, deviceInfo)
+                    .set(loginField, OffsetDateTime.now())
+                    .execute();
+        } else {
+            // Don't overwrite bio_device_id to null — preserves biometric link
+            dsl.insertInto(tbl)
+                    .set(uidField, UUID.fromString(userId))
+                    .set(notifField, notificationDeviceId)
+                    .set(infoField, deviceInfo)
+                    .set(loginField, OffsetDateTime.now())
+                    .onConflict(uidField, notifField)
+                    .doUpdate()
+                    .set(infoField, deviceInfo)
+                    .set(loginField, OffsetDateTime.now())
+                    .execute();
+        }
+    }
+
+    public void updateDeviceNotificationId(String userId, String oldNotifId, String newNotifId) {
+        var tbl = DSL.table("user_devices");
+        dsl.update(tbl)
+                .set(DSL.field("notification_device_id", String.class), newNotifId)
+                .set(DSL.field("last_login_at", OffsetDateTime.class), OffsetDateTime.now())
+                .where(DSL.field("user_id", UUID.class).eq(UUID.fromString(userId)))
+                .and(DSL.field("notification_device_id", String.class).eq(oldNotifId))
                 .execute();
     }
 
-    public void deleteUserDevice(String userId, String notificationDeviceId) {
-        dsl.deleteFrom(DSL.table("user_devices"))
+    public void nullifyNotificationDevice(String userId, String notificationDeviceId) {
+        var tbl = DSL.table("user_devices");
+        dsl.update(tbl)
+                .setNull(DSL.field("notification_device_id", String.class))
                 .where(DSL.field("user_id", UUID.class).eq(UUID.fromString(userId)))
                 .and(DSL.field("notification_device_id", String.class).eq(notificationDeviceId))
+                .execute();
+    }
+
+    public void nullifyAllNotificationDevices(String userId) {
+        var tbl = DSL.table("user_devices");
+        dsl.update(tbl)
+                .setNull(DSL.field("notification_device_id", String.class))
+                .where(DSL.field("user_id", UUID.class).eq(UUID.fromString(userId)))
                 .execute();
     }
 

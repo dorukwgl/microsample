@@ -224,6 +224,14 @@ public class AuthController {
         return HttpResponse.noContent();
     }
 
+    @Operation(description = "Refresh the FCM notification device token without re-login. " +
+            "Call this when Firebase rotates the device token. Old session is replaced with a new one.")
+    @Put("/device/refresh-fcm-token")
+    HttpResponse<LoginResponse> refreshFcmToken(@CookieValue(Constants.SESSION_COOKIE_HEADER) String sessionId,
+                                                 @Valid @RequestBean DeviceInfoRequest info) {
+        return HttpResponse.ok(service.refreshFcmToken(sessionId, infoMapper.toDeviceInfo(info)));
+    }
+
     @Operation(description = "Change Password")
     @Put("/password")
     HttpResponse<?> changePassword(Authentication auth,
@@ -431,7 +439,7 @@ public class AuthController {
     }
 
     @Operation(description = "Disable MFA")
-    @Post("/fa/disable")
+    @Post("/mfa/disable")
     public InfoResponse disableMultiFactorAuthorization(Authentication user,
                                                         @Body
                                                         @Size(max = 50)

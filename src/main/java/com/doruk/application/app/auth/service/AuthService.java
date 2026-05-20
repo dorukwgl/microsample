@@ -281,16 +281,38 @@ public class AuthService {
     }
 
     public void logoutCurrent(String sessionId) {
-        authRepo.deleteSession(sessionId);
+        authRepo.deleteSessionAndDevice(sessionId);
     }
 
     public void logoutAll(String userId, boolean deleteBiometrics) {
         authRepo.deleteAllSessions(userId, deleteBiometrics);
-        authRepo.deleteAllUserDevices(userId);
+        if (deleteBiometrics)
+            authRepo.deleteAllUserDevices(userId);
+        else
+            authRepo.nullifyAllNotificationDevices(userId);
     }
 
     public void logoutOthers(String userId, String sessionId, boolean deleteBiometrics) {
         authRepo.deleteOtherSessions(userId, sessionId, deleteBiometrics);
+    }
+
+    public LoginResponse refreshFcmToken(String sessionId, DeviceInfoObject deviceInfoObject) {
+        var session = authRepo.getActiveSession(sessionId)
+                .orElseThrow(() -> new InvalidCredentialException("Invalid or expired session"));
+
+        var newDeviceId = deviceInfoObject.deviceId()
+                .orElseThrow(() -> new InvalidCredentialException("New device ID is required"));
+
+        // update user_devices: change notification_device_id from old to new
+        if (session.deviceId() != null)
+            authRepo.updateDeviceNotificationId(session.userId(), session.deviceId(), newDeviceId);
+
+        // delete old session
+        authRepo.deleteSession(sessionId);
+
+        // create new session with new device ID + fresh tokens
+        var user = authRepo.findByUserId(session.userId()).orElseThrow();
+        return loginHelper.createLoginResponse(deviceInfoObject, user);
     }
 
     public void updatePassword(String userId, String password, String newPassword) {

@@ -77,19 +77,30 @@ CREATE TABLE user_roles
     PRIMARY KEY (user_id, name)
 );
 
--- SESSIONS AND BIOMETRICS --
+-- SESSIONS --
+-- device_info: parsed User-Agent string (e.g. "Chrome 125 on Windows")
+-- device_id:   Firebase FCM token or browser UUID for push notifications (notification device ID)
+--              nullable — sessions without a notification channel (e.g. biometric-only) have no device_id.
+--              unique per (user, device_id) when not null — one active session per notification channel.
 create table sessions
 (
     id          bigserial primary key,
     user_id     uuid                     not null references users (id) on delete cascade,
     session_id  varchar(255)             not null unique,
-    device_info varchar(255),
-    device_id   varchar(255) unique,
+    device_info varchar(500),
+    device_id   varchar(255),
     expires_at  timestamp with time zone not null,
     created_at  timestamp with time zone default now(),
     permissions integer[]                not null
 );
+create index idx_sessions_user_id on sessions (user_id);
+create index idx_sessions_active_devices on sessions (user_id, expires_at);
+create unique index idx_sessions_user_device on sessions (user_id, device_id) where device_id is not null;
 
+-- BIOMETRICS --
+-- device_id: biometric hardware identifier (e.g. Android Keystore alias, Secure Enclave key ID).
+--            persistent across sessions and normal logouts — survives app reinstalls.
+--            NOT the same as sessions.device_id (notification device ID).
 create table biometrics
 (
     id           uuid primary key default uuidv7(),
@@ -98,12 +109,28 @@ create table biometrics
     device_id    varchar(255) not null unique,
     last_used_at timestamp with time zone
 );
-
--- index all foreign keys
-create index idx_sessions_user_id on sessions (user_id);
 create index idx_biometrics_user_id on biometrics (user_id);
-create index idx_sessions_active_devices on sessions (user_id, expires_at);
-create index idx_user_email on users (username, email);
 
+-- USER DEVICES --
+-- Maps notification_device_id ↔ bio_device_id for each user.
+-- notification_device_id: Firebase FCM token or browser UUID (session-scoped).
+--                         Nullified on logout to stop push; preserved on re-login.
+-- bio_device_id:          Biometric hardware ID from enrollment (persistent).
+--                         Survives logout; only deleted on logout-all?biometric=true.
+-- Multiple rows per user: one per active device.
+create table user_devices
+(
+    id                     bigserial primary key,
+    user_id                uuid         not null references users (id) on delete cascade,
+    notification_device_id varchar(255),
+    bio_device_id          varchar(255),
+    device_info            varchar(500),
+    last_login_at          timestamp with time zone default now(),
+    created_at             timestamp with time zone default now()
+);
+create unique index idx_user_devices_notif_unique on user_devices (user_id, notification_device_id) where notification_device_id is not null;
+create index idx_user_devices_user_id on user_devices (user_id);
+
+-- casts for enum columns used via jOOQ raw queries
 CREATE CAST (character varying AS multi_auth_type) WITH INOUT AS IMPLICIT;
 CREATE CAST (character varying AS USER_STATUS) WITH INOUT AS IMPLICIT;

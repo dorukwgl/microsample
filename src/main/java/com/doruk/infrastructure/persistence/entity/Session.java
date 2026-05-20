@@ -26,7 +26,6 @@ public interface Session {
     String deviceInfo();
 
     @Nullable
-    @Key
     String deviceId();
 
     @Column(name = "expires_at")
