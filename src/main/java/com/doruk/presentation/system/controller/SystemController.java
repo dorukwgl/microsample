@@ -21,6 +21,7 @@ import io.micronaut.security.rules.SecurityRule;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 
@@ -42,7 +43,7 @@ public class SystemController {
 
     @Operation(description = "returns a sorted pagination list of users with given filters")
     @Get("/")
-    public PageResponse<UserResponse> getUsers(UserQueryRequest userQueryRequest, PageQueryRequest pageable) {
+    public PageResponse<UserResponse> getUsers(UserQueryRequest userQueryRequest, @Valid PageQueryRequest pageable) {
         return service.getUsers(PageQueryMapper.toQuery(pageable),
                 new UserQuery(userQueryRequest.email()));
     }
