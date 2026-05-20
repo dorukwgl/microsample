@@ -2,6 +2,7 @@ package com.doruk.infrastructure.security;
 
 import com.doruk.application.security.UserScope;
 import com.doruk.domain.shared.enums.Permissions;
+import com.doruk.infrastructure.logging.LoggingService;
 import com.nimbusds.jwt.JWT;
 import io.micronaut.context.annotation.Replaces;
 import io.micronaut.security.authentication.Authentication;
@@ -46,7 +47,22 @@ public class CustomJwtAuthenticationFactory implements JwtAuthenticationFactory 
                     )
             );
         } catch (Exception e) {
+            var sub = safeSubject(jwt);
+            LoggingService.logError(
+                    "JWT authentication failed",
+                    e,
+                    Map.of("sub", sub)
+            );
             return Optional.empty();
+        }
+    }
+
+    private String safeSubject(JWT jwt) {
+        try {
+            var sub = jwt.getJWTClaimsSet().getSubject();
+            return sub != null ? sub : "unknown";
+        } catch (Exception ex) {
+            return "unknown";
         }
     }
 }
