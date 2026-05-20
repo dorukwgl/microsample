@@ -11,6 +11,8 @@ import io.micronaut.http.multipart.StreamingFileUpload;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
+
 @Singleton
 @RequiredArgsConstructor
 public class FileService {
@@ -22,5 +24,19 @@ public class FileService {
         var obj = storage.store(new StreamingUploadSource(upload), FileType.IMAGE, ObjectVisibility.PUBLIC, config.imageMaxSize());
         var id = fileRepo.save(obj);
         return new UploadedFile(id, obj);
+    }
+
+    public List<UploadedFile> imageUploadPublicBatch(List<StreamingFileUpload> uploads) {
+        return uploads.stream().map(this::imageUploadPublic).toList();
+    }
+
+    public UploadedFile imageUploadPrivate(StreamingFileUpload upload) {
+        var obj = storage.store(new StreamingUploadSource(upload), FileType.IMAGE, ObjectVisibility.PRIVATE, config.imageMaxSize());
+        var id = fileRepo.save(obj);
+        return new UploadedFile(id, obj);
+    }
+
+    public List<UploadedFile> imageUploadPrivateBatch(List<StreamingFileUpload> uploads) {
+        return uploads.stream().map(this::imageUploadPrivate).toList();
     }
 }

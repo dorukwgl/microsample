@@ -1,6 +1,7 @@
 package com.doruk.infrastructure.messaging.handler;
 
 import com.doruk.application.enums.ImageVariant;
+import com.doruk.application.events.MultiImageUploadEvent;
 import com.doruk.application.events.ProfileImageUploadEvent;
 import com.doruk.application.interfaces.ObjectStorage;
 import com.doruk.infrastructure.config.AppExecutors;
@@ -84,10 +85,25 @@ public class ImageUploadEventHandler {
         }, executors.VIRTUAL()).join();
     }
 
-//    @Subject(value = "file.image.upload.multi", queue = "image-upload-multi-queue")
-//    public void handle(MultiImageUpload event) {
-//        // parallel processing
-//        event.files().forEach(file -> CompletableFuture.runAsync(() ->
-//                this.storeFile(file), executors.CPU()));
-//    }
+    @Subject(value = "file.image.upload.multi", queue = "image-upload-multi-queue")
+    public void handleMulti(MultiImageUploadEvent event) {
+        CompletableFuture.runAsync(() -> {
+            var tasks = event.files().stream()
+                    .map(f -> CompletableFuture.runAsync(() -> handleScalingFor(f), executors.CPU()))
+                    .toArray(CompletableFuture[]::new);
+            CompletableFuture.allOf(tasks).join();
+        }, executors.VIRTUAL()).join();
+    }
+
+    private void handleScalingFor(MultiImageUploadEvent.FilePayload file) {
+        for (ImageVariant variant : ImageVariant.values()) {
+            try (InputStream stream = storage.open(file.objectKey())) {
+                var data = scaleAndCompress(stream, variant);
+                String variantKey = ImageVariantKey.of(file.objectKey(), variant);
+                storage.put(variantKey, data.getValue(), data.getKey(), file.mimeType());
+            } catch (IOException e) {
+                throw new RuntimeException("Variant generation failed", e);
+            }
+        }
+    }
 }
