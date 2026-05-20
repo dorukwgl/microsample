@@ -70,6 +70,6 @@ public class BiometricController {
                 dto.challenge(),
                 dto.signature(),
                 ip,
-                new DeviceInfoObject(dto.notifId(), dto.userAgent()));
+                new DeviceInfoObject(dto.notifId(), dto.deviceId(), dto.userAgent()));
     }
 }

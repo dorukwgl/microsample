@@ -210,6 +210,7 @@ public class BiometricService {
         // update last used
         authRepo.updateLastUsedBiometric(deviceId);
 
-        return loginHelper.createLoginResponse(Optional.of(notifId), deviceInfoObject.deviceInfo(uaa), authRepo.findByUserId(txn.userId()).orElseThrow());
+        return loginHelper.createLoginResponse(deviceInfoObject,
+                authRepo.findByUserId(txn.userId()).orElseThrow());
     }
 }

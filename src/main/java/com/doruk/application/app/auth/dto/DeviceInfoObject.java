@@ -14,6 +14,7 @@ import java.util.Set;
 @AllArgsConstructor
 public class DeviceInfoObject {
     private String deviceId;
+    private String fingerprintDeviceId;
     private String userAgent;
 
     public Optional<String> deviceInfo(UserAgentAnalyzer uaa) {
@@ -28,7 +29,13 @@ public class DeviceInfoObject {
         return Optional.of(String.format("%s %s on %s", name, version, platform));
     }
 
+    /** Firebase FCM token or browser UUID — may change between sessions. */
     public Optional<String> deviceId() {
         return Optional.ofNullable(this.deviceId);
+    }
+
+    /** Biometric hardware device ID — persistent across sessions on the same device. */
+    public Optional<String> fingerprintDeviceId() {
+        return Optional.ofNullable(this.fingerprintDeviceId);
     }
 }

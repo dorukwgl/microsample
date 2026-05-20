@@ -242,7 +242,7 @@ public class AuthService {
         if (user.multiFactorAuth() != MultiAuthType.NONE)
             return this.authInitializers.get(user.multiFactorAuth()).apply(user);
 
-        return loginHelper.createLoginResponse(deviceInfoObject.deviceId(), deviceInfoObject.deviceInfo(uaa), user);
+        return loginHelper.createLoginResponse(deviceInfoObject, user);
     }
 
     public LoginResponse performMfa(String mfaToken, int otp, DeviceInfoObject deviceInfoObject) {
@@ -257,7 +257,7 @@ public class AuthService {
             throw new InvalidCredentialException("Invalid otp code");
 
         // create session
-        var response = loginHelper.createLoginResponse(deviceInfoObject.deviceId(), deviceInfoObject.deviceInfo(uaa),
+        var response = loginHelper.createLoginResponse(deviceInfoObject,
                 authRepo.findByUserId(mfaTransaction.userId()).orElseThrow());
 
         // remove the mfa transaction
@@ -286,6 +286,7 @@ public class AuthService {
 
     public void logoutAll(String userId, boolean deleteBiometrics) {
         authRepo.deleteAllSessions(userId, deleteBiometrics);
+        authRepo.deleteAllUserDevices(userId);
     }
 
     public void logoutOthers(String userId, String sessionId, boolean deleteBiometrics) {
@@ -402,7 +403,7 @@ public class AuthService {
     public AuthUpdateResponse updatePhone(String userId, String phone) {
         var current = authRepo.getUserPhone(userId);
         if (!current.getValue()) {
-            authRepo.updateEmail(userId, phone, false);
+            authRepo.updatePhone(userId, phone, false);
             return new AuthUpdateResponse(null, false,
                     "Phone Number updated, please proceed to verify it.");
         }

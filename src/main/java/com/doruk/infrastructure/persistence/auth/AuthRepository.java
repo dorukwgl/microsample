@@ -86,7 +86,7 @@ public class AuthRepository {
 
     public Optional<AuthDto> findByUserId(String userId) {
         var u = Users.USERS;
-        return this.findUserWithPermissions(u.USERNAME.eq(userId));
+        return this.findUserWithPermissions(u.ID.eq(UUID.fromString(userId)));
     }
 
     public void createSession(String userId,
@@ -327,6 +327,44 @@ public class AuthRepository {
         var t = BiometricTable.$;
         sqlClient.createDelete(t)
                 .where(t.deviceId().eq(deviceId))
+                .execute();
+    }
+
+    // ── user device management ───────────────────────────────────────
+
+    public void upsertUserDevice(String userId, String notificationDeviceId,
+                                 String bioDeviceId, String deviceInfo) {
+        var tbl = DSL.table("user_devices");
+        var uidField = DSL.field("user_id", UUID.class);
+        var notifField = DSL.field("notification_device_id", String.class);
+        var bioField = DSL.field("bio_device_id", String.class);
+        var infoField = DSL.field("device_info", String.class);
+        var loginField = DSL.field("last_login_at", OffsetDateTime.class);
+
+        dsl.insertInto(tbl)
+                .set(uidField, UUID.fromString(userId))
+                .set(notifField, notificationDeviceId)
+                .set(bioField, bioDeviceId)
+                .set(infoField, deviceInfo)
+                .set(loginField, OffsetDateTime.now())
+                .onConflict(uidField, notifField)
+                .doUpdate()
+                .set(bioField, bioDeviceId)
+                .set(infoField, deviceInfo)
+                .set(loginField, OffsetDateTime.now())
+                .execute();
+    }
+
+    public void deleteUserDevice(String userId, String notificationDeviceId) {
+        dsl.deleteFrom(DSL.table("user_devices"))
+                .where(DSL.field("user_id", UUID.class).eq(UUID.fromString(userId)))
+                .and(DSL.field("notification_device_id", String.class).eq(notificationDeviceId))
+                .execute();
+    }
+
+    public void deleteAllUserDevices(String userId) {
+        dsl.deleteFrom(DSL.table("user_devices"))
+                .where(DSL.field("user_id", UUID.class).eq(UUID.fromString(userId)))
                 .execute();
     }
 }

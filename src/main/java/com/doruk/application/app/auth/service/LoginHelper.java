@@ -1,6 +1,7 @@
 package com.doruk.application.app.auth.service;
 
 import com.doruk.application.app.auth.dto.AuthDto;
+import com.doruk.application.app.auth.dto.DeviceInfoObject;
 import com.doruk.application.app.auth.dto.JwtRequest;
 import com.doruk.application.app.auth.dto.JwtResponse;
 import com.doruk.application.app.auth.dto.LoginResponse;
@@ -12,6 +13,7 @@ import com.doruk.infrastructure.util.GenerateRandom;
 import jakarta.inject.Singleton;
 import javafx.util.Pair;
 import lombok.RequiredArgsConstructor;
+import nl.basjes.parse.useragent.UserAgentAnalyzer;
 
 import java.time.OffsetDateTime;
 import java.util.Optional;
@@ -25,6 +27,7 @@ public class LoginHelper {
     private final JwtIssuer issuer;
     private final AppConfig appConfig;
     private final AuthRepository authRepo;
+    private final UserAgentAnalyzer uaa;
 
     private Pair<String, JwtResponse> createSessionTokens(String userId, Set<Permissions> permissions, Optional<String> deviceId, Optional<String> deviceInfo) {
         var sessionId = GenerateRandom.generateSessionId();
@@ -43,9 +46,20 @@ public class LoginHelper {
         }
     }
 
-    public LoginResponse createLoginResponse(Optional<String> deviceId, Optional<String> deviceInfo, AuthDto user) {
+    public LoginResponse createLoginResponse(DeviceInfoObject deviceInfoObject, AuthDto user) {
+        var deviceId = deviceInfoObject.deviceId();
+        var deviceInfo = deviceInfoObject.deviceInfo(uaa);
+        var fingerprintId = deviceInfoObject.fingerprintDeviceId();
+
         // sign jwt, and also create refresh token
         var tokens = this.createSessionTokens(user.id(), user.permissions(), deviceId, deviceInfo);
+
+        // register device for future notification / fingerprint tracking
+        deviceId.ifPresent(notifId ->
+                authRepo.upsertUserDevice(user.id(), notifId,
+                        fingerprintId.orElse(null),
+                        deviceInfo.orElse(null)));
+
         return LoginResponse.builder()
                 .accessToken(tokens.getValue().accessToken())
                 .accessTokenType(tokens.getValue().tokenType())
