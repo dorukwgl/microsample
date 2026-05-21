@@ -85,6 +85,18 @@ PageQueryRequest (presentation/dto/, validated DTO with swagger)
 | Utilities | `infrastructure/util/{StringUtil, ErrorBuilder, Constants, ...}` |
 | Config | `infrastructure/config/` — JimmerConfig, DatabaseConfig, etc. |
 
+## Controller Annotations (never use raw `@Controller`)
+
+Three custom meta-annotations in `infrastructure/annotataions/` — always pick one, never import `io.micronaut.http.annotation.Controller` directly.
+
+| Annotation | Base Path | When to Use |
+|---|---|---|
+| `@AppController` | `/app` | **Default.** User-facing routes, auth, profiles, etc. |
+| `@ApiV1Controller` | `/api/v1` | REST API endpoints (when explicitly asked for an API) |
+| `@SystemController` | `/system` | System/admin routes |
+
+Each exposes `value()` (default `""`) to append a sub-path. Example: `@AppController("users")` → `/app/users`.
+
 ## Code Rules
 - Controller: swagger docs on endpoint + DTO fields, only forward to application, return service output
 - Application: orchestrate, enforce ABAC, call domain/infra/utilities — no business logic inline
