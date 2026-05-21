@@ -7,6 +7,7 @@ import com.doruk.application.app.system.dto.UserResponse;
 import com.doruk.application.app.system.service.SystemService;
 import com.doruk.application.dto.PageResponse;
 import com.doruk.domain.shared.enums.Permissions;
+import com.doruk.infrastructure.annotataions.SystemController;
 import com.doruk.infrastructure.dto.InfoResponse;
 import com.doruk.infrastructure.security.annotation.RequiresPermission;
 import com.doruk.presentation.dto.PageQueryMapper;
@@ -33,12 +34,13 @@ import java.util.Set;
         value = {
                 Permissions.CREATE_ROLES,
                 Permissions.MANAGE_SYSTEM_USER_ROLES,
-                Permissions.ALTER_USER_ACCOUNT_STATUS
+                Permissions.ALTER_USER_ACCOUNT_STATUS,
+                Permissions.SYSTEM_PERMISSION
         },
         logical = RequiresPermission.Logical.OR)
-@Controller("system")
+@SystemController("system")
 @RequiredArgsConstructor
-public class SystemController {
+public class SysAdminController {
     private final SystemService service;
 
     @Operation(description = "returns a sorted pagination list of users with given filters")

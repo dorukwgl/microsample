@@ -5,6 +5,7 @@ import com.doruk.application.app.users.dto.ProfileDto;
 import com.doruk.application.app.users.dto.UserResponseDto;
 import com.doruk.application.app.users.service.UserService;
 import com.doruk.application.files.FileService;
+import com.doruk.infrastructure.annotataions.AppController;
 import com.doruk.presentation.users.dto.ProfileUpdateRequest;
 import com.doruk.presentation.users.dto.RegistrationRequest;
 import com.doruk.presentation.users.mapper.ProfileMapper;
@@ -17,7 +18,6 @@ import io.micronaut.security.authentication.Authentication;
 import io.micronaut.security.rules.SecurityRule;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +27,7 @@ import java.util.Map;
 @Tag(name = "User Management", description = "User registration and profile management")
 @Secured(SecurityRule.IS_AUTHENTICATED)
 @RequiredArgsConstructor
-@Controller("/users")
+@AppController("users")
 public class UserController {
     private final UserService service;
     private final RegistrationMapper registrationMapper;

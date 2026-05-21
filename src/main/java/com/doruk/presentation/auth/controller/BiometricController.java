@@ -3,13 +3,13 @@ package com.doruk.presentation.auth.controller;
 import com.doruk.application.app.auth.dto.DeviceInfoObject;
 import com.doruk.application.app.auth.dto.LoginResponse;
 import com.doruk.application.app.auth.service.BiometricService;
+import com.doruk.infrastructure.annotataions.AppController;
 import com.doruk.infrastructure.dto.InfoResponse;
 import com.doruk.presentation.auth.dto.BiometricEnrollRequest;
 import com.doruk.presentation.auth.dto.BiometricVerifyRequest;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.annotation.Body;
-import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Post;
 import io.micronaut.http.annotation.RequestBean;
 import io.micronaut.http.server.binding.RequestArgumentSatisfier;
@@ -24,7 +24,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Map;
 
-@Controller("biometrics")
+@AppController("biometrics")
 @Secured(SecurityRule.IS_AUTHENTICATED)
 @RequiredArgsConstructor
 public class BiometricController {

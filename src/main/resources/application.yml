@@ -61,7 +61,6 @@ micronaut:
       event-loop-shutdown-timeout: 0ms
 
     thread-selection: blocking # for loom carrier
-    context-path: /app
 
   http:
     client:
@@ -137,7 +136,7 @@ flyway:
       baseline-description: "Initial migration"
       out-of-order: false
       locations: classpath:db/migration
-      schemas: microsample
+      schemas: sample
 
 # ==================================
 # S3 Storage Configuration
@@ -150,3 +149,5 @@ storage:
     endpoint: https://<account-id>.r2.cloudflarestorage.com
     access-key: ${R2_ACCESS_KEY}
     secret-key: ${R2_SECRET_KEY}
+
+kind: Application

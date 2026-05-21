@@ -6,6 +6,7 @@ import com.doruk.application.app.auth.dto.LoginResponse;
 import com.doruk.application.app.auth.dto.SessionDto;
 import com.doruk.application.app.auth.service.AuthService;
 import com.doruk.domain.shared.enums.MultiAuthType;
+import com.doruk.infrastructure.annotataions.AppController;
 import com.doruk.infrastructure.config.AppConfig;
 import com.doruk.infrastructure.dto.InfoResponse;
 import com.doruk.infrastructure.util.Constants;
@@ -35,7 +36,7 @@ import java.util.Map;
 
 @Tag(name = "Authentications")
 @Secured(SecurityRule.IS_AUTHENTICATED)
-@Controller("auth")
+@AppController("auth")
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthService service;

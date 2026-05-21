@@ -157,7 +157,7 @@ jooq {
             jooqConfiguration.apply {
                 jdbc.apply {
                     driver = "org.postgresql.Driver"
-                    url = "jdbc:postgresql://localhost:5432/kendra"
+                    url = "jdbc:postgresql://localhost:5432/microsample"
                     user = "doruk"
                     password = "dorukdb"
                 }
@@ -167,7 +167,7 @@ jooq {
 
                     database.apply {
                         name = "org.jooq.meta.postgres.PostgresDatabase"
-                        inputSchema = "kendra"
+                        inputSchema = "sample"
 
                         forcedTypes = listOf(
                             ForcedType()
@@ -179,21 +179,6 @@ jooq {
                                 .withUserType("com.doruk.domain.shared.enums.UserAccountStatus")
                                 .withEnumConverter(true)
                                 .withIncludeTypes("user_status"),
-
-                            ForcedType()
-                                .withUserType("com.doruk.domain.shared.enums.OrganizationType")
-                                .withEnumConverter(true)
-                                .withIncludeTypes("organization_type_enum"),
-
-                            ForcedType()
-                                .withUserType("com.doruk.domain.shared.enums.LicenseType")
-                                .withEnumConverter(true)
-                                .withIncludeTypes("license_type_enum"),
-
-                            ForcedType()
-                                .withUserType("com.doruk.domain.shared.enums.LicenseStatus")
-                                .withEnumConverter(true)
-                                .withIncludeTypes("license_status_enum"),
                         )
                     }
 
