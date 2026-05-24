@@ -16,14 +16,15 @@ public class FirebasePushService {
     private final FirebaseClient firebaseClient;
     private final AppExecutors executor;
 
-    public void sendBulk(List<String> deviceTokens, String title, String body, String icon, String image) {
+    public void sendBulk(List<String> deviceTokens, String title, String body, String icon, String image,
+                          String attachmentType, String attachmentUrl) {
         if (deviceTokens == null || deviceTokens.isEmpty()) return;
 
         var futures = new ArrayList<CompletableFuture<Void>>(deviceTokens.size());
         for (var token : deviceTokens) {
             futures.add(
                     CompletableFuture.runAsync(
-                            () -> firebaseClient.send(token, title, body, icon, image),
+                            () -> firebaseClient.sendPushNotification(token, title, body, icon, image, attachmentType, attachmentUrl),
                             executor.VIRTUAL()
                     ).whenComplete((_, ex) -> {
                         if (ex != null) {

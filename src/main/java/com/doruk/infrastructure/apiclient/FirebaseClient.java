@@ -73,8 +73,9 @@ public class FirebaseClient {
         }
     }
 
-    public void send(String token, String title, String body, String icon, String image) {
-        var request = buildRequest(token, title, body, icon, image);
+    public void sendPushNotification(String token, String title, String body, String icon, String image,
+                                     String attachmentType, String attachmentUrl) {
+        var request = buildRequest(token, title, body, icon, image, attachmentType, attachmentUrl);
         String payload = serialize(request);
 
         HttpResponse<String> response = httpClient.toBlocking()
@@ -144,7 +145,8 @@ public class FirebaseClient {
         return signingInput + "." + signature;
     }
 
-    private Object buildRequest(String token, String title, String body, String icon, String image) {
+    private Object buildRequest(String token, String title, String body, String icon, String image,
+                                 String attachmentType, String attachmentUrl) {
         var notification = new java.util.LinkedHashMap<String, Object>();
         notification.put("title", title);
         notification.put("body", body);
@@ -153,6 +155,13 @@ public class FirebaseClient {
         var message = new java.util.LinkedHashMap<String, Object>();
         message.put("token", token);
         message.put("notification", notification);
+
+        if (attachmentType != null || attachmentUrl != null) {
+            var data = new java.util.LinkedHashMap<String, String>();
+            if (attachmentType != null) data.put("attachmentType", attachmentType);
+            if (attachmentUrl != null) data.put("attachment", attachmentUrl);
+            message.put("data", data);
+        }
 
         if (icon != null || image != null) {
             var androidConfig = new java.util.LinkedHashMap<String, Object>();

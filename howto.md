@@ -511,3 +511,207 @@ public List<Map<String, String>> uploadMultipleImages(
 | **FileRepository** | Delete `media_store` row by id, return `objectKey` before deletion |
 | **ObjectStorage** | `.delete(objectKey)` for original + `.delete(ImageVariantKey.of(key, variant))` for all 4 variants |
 | **Event (optional)** | Publish event with old objectKey so handler cleans up variant files async |
+
+---
+
+## 8. Push Notification Sending
+
+### Context
+Two approaches for sending push notifications: **immediate** (blocking, direct) and **background** (NATS event, async). Both support rich notifications with title, message, icon, and attachments (image, audio, video, document).
+
+### Architecture
+```
+sendInBackground → NotificationEventPublisher → NATS → NotificationEventHandler
+                                                          ├─ repository.saveAll()
+                                                          ├─ storage.resolveUrl() (icon, attachment)
+                                                          └─ firebasePushService.sendBulk()
+
+sendImmediate → NotificationService
+                  ├─ repository.saveAll()
+                  ├─ storage.resolveUrl() (icon, attachment)
+                  └─ firebasePushService.sendBulk() (blocks until all sent)
+```
+
+### Rich Notification Structure
+**DTO:** `application/dto/NotificationDto.java`
+```java
+@Serdeable
+public record NotificationDto(
+        UUID userId,           // target user
+        String title,          // notification title
+        String message,        // notification body
+        @Nullable String icon,           // object key of icon (stored in media_store)
+        @Nullable String attachment,      // object key of attachment file
+        @Nullable AttachmentType attachmentType  // IMAGE, AUDIO, VIDEO, DOCUMENT
+) {}
+```
+
+**FCM payload delivered to device:**
+```json
+{
+  "message": {
+    "token": "...",
+    "notification": { "title": "...", "body": "...", "image": "..." },
+    "data": {
+      "attachmentType": "IMAGE",
+      "attachment": "https://..."
+    },
+    "android": { "notification": { "icon": "...", "image": "..." } },
+    "apns": { "payload": { "aps": { "mutable-content": 1 } }, "fcm_options": { "image": "..." } }
+  }
+}
+```
+- `notification.image` / `android.notification.image` — set only when `attachmentType == IMAGE`
+- `data.attachmentType` — enum name so Android can differentiate IMAGE vs DOCUMENT vs AUDIO vs VIDEO
+- `data.attachment` — resolved URL of the attachment file
+- `android.notification.icon` — small notification tray icon
+
+### Send Immediately (Blocking)
+
+Resolves storage URLs, saves to DB, fetches device tokens, and pushes directly. Blocks until all device sends complete.
+
+```java
+// --- In NotificationService (already implemented) ---
+@Singleton
+@RequiredArgsConstructor
+public class NotificationService {
+    private final NotificationRepository repository;
+    private final FirebasePushService firebasePushService;
+    private final NotificationEventPublisher eventPublisher;
+    private final ObjectStorage storage;
+
+    public void sendImmediate(NotificationDto dto) {
+        sendImmediateBulk(List.of(dto));
+    }
+
+    public void sendImmediateBulk(List<NotificationDto> dtos) {
+        repository.saveAll(dtos);
+        for (var dto : dtos) {
+            var tokens = repository.findDeviceTokens(dto.userId());
+            if (tokens.isEmpty()) continue;
+
+            String iconUrl = dto.icon() != null
+                    ? storage.resolveUrl(storedObjectFromKey(dto.icon())) : null;
+
+            String attachmentUrl = dto.attachment() != null
+                    ? storage.resolveUrl(storedObjectFromKey(dto.attachment())) : null;
+
+            boolean isImageAttachment = dto.attachmentType() == AttachmentType.IMAGE;
+            String imageUrl = isImageAttachment ? attachmentUrl : null;
+            String attachmentType = dto.attachmentType() != null
+                    ? dto.attachmentType().name() : null;
+
+            firebasePushService.sendBulk(tokens, dto.title(), dto.message(),
+                    iconUrl, imageUrl, attachmentType, attachmentUrl);
+        }
+    }
+}
+```
+
+```java
+// --- Controller usage ---
+@Post("/send")
+public HttpResponse<?> sendNotification(NotificationDto dto) {
+    notificationService.sendImmediate(dto);
+    return HttpResponse.ok();
+}
+```
+
+**Characteristics:**
+- Blocks until all FCM HTTP calls complete (all device tokens processed)
+- 490 devices in parallel via virtual threads + HTTP/2 multiplexing
+- Caller gets direct feedback — failures are logged individually per token
+- Good for: admin-triggered sends, one-off notifications, debugging
+
+### Send in Background (NATS Event)
+
+Publishes to NATS; handler processes asynchronously. Non-blocking — returns immediately.
+
+```java
+// --- In NotificationService (already implemented) ---
+public void sendInBackground(NotificationDto dto) {
+    eventPublisher.publishSingle(dto);
+}
+
+public void sendInBackgroundBulk(List<NotificationDto> dtos) {
+    eventPublisher.publishBulk(dtos);
+}
+```
+
+```java
+// --- Controller usage ---
+@Post("/send-async")
+public HttpResponse<?> sendNotificationAsync(NotificationDto dto) {
+    notificationService.sendInBackground(dto);
+    return HttpResponse.accepted();
+}
+```
+
+**Event handler** (`infrastructure/messaging/handler/NotificationEventHandler.java`):
+```java
+@Subject(value = "event.notification.send", queue = "event-notification-workers")
+public void handle(NotificationEvent event) {
+    repository.saveAll(event.notifications());
+    for (var dto : event.notifications()) {
+        var tokens = repository.findDeviceTokens(dto.userId());
+        if (tokens.isEmpty()) continue;
+
+        // ... resolve URLs, determine image vs attachment ...
+
+        firebasePushService.sendBulk(tokens, dto.title(), dto.message(),
+                iconUrl, imageUrl, attachmentType, attachmentUrl);
+    }
+}
+```
+
+**Characteristics:**
+- Returns immediately — caller doesn't wait for FCM delivery
+- NATS queue group (`event-notification-workers`) distributes load across instances
+- Good for: bulk/automated sends, event-driven flows, fire-and-forget
+
+### Immediate vs Background: When to Use
+
+| Criterion | sendImmediate | sendInBackground |
+|-----------|--------------|------------------|
+| Latency | Blocking (wait for all FCM calls) | Non-blocking (returns instantly) |
+| Failure feedback | Logged per-token in calling thread | Logged in handler, caller unaware |
+| Load distribution | Runs on caller's thread | NATS queue group distributes |
+| Suitable for | Admin UI, one-off, debugging | Bulk, automated, event-driven |
+
+### Android Client Integration Points
+
+When the Android device receives a push, read the data payload to determine how to display the attachment:
+
+```
+// In FirebaseMessagingService.onMessageReceived():
+String attachmentType = remoteMessage.getData().get("attachmentType");
+String attachmentUrl = remoteMessage.getData().get("attachment");
+
+switch (attachmentType) {
+    case "IMAGE"   → show in image viewer
+    case "DOCUMENT" → open in document viewer / download
+    case "AUDIO"   → play inline or open audio player
+    case "VIDEO"   → play inline or open video player
+    case null      → simple text notification (no attachment)
+}
+```
+
+### Key Files Reference
+
+| Layer | File |
+|-------|------|
+| Notification DTO | `application/dto/NotificationDto.java` |
+| NotificationEvent | `application/events/NotificationEvent.java` |
+| AttachmentType enum | `application/enums/AttachmentType.java` |
+| NotificationService | `application/app/notifications/service/NotificationService.java` |
+| NotificationResponse | `application/app/notifications/dto/NotificationResponse.java` |
+| NotificationEventPublisher | `infrastructure/messaging/publisher/NotificationEventPublisher.java` |
+| NotificationEventHandler | `infrastructure/messaging/handler/NotificationEventHandler.java` |
+| FirebasePushService | `infrastructure/apiclient/FirebasePushService.java` |
+| FirebaseClient | `infrastructure/apiclient/FirebaseClient.java` |
+| FirebaseConfig | `infrastructure/config/FirebaseConfig.java` |
+| FirebasePushRequest | `infrastructure/apiclient/dto/FirebasePushRequest.java` |
+| Notification entity | `infrastructure/persistence/entity/Notification.java` |
+| NotificationRepository | `infrastructure/persistence/notification/NotificationRepository.java` |
+| NotificationController | `presentation/notifications/controller/NotificationController.java` |
+| Flyway migration | `resources/db/migration/V2__create_notifications.sql` |
