@@ -13,8 +13,6 @@ import io.micronaut.http.MediaType;
 import io.micronaut.http.client.DefaultHttpClientConfiguration;
 import io.micronaut.http.client.HttpClient;
 import jakarta.inject.Singleton;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
@@ -23,6 +21,7 @@ import java.security.Signature;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.time.Instant;
 import java.util.Base64;
+import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 
 @Singleton
@@ -61,8 +60,9 @@ public class FirebaseClient {
         }
         try {
             var fcmConfig = new DefaultHttpClientConfiguration();
-            fcmConfig.setHttpVersion(HttpVersion.HTTP_2_0);
-            fcmConfig.getConnectionPoolConfiguration().setMaxConcurrentRequestsPerHttp2Connection(600);
+            fcmConfig.setAlpnModes(List.of("h2", "http/1.1"));
+
+            fcmConfig.getConnectionPoolConfiguration().setMaxConcurrentRequestsPerHttp2Connection(500);
             this.httpClient = HttpClient.create(URI.create(FCM_BASE).toURL(), fcmConfig);
         } catch (java.net.MalformedURLException e) {
             throw new RuntimeException("Invalid FCM base URL", e);
