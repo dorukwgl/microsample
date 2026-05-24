@@ -8,7 +8,6 @@ import io.micronaut.context.annotation.Context;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.HttpStatus;
-import io.micronaut.http.HttpVersion;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.client.DefaultHttpClientConfiguration;
 import io.micronaut.http.client.HttpClient;
