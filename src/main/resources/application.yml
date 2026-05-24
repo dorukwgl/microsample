@@ -124,6 +124,14 @@ brevo:
   senderName: ${BREVO_SENDER_NAME}
 
 # ==========================
+# Firebase Cloud Messaging
+# ==========================
+# Generate service account JSON: Firebase Console → Project Settings → Service Accounts → Generate New Private Key
+# Copy the entire JSON content into the FIREBASE_SERVICE_ACCOUNT_JSON env var.
+firebase:
+  service-account-json: ${FIREBASE_SERVICE_ACCOUNT_JSON}
+
+# ==========================
 # Flyway Migration Settings
 # ==========================
 
