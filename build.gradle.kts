@@ -179,6 +179,11 @@ jooq {
                                 .withUserType("com.doruk.domain.shared.enums.UserAccountStatus")
                                 .withEnumConverter(true)
                                 .withIncludeTypes("user_status"),
+
+                            ForcedType()
+                                .withUserType("com.doruk.application.enums.AttachmentType")
+                                .withEnumConverter(true)
+                                .withIncludeTypes("attachment_type"),
                         )
                     }
 
