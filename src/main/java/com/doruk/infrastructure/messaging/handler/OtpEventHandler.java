@@ -5,6 +5,7 @@ import com.doruk.application.events.OtpDeliveryEvent;
 import com.doruk.application.interfaces.MailService;
 import com.doruk.application.interfaces.SmsService;
 import com.doruk.infrastructure.config.AppExecutors;
+import com.doruk.infrastructure.logging.LoggingService;
 import io.micronaut.nats.annotation.NatsListener;
 import io.micronaut.nats.annotation.Subject;
 import jakarta.inject.Singleton;
@@ -63,18 +64,22 @@ public class OtpEventHandler {
     @Subject(value = "event.otp.delivery", queue = "event-otp-workers")
     public void handleSendOtp(OtpDeliveryEvent dto) {
         CompletableFuture.runAsync(() -> {
-            switch (dto.channel()) {
-                case EMAIL ->
-                    mailService.sendMail(
-                            new MailService.MailParams(
-                                    "",
-                                    dto.to(),
-                                    dto.magicLink(),
-                                    dto.otp()
-                            ), dto.contentTemplate()
-                    );
-                case PHONE -> smsService.sendOtp(dto.to(), dto.otp(),  dto.contentTemplate());
+            try {
+                switch (dto.channel()) {
+                    case EMAIL ->
+                        mailService.sendMail(
+                                new MailService.MailParams(
+                                        "",
+                                        dto.to(),
+                                        dto.magicLink(),
+                                        dto.otp()
+                                ), dto.contentTemplate()
+                        );
+                    case PHONE -> smsService.sendOtp(dto.to(), dto.otp(),  dto.contentTemplate());
+                }
+            } catch (Exception e) {
+                LoggingService.logError("OTP delivery event handling failed", e);
             }
-        },  executors.VIRTUAL()).join();
+        },  executors.VIRTUAL());
     }
 }

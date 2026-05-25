@@ -5,6 +5,7 @@ import com.doruk.application.events.MultiImageUploadEvent;
 import com.doruk.application.events.ProfileImageUploadEvent;
 import com.doruk.application.interfaces.ObjectStorage;
 import com.doruk.infrastructure.config.AppExecutors;
+import com.doruk.infrastructure.logging.LoggingService;
 import com.doruk.infrastructure.util.ImageVariantKey;
 import io.micronaut.nats.annotation.NatsListener;
 import io.micronaut.nats.annotation.Subject;
@@ -80,19 +81,27 @@ public class ImageUploadEventHandler {
     @Subject(value = "profile.image.upload.event", queue = "profile-image-upload-queue")
     public void handle(ProfileImageUploadEvent event) {
         CompletableFuture.runAsync(() -> {
-            handleScaling(event);
-            deleteOldVariantFiles(event);
-        }, executors.VIRTUAL()).join();
+            try {
+                handleScaling(event);
+                deleteOldVariantFiles(event);
+            } catch (Exception e) {
+                LoggingService.logError("Profile image upload handling failed", e);
+            }
+        }, executors.VIRTUAL());
     }
 
     @Subject(value = "file.image.upload.multi", queue = "image-upload-multi-queue")
     public void handleMulti(MultiImageUploadEvent event) {
         CompletableFuture.runAsync(() -> {
-            var tasks = event.files().stream()
-                    .map(f -> CompletableFuture.runAsync(() -> handleScalingFor(f), executors.CPU()))
-                    .toArray(CompletableFuture[]::new);
-            CompletableFuture.allOf(tasks).join();
-        }, executors.VIRTUAL()).join();
+            try {
+                var tasks = event.files().stream()
+                        .map(f -> CompletableFuture.runAsync(() -> handleScalingFor(f), executors.CPU()))
+                        .toArray(CompletableFuture[]::new);
+                CompletableFuture.allOf(tasks).join();
+            } catch (Exception e) {
+                LoggingService.logError("Multi image upload handling failed", e);
+            }
+        }, executors.VIRTUAL());
     }
 
     private void handleScalingFor(MultiImageUploadEvent.FilePayload file) {
