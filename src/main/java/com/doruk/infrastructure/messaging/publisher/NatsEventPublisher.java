@@ -5,6 +5,8 @@ import com.doruk.application.interfaces.EventPublisher;
 import io.micronaut.context.annotation.Bean;
 import io.micronaut.json.JsonMapper;
 import io.nats.client.Connection;
+import io.nats.client.JetStream;
+import io.nats.client.JetStreamApiException;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 
@@ -16,24 +18,23 @@ import java.io.IOException;
 public class NatsEventPublisher implements EventPublisher {
     private final Connection natsConnection;
     private final JsonMapper jsonMapper;
+    private volatile JetStream jetStream;
 
+    private JetStream jetStream() throws IOException {
+        if (jetStream == null) {
+            jetStream = natsConnection.jetStream();
+        }
+        return jetStream;
+    }
 
     @Override
     public void publish(EventDto eventDto) {
         try {
-            natsConnection.publish(eventDto.eventSubject(),
+            jetStream().publish(eventDto.eventSubject(),
                     jsonMapper.writeValueAsBytes(eventDto));
-        } catch (IOException e) {
+        } catch (IOException | JetStreamApiException e) {
             throw new RuntimeException(e);
         }
     }
 
-    @Override
-    public void publish(EventSubject subject, String payload) {
-        try {
-            natsConnection.publish(subject.getSubject(), payload.getBytes());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
 }

@@ -111,7 +111,7 @@ nats:
   default:
     addresses:
       - "nats://localhost:4222"
-    username: ledger-system-sysid-1
+    username: microsample-system-sysid-1
     password: ${NATS_PASSWORD}
 
 redis:
