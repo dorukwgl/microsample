@@ -6,7 +6,7 @@ import jakarta.validation.constraints.*;
 
 @Serdeable
 public record RegistrationRequest(
-        @NotBlank
+        @Nullable
         @Size(min = 3, max = 30, message = "Username must be between 3 to 30 letters")
         String username,
 
