@@ -34,6 +34,10 @@ micronaut:
         google:
           client-id: ${GOOGLE_CLIENT_ID}
           client-secret: ${GOOGLE_CLIENT_SECRET}
+          scopes:
+            - email
+            - profile
+            - openid
           openid:
             issuer: https://accounts.google.com
           authorization:

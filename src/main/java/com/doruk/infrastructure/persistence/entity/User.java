@@ -40,9 +40,6 @@ public interface User {
     @Column(name = "is_phone_verified")
     boolean phoneVerified();
 
-    @Column(name = "is_password_set")
-    boolean passwordSet();
-
     @Column(name = "status")
     UserAccountStatus status();
 

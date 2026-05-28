@@ -15,7 +15,7 @@ public class GoogleTokenVerifier {
     private final String expectedAudience;
 
     public GoogleTokenVerifier(GoogleApiClient googleApi,
-                               @Value("${GOOGLE_CLIENT_ID}") String expectedAudience) {
+                               @Value("${micronaut.security.oauth2.clients.google.client-id}") String expectedAudience) {
         this.googleApi = googleApi;
         this.expectedAudience = expectedAudience;
     }
@@ -39,7 +39,7 @@ public class GoogleTokenVerifier {
                 info.sub(),
                 info.email(),
                 info.name(),
-                "true".equals(info.emailVerified())
+                Boolean.TRUE.equals(info.emailVerified())
         );
     }
 }

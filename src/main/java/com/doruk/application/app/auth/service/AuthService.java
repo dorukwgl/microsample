@@ -2,12 +2,11 @@ package com.doruk.application.app.auth.service;
 
 import com.doruk.application.app.auth.dto.*;
 import com.doruk.application.app.auth.dto.OtpTransaction;
+import com.doruk.application.app.auth.dto.GoogleClaims;
 import com.doruk.application.enums.OtpChannel;
 import com.doruk.application.enums.TemplateType;
 import com.doruk.application.events.OtpDeliveryEvent;
-import com.doruk.application.exception.IncompleteStateException;
-import com.doruk.application.exception.InvalidCredentialException;
-import com.doruk.application.exception.TooManyAttemptsException;
+import com.doruk.application.exception.*;
 import com.doruk.application.interfaces.EventPublisher;
 import com.doruk.application.interfaces.MemoryStorage;
 import com.doruk.application.security.PasswordEncoder;
@@ -565,5 +564,36 @@ public class AuthService {
 
         // disable the mfa
         authRepo.disableMfa(userId);
+    }
+
+    public LoginResponse handleGoogleLogin(GoogleClaims claims, DeviceInfoObject deviceInfo) {
+        if (!claims.emailVerified())
+            throw new ForbiddenException("Google sent untrusted verification for your email address.");
+
+        // find user by googleSub or email, register if not exists
+        var user = authRepo.findUserByGoogleSubOrEmail(claims.sub(), claims.email())
+                .orElse(authRepo.registerUserViaGoogleAuth(claims.email(), claims.sub(), claims.name()));
+
+        // user exists but not linked to google, link account
+        if (user.googleSub() == null)
+            authRepo.linkUserToGoogleAuth(user.userId(), claims.sub());
+
+        // check if the user's db email matches the one sent by google
+        if (!user.email().equals(claims.email()))
+            authRepo.updateEmailFromGoogleAuth(user.userId(), claims.email());
+
+        // perform login, create session + JWT
+        var authDto = authRepo.findByUserId(user.userId().toString())
+                .orElseThrow(() -> new IllegalStateException("User not found after successful google sign in"));
+
+        return loginHelper.createLoginResponse(deviceInfo, authDto);
+    }
+
+    // when signed up via google, user can later set password
+    // isPasswordSet check provides early error message;
+    // WHERE password IS NULL in setPasswordIfNotSet is the atomic safety net for concurrent requests
+    public void setPasswordFirstTime(UUID userId, String password) {
+        if (!authRepo.setPasswordIfNotSet(userId, passwordEncoder.encode(password)))
+            throw new ConflictingArgumentException("Password has already been set");
     }
 }

@@ -5,12 +5,14 @@ import com.doruk.application.app.auth.dto.JwtResponse;
 import com.doruk.application.app.auth.dto.LoginResponse;
 import com.doruk.application.app.auth.dto.SessionDto;
 import com.doruk.application.app.auth.service.AuthService;
+import com.doruk.infrastructure.security.GoogleTokenVerifier;
 import com.doruk.domain.shared.enums.MultiAuthType;
 import com.doruk.infrastructure.annotataions.AppController;
 import com.doruk.infrastructure.config.AppConfig;
 import com.doruk.infrastructure.dto.InfoResponse;
 import com.doruk.infrastructure.util.Constants;
 import com.doruk.presentation.auth.dto.DeviceInfoRequest;
+import com.doruk.presentation.auth.dto.GoogleLoginRequest;
 import com.doruk.presentation.auth.dto.LoginRequest;
 import com.doruk.presentation.auth.mappers.DeviceInfoMapper;
 import io.micronaut.http.HttpResponse;
@@ -33,6 +35,7 @@ import lombok.RequiredArgsConstructor;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @Tag(name = "Authentications")
 @Secured(SecurityRule.IS_AUTHENTICATED)
@@ -42,6 +45,7 @@ public class AuthController {
     private final AuthService service;
     private final DeviceInfoMapper infoMapper;
     private final AppConfig appConfig;
+    private final GoogleTokenVerifier tokenVerifier;
 
     private String renderResetFormPage(String magic) {
         var str = """
@@ -447,5 +451,37 @@ public class AuthController {
                                                         String password) {
         service.disableMfa(user.getName(), password);
         return new InfoResponse("MFA disabled successfully");
+    }
+
+    @Operation(
+            summary = "Google OAuth Login / Registration",
+            description = "Accepts a Google ID token from client-side Google Sign-In. " +
+                          "Verifies the token, looks up or creates a user linked to the Google account, " +
+                          "and returns a JWT access token + refresh session cookie."
+    )
+    @ApiResponse(responseCode = "201", description = "Login successful, access token + refresh cookie returned")
+    @ApiResponse(responseCode = "401", description = "Invalid or expired Google token")
+    @Secured(SecurityRule.IS_ANONYMOUS)
+    @Post("/oauth/google/callback")
+    HttpResponse<LoginResponse> googleLogin(
+            @Valid @Body GoogleLoginRequest request,
+            @Valid @RequestBean DeviceInfoRequest info) {
+        var claims = tokenVerifier.verify(request.token());
+        var response = service.handleGoogleLogin(claims, infoMapper.toDeviceInfo(info));
+        return HttpResponse.created(response)
+                .cookie(Cookie.of(Constants.SESSION_COOKIE_HEADER, response.refreshToken())
+                        .httpOnly()
+                        .secure(appConfig.cookieSecure())
+                        .maxAge(Duration.ofDays(appConfig.sessionExpiration()))
+                        .path("/app/auth/session")
+                        .sameSite(SameSite.Lax));
+    }
+
+    @Operation(description = "Set password. When registered via google sign in, the user doesn't have to set password." +
+            "Such user can use this route to set the password for future log in using email/password.")
+    @Post("/set-password")
+    public InfoResponse setPassword(Authentication user, @Body @Size(min = 8, max = 25) String password) {
+        service.setPasswordFirstTime(UUID.fromString(user.getName()), password);
+        return new InfoResponse("Password set successfully");
     }
 }

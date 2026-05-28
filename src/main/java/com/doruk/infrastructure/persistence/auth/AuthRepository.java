@@ -2,6 +2,7 @@ package com.doruk.infrastructure.persistence.auth;
 
 import com.doruk.application.app.auth.dto.AuthDto;
 import com.doruk.application.app.auth.dto.BiometricDto;
+import com.doruk.application.app.auth.dto.GoogleLinkDto;
 import com.doruk.application.app.auth.dto.SessionDto;
 import com.doruk.domain.shared.enums.MultiAuthType;
 import com.doruk.domain.shared.enums.Permissions;
@@ -466,5 +467,77 @@ public class AuthRepository {
         dsl.deleteFrom(DSL.table("user_devices"))
                 .where(DSL.field("user_id", UUID.class).eq(UUID.fromString(userId)))
                 .execute();
+    }
+
+    public Optional<GoogleLinkDto> findUserByGoogleSubOrEmail(String googleSub, String email) {
+        var t = UserTable.$;
+        return sqlClient.createQuery(t)
+                .where(Predicate.or(
+                        t.googleSub().eq(googleSub),
+                        t.email().eq(email)
+                ))
+                .select(t.id(), t.googleSub(), t.email())
+                .execute()
+                .stream()
+                .map(r -> GoogleLinkDto.builder()
+                        .userId(r.get_1())
+                        .googleSub(r.get_2())
+                        .email(r.get_3())
+                        .build())
+                .findFirst();
+    }
+
+    public GoogleLinkDto registerUserViaGoogleAuth(String email, String googleSub, String name) {
+        var draft = UserDraft.$.produce(d -> d
+                .setEmail(email)
+                .setGoogleSub(googleSub)
+                .setEmailVerified(true)
+        );
+        var pDraft = UserProfileDraft.$.produce(d -> d.setFullName(name));
+
+        var saved =sqlClient.transaction(() -> {
+            sqlClient.saveCommand(pDraft).execute();
+            var usr = sqlClient.saveCommand(draft).execute().getModifiedEntity();
+
+            // assign default role
+            sqlClient.saveCommand(UserDraft.$.produce(d ->
+                    d.setRoles(List.of(RoleDraft.$.produce(r -> r.setName("USER"))))))
+                    .execute();
+
+            return usr;
+        });
+
+        return GoogleLinkDto.builder()
+                .userId(saved.id())
+                .googleSub(googleSub)
+                .email(email)
+                .build();
+    }
+
+    public void linkUserToGoogleAuth(UUID userId, String googleSub) {
+        var t = UserTable.$;
+        sqlClient.createUpdate(t)
+                .set(t.googleSub(), googleSub)
+                .set(t.emailVerified(), true)
+                .where(t.id().eq(userId))
+                .execute();
+    }
+
+    public void updateEmailFromGoogleAuth(UUID userId, String email) {
+        var t = Users.USERS;
+        dsl.update(t)
+                .set(t.EMAIL, email)
+                .where(t.ID.eq(userId))
+                .execute();
+    }
+
+    // set for the first time (if done google sign in)
+    // WHERE password IS NULL makes this atomic even under concurrent requests
+    public boolean setPasswordIfNotSet(UUID userId, String hashedPassword) {
+        var t = UserTable.$;
+        return sqlClient.createUpdate(t)
+                .set(t.password(), hashedPassword)
+                .where(t.id().eq(userId), t.password().isNull())
+                .execute() > 0;
     }
 }
