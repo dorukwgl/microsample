@@ -22,8 +22,6 @@ public interface User {
     @Key
     String email();
 
-    String fullName();
-
     @Key
     String googleSub();
 

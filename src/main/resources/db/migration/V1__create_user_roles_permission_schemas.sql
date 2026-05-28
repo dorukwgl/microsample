@@ -20,7 +20,6 @@ CREATE TABLE users
     id                UUID PRIMARY KEY         default uuidv7(),
     google_sub        varchar(255) unique,                   -- from google sign in
     is_password_set   boolean                  default true, -- false when signed up from google
-    full_name         varchar(255),
     username          VARCHAR(255) UNIQUE,
     email             varchar(255) not null unique,
     phone             varchar(255),
