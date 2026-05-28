@@ -6,11 +6,11 @@ create type FILE_VISIBILITY as enum ('PRIVATE', 'PUBLIC');
 create table media_store
 (
     id         bigserial PRIMARY KEY,
-    object_key VARCHAR                   NOT NULL UNIQUE,
-    visibility FILE_VISIBILITY default 'PUBLIC',
-    mime_type  VARCHAR                   NOT NULL,
-    size       BIGINT                    NOT NULL,
-    created_at timestamp with time zone  default now(),
+    object_key VARCHAR NOT NULL UNIQUE,
+    visibility FILE_VISIBILITY          default 'PUBLIC',
+    mime_type  VARCHAR NOT NULL,
+    size       BIGINT  NOT NULL,
+    created_at timestamp with time zone default now(),
     deleted_at timestamp with time zone
 );
 
@@ -18,10 +18,13 @@ create table media_store
 CREATE TABLE users
 (
     id                UUID PRIMARY KEY         default uuidv7(),
-    username          VARCHAR(255)  NOT NULL UNIQUE,
-    email             varchar(255)  not null unique,
+    google_sub        varchar(255) unique,                   -- from google sign in
+    is_password_set   boolean                  default true, -- false when signed up from google
+    full_name         varchar(255),
+    username          VARCHAR(255) UNIQUE,
+    email             varchar(255) not null unique,
     phone             varchar(255),
-    password          VARCHAR(1024) NOT NULL,
+    password          VARCHAR(1024),
     multi_factor_auth MULTI_AUTH_TYPE          DEFAULT 'NONE',
     is_email_verified boolean                  DEFAULT false,
     is_phone_verified boolean                  DEFAULT false,
@@ -33,18 +36,18 @@ CREATE TABLE users
 -- profile
 create table user_profiles
 (
-    id              bigserial primary key,
-    user_id         uuid unique references users (id) on delete cascade,
-    full_name       varchar(255),
+    id           bigserial primary key,
+    user_id      uuid unique references users (id) on delete cascade,
+    full_name    varchar(255),
     profile_icon bigint,
-    address         varchar(255),
-    city            varchar(255),
-    state           varchar(255),
-    country         varchar(255),
-    postal_code     varchar(255),
-    created_at      timestamp with time zone default now(),
-    updated_at      timestamp with time zone default now(),
-    foreign key (profile_icon) references media_store(id)
+    address      varchar(255),
+    city         varchar(255),
+    state        varchar(255),
+    country      varchar(255),
+    postal_code  varchar(255),
+    created_at   timestamp with time zone default now(),
+    updated_at   timestamp with time zone default now(),
+    foreign key (profile_icon) references media_store (id)
 );
 
 -- roles
@@ -121,7 +124,7 @@ create index idx_biometrics_user_id on biometrics (user_id);
 create table user_devices
 (
     id                     bigserial primary key,
-    user_id                uuid         not null references users (id) on delete cascade,
+    user_id                uuid not null references users (id) on delete cascade,
     notification_device_id varchar(255),
     bio_device_id          varchar(255),
     device_info            varchar(500),

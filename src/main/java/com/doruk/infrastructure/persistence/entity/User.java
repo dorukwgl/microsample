@@ -17,11 +17,15 @@ public interface User {
     @Id
     UUID id();
 
-    @Key
     String username();
 
     @Key
     String email();
+
+    String fullName();
+
+    @Key
+    String googleSub();
 
     @Nullable
     String phone();
@@ -37,6 +41,9 @@ public interface User {
 
     @Column(name = "is_phone_verified")
     boolean phoneVerified();
+
+    @Column(name = "is_password_set")
+    boolean passwordSet();
 
     @Column(name = "status")
     UserAccountStatus status();
