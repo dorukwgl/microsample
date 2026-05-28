@@ -60,6 +60,7 @@ dependencies {
     implementation("io.micronaut.nats:micronaut-nats")
     implementation("io.micronaut.redis:micronaut-redis-lettuce")
     implementation("io.micronaut.security:micronaut-security-jwt")
+    implementation("io.micronaut.security:micronaut-security-oauth2")
     implementation("io.micronaut.serde:micronaut-serde-jackson")
     implementation("io.micronaut.sql:micronaut-jdbc-hikari")
     implementation("io.micronaut.validation:micronaut-validation")

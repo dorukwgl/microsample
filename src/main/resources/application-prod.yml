@@ -8,7 +8,6 @@ micronaut:
     publicPathPrefix: "pub"
     privatePathPrefix: "drk"
     sociairApiKey: ${SOCIAIR_KEY}
-    app-url: http://localhost:${MICROSAMPLE_PORT}
     resource-api-path: "res"
     cookie-secure: true
 
