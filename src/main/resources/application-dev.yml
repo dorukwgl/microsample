@@ -38,9 +38,9 @@ micronaut:
 # ==========================
 datasources:
   default:
-    url: jdbc:postgresql://localhost:5432/microsample
-    username: doruk
-    password: dorukdb
+    url: ${DEV_DATASOURCE_URL:-jdbc:postgresql://localhost:5432/sampledb}
+    username: ${DEV_DATASOURCE_USERNAME:-micro_infra}
+    password: ${DEV_DATASOURCE_PASSWORD}
     driverClassName: org.postgresql.Driver
     dialect: POSTGRES
     schema: microsample
@@ -53,11 +53,11 @@ nats:
   default:
     addresses:
       - "nats://localhost:4222"
-    username: microsample-system-sysid-1
+    username: ${NATS_USERNAME:-microsample-system-1}
     password: ${NATS_PASSWORD}
 
 redis:
-  uri: "redis://localhost"
+  uri: ${DEV_REDIS_URI}
 
 storage:
   s3:
