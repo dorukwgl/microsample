@@ -111,6 +111,11 @@ dependencies {
     aotPlugins(platform("io.micronaut.platform:micronaut-platform:4.10.14"))
     aotPlugins("io.micronaut.security:micronaut-security-aot")
 
+    // Testcontainers
+    testImplementation("org.testcontainers:testcontainers:2.0.5")
+    testImplementation("org.testcontainers:testcontainers-junit-jupiter:2.0.5")
+    testImplementation("org.testcontainers:testcontainers-postgresql:2.0.5")
+
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
