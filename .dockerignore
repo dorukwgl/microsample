@@ -1,0 +1,12 @@
+.git
+.gradle
+build
+target
+out
+.idea
+*.iml
+devexe.sh
+devexe.sh.bak
+CLAUDE.md
+graphify-out/
+*.md
