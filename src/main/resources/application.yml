@@ -6,11 +6,11 @@ app:
   app-id: ${APP_ID}
   session-expiration: ${SESSION_EXPIRATION:7} # days
   image-max-size: 5242880 # 5MB
-  license-server-private-key: ${LICENSE_SERVER_PRIVATE_KEY}
-  license-server-public-key: ${LICENSE_SERVER_PUBLIC_KEY}
+  current-server-private-key: ${CURRENT_SERVER_PRIVATE_KEY}
+  current-server-public-key: ${CURRENT_SERVER_PUBLIC_KEY}
   app-url: ${APP_URL}
   cookie-secure: true
-  local-storage-dir: "/var/www/microsample"
+  local-storage-dir: /var/www/microsample
   public-path-prefix: "pub"
   private-path-prefix: "drk"
   sociair-api-key: ${SOCIAIR_KEY}
@@ -54,7 +54,7 @@ micronaut:
             url: https://accounts.google.com/o/oauth2/auth
           token:
             url: https://oauth2.googleapis.com/token
-          redirect-uri: ${APP_URL}"/auth/oauth/google/callback"
+          redirect-uri: "${app.app-url}/auth/oauth/google/callback"
 
   executors:
     cpu-executor:

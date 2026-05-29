@@ -14,7 +14,7 @@ public record AppConfig(String name,
                         boolean cookieSecure,
                         long imageMaxSize,
                         String resourceApiPath,
-                        String licenseServerPrivateKey,
-                        String licenseServerPublicKey
+                        String currentServerPrivateKey,
+                        String currentServerPublicKey
 ) {
 }

@@ -20,7 +20,7 @@ public class SignatureHelper {
     public SignatureHelper(AppConfig config) {
         try {
             this.config = config;
-            byte[] keyBytes = Base64.getDecoder().decode(config.licenseServerPrivateKey());
+            byte[] keyBytes = Base64.getDecoder().decode(config.currentServerPrivateKey());
             PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(keyBytes);
             KeyFactory factory = KeyFactory.getInstance("Ed25519");
             this.privateKey = factory.generatePrivate(spec);
