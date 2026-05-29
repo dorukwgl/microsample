@@ -46,7 +46,7 @@ public class RedisMemoryStorage implements MemoryStorage {
     }
 
     private String getKey(String key) {
-        return key + ":" + appConfig.appId();
+        return appConfig.appId() + ":" + key;
     }
 
     @Override
