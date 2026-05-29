@@ -1,4 +1,4 @@
-FROM bellsoft/hardened-liberica-runtime-container:jre-26-cds-slim-glibc AS builder
+FROM bellsoft/hardened-liberica-runtime-container:jre-26-cds-glibc AS builder
 WORKDIR /app
 
 # Cache Gradle dependencies
@@ -11,7 +11,7 @@ COPY src/ src/
 RUN ./gradlew assemble -x test --no-daemon
 
 # ─────────────────────────────────────────────────────
-FROM bellsoft/liberica-runtime-container:jre-26-cds-slim-glibc
+FROM bellsoft/liberica-runtime-container:jre-26-cds-glibc
 WORKDIR /app
 COPY --from=builder /app/build/libs/microsample-1.0.0-all.jar app.jar
 
