@@ -1,15 +1,26 @@
 # ==========================
-# Development Environment Configuration
+# Development Environment
 # ==========================
 
+app:
+  app-url: "http://localhost:3000"
+  cookie-secure: false
+  control-panel:
+    enabled: true
+    title: micro-panel
+    path: /control-panel
+    log-url: true
+
 micronaut:
-  application:
-    local-storage-dir: "/var/www/microsample"
-    public-path-prefix: "pub"
-    private-path-prefix: "drk"
-    sociair-api-key: ${SOCIAIR_KEY}
-    resource-api-path: "res"
-    cookie-secure: false
+  server:
+    cors:
+      enabled: true
+      configurations:
+        web:
+          allowedOrigins: "http://localhost:3000" 
+    multipart:
+      max-file-size: 10
+      max-request-size: 52MB
 
   security:
     intercept-url-map:
@@ -22,16 +33,35 @@ micronaut:
         access:
           - isAnonymous()
 
-  server:
-    multipart:
-      max-file-size: 10
-      max-request-size: 52MB
+# ==========================
+# Development Infrastructure
+# ==========================
+datasources:
+  default:
+    url: jdbc:postgresql://localhost:5432/microsample
+    username: doruk
+    password: dorukdb
+    driverClassName: org.postgresql.Driver
+    dialect: POSTGRES
+    schema: microsample
+    hikari:
+      maximum-pool-size: 30
+      minimum-idle: 5
+      auto-commit: true
 
-  control-panel:
-    enabled: true
-    title: micro-panel
-    path: /control-panel
-    log-url: true
+nats:
+  default:
+    addresses:
+      - "nats://localhost:4222"
+    username: microsample-system-sysid-1
+    password: ${NATS_PASSWORD}
+
+redis:
+  uri: "redis://localhost"
+
+storage:
+  s3:
+    bucket: test-bucket
 
 # ==========================
 # Development Settings

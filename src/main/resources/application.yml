@@ -1,17 +1,27 @@
 # ==========================
-# Common Application Configuration
+# Custom Application Properties
 # ==========================
+app:
+  name: microsample
+  app-id: ${APP_ID}
+  session-expiration: ${SESSION_EXPIRATION:7} # days
+  image-max-size: 5242880 # 5MB
+  license-server-private-key: ${LICENSE_SERVER_PRIVATE_KEY}
+  license-server-public-key: ${LICENSE_SERVER_PUBLIC_KEY}
+  app-url: ${APP_URL}
+  cookie-secure: true
+  local-storage-dir: "/var/www/microsample"
+  public-path-prefix: "pub"
+  private-path-prefix: "drk"
+  sociair-api-key: ${SOCIAIR_KEY}
+  resource-api-path: "res"
 
+# ==========================
+# Micronaut Framework
+# ==========================
 micronaut:
   application:
     name: microsample
-    app-id: ${APP_ID}
-    session-expiration: ${SESSION_EXPIRATION:7} # days
-    image-max-size: 5242880 # 5MB
-    license-server-private-key: ${LICENSE_SERVER_PRIVATE_KEY}
-    license-server-public-key: ${LICENSE_SERVER_PUBLIC_KEY}
-    app-url: ${APP_URL}
-
   security:
     enabled: true
     reject-not-found: false
@@ -54,11 +64,6 @@ micronaut:
   server:
     proxy:
       enabled: true
-    cors:
-      enabled: true
-      configurations:
-        web:
-          allowedOrigins: "http://localhost:3000"
     dispatch-options-requests: true
     netty:
       use-native-transport: true
@@ -71,19 +76,18 @@ micronaut:
         default:
           prefer-native-transport: true
           transport: io_uring
-          loom-carrier: true  # for loom carrier
+          loom-carrier: true
 
-      default-bootstrap:
       event-loop-shutdown-quiet-period: 0ms
       event-loop-shutdown-timeout: 0ms
 
-    thread-selection: blocking # for loom carrier
+    thread-selection: blocking
 
   http:
     client:
-      event-loop-group: default # for loom carrier
+      event-loop-group: default
       pool:
-        connection-locality: enforced_always # for loom carrier
+        connection-locality: enforced_always
     services:
       jwks:
         url: http://localhost:41518
@@ -105,52 +109,11 @@ micronaut:
         mapping: /swagger-ui/**
 
 # ==========================
-# Database Configuration
+# Infrastructure — Shared
 # ==========================
-datasources:
-  default:
-    url: jdbc:${DATASOURCE_URL}
-    username: ${DATASOURCE_USERNAME}
-    password: ${DATASOURCE_PASSWORD}
-    driverClassName: org.postgresql.Driver
-    dialect: POSTGRES
-    schema: microsample
-
-    hikari:
-      maximum-pool-size: 30
-      minimum-idle: 5
-      auto-commit: true
 
 jimmer:
   dialect: postgres
-
-nats:
-  default:
-    addresses:
-      - "nats://localhost:4222"
-    username: microsample-system-sysid-1
-    password: ${NATS_PASSWORD}
-
-redis:
-  uri: "redis://localhost"
-
-brevo:
-  url: https://api.brevo.com
-  apiKey: ${BREVO_API_KEY}
-  senderEmail: ${BREVO_SENDER_EMAIL}
-  senderName: ${BREVO_SENDER_NAME}
-
-# ==========================
-# Firebase Cloud Messaging
-# ==========================
-# Generate service account JSON: Firebase Console → Project Settings → Service Accounts → Generate New Private Key
-# Copy the entire JSON content into the FIREBASE_SERVICE_ACCOUNT_JSON env var.
-firebase:
-  service-account-json: ${FIREBASE_SERVICE_ACCOUNT_JSON}
-
-# ==========================
-# Flyway Migration Settings
-# ==========================
 
 flyway:
   datasources:
@@ -161,18 +124,19 @@ flyway:
       baseline-description: "Initial migration"
       out-of-order: false
       locations: classpath:db/migration
-      schemas: sample
 
-# ==================================
-# S3 Storage Configuration
-# ==================================
+brevo:
+  url: https://api.brevo.com
+  apiKey: ${BREVO_API_KEY}
+  senderEmail: ${BREVO_SENDER_EMAIL}
+  senderName: ${BREVO_SENDER_NAME}
+
+firebase:
+  service-account-json: ${FIREBASE_SERVICE_ACCOUNT_JSON}
+
 storage:
   s3:
-    bucket: test-bucket
-    public-base-url: https://cdn.example.com
     region: auto
     endpoint: https://<account-id>.r2.cloudflarestorage.com
-    access-key: ${R2_ACCESS_KEY}
-    secret-key: ${R2_SECRET_KEY}
 
 kind: Application

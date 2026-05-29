@@ -3,7 +3,7 @@ package com.doruk.infrastructure.config;
 
 import io.micronaut.context.annotation.ConfigurationProperties;
 
-@ConfigurationProperties("micronaut.application")
+@ConfigurationProperties("app")
 public record AppConfig(String name,
                         String publicPathPrefix,
                         String privatePathPrefix,

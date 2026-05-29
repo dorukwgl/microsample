@@ -1,15 +1,47 @@
 # ==========================
-# Production Environment Configuration
+# Production Environment
 # ==========================
 
+app:
+  cookie-secure: true
+
 micronaut:
-  application:
-    localStorageDir: "/var/www/microsample"
-    publicPathPrefix: "pub"
-    privatePathPrefix: "drk"
-    sociairApiKey: ${SOCIAIR_KEY}
-    resource-api-path: "res"
-    cookie-secure: true
+  server:
+    cors:
+      enabled: true
+      configurations:
+        web:
+          allowedOrigins: ${CORS_ORIGINS}
+
+# ==========================
+# Production Infrastructure
+# ==========================
+datasources:
+  default:
+    url: jdbc:${DATASOURCE_URL}
+    username: ${DATASOURCE_USERNAME}
+    password: ${DATASOURCE_PASSWORD}
+    driverClassName: org.postgresql.Driver
+    dialect: POSTGRES
+    schema: microsample
+    hikari:
+      maximum-pool-size: 30
+      minimum-idle: 10
+      auto-commit: true
+
+nats:
+  default:
+    addresses:
+      - ${NATS_URL}
+    username: ${NATS_USERNAME}
+    password: ${NATS_PASSWORD}
+
+redis:
+  uri: ${REDIS_URL}
+
+storage:
+  s3:
+    bucket: ${S3_BUCKET}
 
 # ==========================
 # Production Settings

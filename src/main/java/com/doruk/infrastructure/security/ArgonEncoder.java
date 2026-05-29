@@ -7,8 +7,6 @@ import de.mkammerer.argon2.Argon2Factory;
 import de.mkammerer.argon2.Argon2Factory.Argon2Types;
 import io.micronaut.context.annotation.Bean;
 import jakarta.inject.Singleton;
-import reactor.core.publisher.Mono;
-
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 

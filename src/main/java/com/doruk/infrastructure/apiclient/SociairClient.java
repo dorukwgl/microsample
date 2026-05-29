@@ -11,7 +11,7 @@ import io.micronaut.http.client.annotation.Client;
 @Client("sociair")
 @Header(name = "accept", value = "application/json")
 @Header(name = "content-type", value = "application/json")
-@Header(name = HttpHeaders.AUTHORIZATION, value = "Bearer ${micronaut.application.sociairApiKey}")
+@Header(name = HttpHeaders.AUTHORIZATION, value = "Bearer ${app.sociair-api-key}")
 public interface SociairClient {
     @Post("/api/sms")
     SociairSendSmsResponse sendSms(

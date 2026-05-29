@@ -1,5 +1,5 @@
 # ==========================
-# Test Environment Configuration
+# Test Environment
 # ==========================
 
 micronaut:
@@ -67,3 +67,5 @@ logger:
     org.flywaydb: INFO
     io.micronaut.flyway: INFO
     org.babyfish.jimmer.sql: WARN
+
+kind: Application
