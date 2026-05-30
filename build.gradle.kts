@@ -154,10 +154,10 @@ tasks.withType<JavaCompile> {
 
 // --- Flyway Configuration
 flyway {
-    url = "jdbc:postgresql://localhost:5432/kendra"
+    url = "jdbc:postgresql://localhost:5432/microsample"
     user = "doruk"
     password = "dorukdb"
-    schemas = arrayOf("kendra")
+    schemas = arrayOf("sample")
     locations = arrayOf("filesystem:src/main/resources/db/migration")
 }
 
@@ -270,6 +270,9 @@ tasks.assemble {
     dependsOn(tasks.shadowJar)
 }
 
+tasks.matching { it.name == "generateJooq" }.configureEach {
+    dependsOn("flywayMigrate")
+}
 
 tasks.named<JavaExec>("run") {
     jvmArgs(
