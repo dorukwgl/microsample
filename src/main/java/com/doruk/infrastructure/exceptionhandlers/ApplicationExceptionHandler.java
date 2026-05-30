@@ -2,13 +2,13 @@ package com.doruk.infrastructure.exceptionhandlers;
 
 import com.doruk.application.exception.*;
 import com.doruk.infrastructure.dto.ErrorResponse;
+import com.doruk.infrastructure.util.Pair;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.annotation.Produces;
 import io.micronaut.http.server.exceptions.ExceptionHandler;
 import jakarta.inject.Singleton;
-import javafx.util.Pair;
 
 import java.util.Random;
 
@@ -71,7 +71,7 @@ public class ApplicationExceptionHandler implements ExceptionHandler<Application
     public HttpResponse<?> handle(HttpRequest request, ApplicationException exception) {
         var statusPair = getStatusCode(exception);
         var msg = getMessage(exception);
-        return HttpResponse.status(statusPair.getKey(), statusPair.getValue())
+        return HttpResponse.status(statusPair.key(), statusPair.value())
                 .body(new ErrorResponse(msg));
     }
 }

@@ -12,8 +12,8 @@ import com.doruk.infrastructure.config.AppExecutors;
 import com.doruk.infrastructure.persistence.auth.AuthRepository;
 import com.doruk.infrastructure.util.Constants;
 import com.doruk.infrastructure.util.KeyNamespace;
+import com.doruk.infrastructure.util.Pair;
 import jakarta.inject.Singleton;
-import javafx.util.Pair;
 import lombok.RequiredArgsConstructor;
 import nl.basjes.parse.useragent.UserAgentAnalyzer;
 
@@ -134,7 +134,7 @@ public class BiometricService {
         var txn = new BiometricTransaction(
                 biometric.userId(),
                 biometric.publicKey(),
-                challenge.getValue(),
+                challenge.value(),
                 ipContext
         );
 
@@ -144,7 +144,7 @@ public class BiometricService {
         storage.saveEx(KeyNamespace.getNamespacedId(txnPrefix, biometric.deviceId()), txn, duration);
 
         // return the challenge
-        return challenge.getKey();
+        return challenge.key();
     }
 
     private boolean verifySignature(byte[] publicKey, byte[] challenge, String encodedSignature) {

@@ -1,7 +1,6 @@
 package com.doruk.infrastructure.util;
 
 import com.doruk.application.enums.ImageVariant;
-import javafx.util.Pair;
 import net.coobird.thumbnailator.Thumbnails;
 
 import java.io.ByteArrayInputStream;

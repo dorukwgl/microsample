@@ -83,7 +83,7 @@ public class ProfileImageUploadConsumer extends EventConsumer<ProfileImageUpload
                         .join();
 
                 String variantKey = ImageVariantKey.of(event.objectKey(), variant);
-                storage.put(variantKey, data.getValue(), data.getKey(), event.mimeType());
+                storage.put(variantKey, data.value(), data.key(), event.mimeType());
             } catch (IOException e) {
                 throw new RuntimeException("Variant generation failed", e);
             }

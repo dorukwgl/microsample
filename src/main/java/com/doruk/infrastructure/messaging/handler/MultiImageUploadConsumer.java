@@ -71,7 +71,7 @@ public class MultiImageUploadConsumer extends EventConsumer<MultiImageUploadEven
             try (InputStream stream = storage.open(file.objectKey())) {
                 var data = ImageScalingUtil.scaleAndCompress(stream, variant);
                 String variantKey = ImageVariantKey.of(file.objectKey(), variant);
-                storage.put(variantKey, data.getValue(), data.getKey(), file.mimeType());
+                storage.put(variantKey, data.value(), data.key(), file.mimeType());
             } catch (IOException e) {
                 throw new RuntimeException("Variant generation failed", e);
             }

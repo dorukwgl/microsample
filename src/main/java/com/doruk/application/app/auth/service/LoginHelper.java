@@ -10,8 +10,8 @@ import com.doruk.infrastructure.config.AppConfig;
 import com.doruk.infrastructure.persistence.auth.AuthRepository;
 import com.doruk.infrastructure.security.JwtIssuer;
 import com.doruk.infrastructure.util.GenerateRandom;
+import com.doruk.infrastructure.util.Pair;
 import jakarta.inject.Singleton;
-import javafx.util.Pair;
 import lombok.RequiredArgsConstructor;
 import nl.basjes.parse.useragent.UserAgentAnalyzer;
 
@@ -61,10 +61,10 @@ public class LoginHelper {
                         deviceInfo.orElse(null)));
 
         return LoginResponse.builder()
-                .accessToken(tokens.getValue().accessToken())
-                .accessTokenType(tokens.getValue().tokenType())
-                .accessTokenExpiresIn(tokens.getValue().expiresIn())
-                .refreshToken(tokens.getKey())
+                .accessToken(tokens.value().accessToken())
+                .accessTokenType(tokens.value().tokenType())
+                .accessTokenExpiresIn(tokens.value().expiresIn())
+                .refreshToken(tokens.key())
                 .isEmailVerified(user.emailVerified())
                 .isPhoneVerified(user.phoneVerified())
                 .mfaRequired(false)

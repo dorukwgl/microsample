@@ -5,8 +5,8 @@ import com.doruk.application.interfaces.MailService;
 import com.doruk.infrastructure.apiclient.BrevoClient;
 import com.doruk.infrastructure.apiclient.dto.BrevoMailRequest;
 import com.doruk.infrastructure.config.BrevoConfig;
+import com.doruk.infrastructure.util.Pair;
 import jakarta.inject.Singleton;
-import javafx.util.Pair;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -32,8 +32,8 @@ public class BrevoMailService implements MailService {
         var request = new BrevoMailRequest(
                 new BrevoMailRequest.MailUser(brevoConfig.senderName(), brevoConfig.senderEmail()),
                 List.of(new BrevoMailRequest.MailUser(mailParams.toName(), mailParams.toEmail())),
-                template.getKey(),
-                template.getValue(),
+                template.key(),
+                template.value(),
                 Map.of(
                         "otp", mailParams.otp(),
                         "name", mailParams.toName(),

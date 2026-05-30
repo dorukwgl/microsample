@@ -324,7 +324,7 @@ public class AuthService {
 
     public Map<String, String> initEmailVerification(String userId) {
         var user = authRepo.getUserEmail(userId);
-        var tid = this.createAndPublishEmailVerificationTransaction(userId, user.getKey());
+        var tid = this.createAndPublishEmailVerificationTransaction(userId, user.key());
         return Map.of("tid", tid, "message", "OTP is sent to your email address");
     }
 
@@ -375,7 +375,7 @@ public class AuthService {
 
     public Map<String, String> initPhoneVerification(String userId) {
         var phonePair = authRepo.getUserPhone(userId);
-        var phone = phonePair.getKey();
+        var phone = phonePair.key();
 
         if (phone == null || phone.isBlank())
             throw new IncompleteStateException("Phone number not provided, please update your profile.");
@@ -406,7 +406,7 @@ public class AuthService {
 
     public AuthUpdateResponse updateEmail(String userId, String email) {
         var current = authRepo.getUserEmail(userId);
-        if (!current.getValue()) {
+        if (!current.value()) {
             authRepo.updateEmail(userId, email, false);
             return new AuthUpdateResponse(null, false,
                     "Email address updated, please proceed to verify it.");
@@ -423,7 +423,7 @@ public class AuthService {
 
     public AuthUpdateResponse updatePhone(String userId, String phone) {
         var current = authRepo.getUserPhone(userId);
-        if (!current.getValue()) {
+        if (!current.value()) {
             authRepo.updatePhone(userId, phone, false);
             return new AuthUpdateResponse(null, false,
                     "Phone Number updated, please proceed to verify it.");
@@ -544,7 +544,7 @@ public class AuthService {
         var unverifiedMsg = "Please verify your " + (authType == MultiAuthType.PHONE ? "Phone" : "Email") +
                 " to enable Multi Factor Authorization in your account";
 
-        if (!user.getValue() || user.getKey() == null)
+        if (!user.value() || user.key() == null)
             throw new IncompleteStateException(unverifiedMsg);
 
         // enable the mfa
