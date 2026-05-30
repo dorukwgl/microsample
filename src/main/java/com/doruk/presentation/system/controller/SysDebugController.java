@@ -1,0 +1,41 @@
+package com.doruk.presentation.system.controller;
+
+import com.doruk.infrastructure.annotataions.SystemController;
+import io.micronaut.http.MediaType;
+import io.micronaut.http.annotation.Get;
+import io.micronaut.http.annotation.Produces;
+import io.micronaut.security.annotation.Secured;
+import io.micronaut.security.rules.SecurityRule;
+import io.swagger.v3.oas.annotations.Operation;
+
+@SystemController
+@Secured(SecurityRule.IS_ANONYMOUS)
+public class SysDebugController {
+    @Operation(description = "Returns the active Netty transport (epoll, io_uring, or nio)")
+    @Produces(MediaType.TEXT_PLAIN)
+    @Get("/transport")
+    String transport() {
+        try {
+            var epoll = Class.forName("io.netty.channel.epoll.Epoll");
+            if ((boolean) epoll.getMethod("isAvailable").invoke(null)) return "epoll";
+        } catch (Exception ignored) {}
+        try {
+            var uring = Class.forName("io.netty.incubator.channel.uring.IoUring");
+            if ((boolean) uring.getMethod("isAvailable").invoke(null)) return "io_uring";
+        } catch (Exception ignored) {}
+        return "nio";
+    }
+
+    @Operation(description = "Returns the current thread name")
+    @Produces(MediaType.TEXT_PLAIN)
+    @Get("/thread")
+    String thread() {
+        return Thread.currentThread().getName();
+    }
+
+    @Secured(SecurityRule.IS_AUTHENTICATED)
+    @Get("/testauth")
+    String testAuth() {
+        return "you are authenticated...";
+    }
+}

@@ -15,7 +15,6 @@ import com.doruk.application.policies.SysUserPolicy;
 import com.doruk.domain.shared.enums.Permissions;
 import com.doruk.domain.shared.enums.UserAccountStatus;
 import com.doruk.infrastructure.persistence.system.SystemRepository;
-import com.doruk.infrastructure.startup.PermissionSeeder;
 import com.doruk.infrastructure.util.Constants;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +27,6 @@ import java.util.Set;
 public class SystemService {
     private final SystemRepository repo;
     private final ObjectStorage storage;
-    private final PermissionSeeder permissionSeeder;
 
     public PageResponse<UserResponse> getUsers(PageQuery page, UserQuery userQuery) {
         var users = repo.getUsers(page, userQuery);
