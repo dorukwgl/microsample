@@ -3,16 +3,20 @@ export MICRONAUT_ENVIRONMENTS=dev,object-storage-local
 export ENVIRONMENT=prod
 export DATASOURCE_USERNAME=micro_infra
 export LEDGER_PORT=9096
-export DATASOURCE_URL="postgresql://postgres:5432/sampledb"
+export DATASOURCE_URL="jdbc:postgresql://postgres:5432/sampledb"
 export DATASOURCE_PASSWORD=4a7b2c9f1e3d8a6b5c0f2e4d1a7b9c3f
 export LOG_DIR="/var/log/microsample"
-export APP_ID=microsample-system-sysid-1;
+export APP_ID=microsample-system-sysid-1
 export BREVO_API_KEY=lsdkfjslkdskdlfjsdlkf
 export BREVO_SENDER_EMAIL=doruk@portal.yakshasoft.com
 export BREVO_SENDER_NAME=YakshaSoft
+export REDIS_PASSWORD=1c5d9f2e4a7b8c0d3f6e1a2b4c9d8f7e
+
 export NATS_USERNAME=microsample-system-1
 export NATS_PASSWORD=8f3a2c9d1e7b4a6f5c0d3e8f1a2b4c6d
-export DEV_REDIS_URI="redis://:1c5d9f2e4a7b8c0d3f6e1a2b4c9d8f7e@redis:6379"
+export NATS_URL="nats://nats:4222"
+export REDIS_URI="redis://:1c5d9f2e4a7b8c0d3f6e1a2b4c9d8f7e@redis:6379"
+
 export APP_URL=http://localhost:3000
 export CURRENT_SERVER_PRIVATE_KEY=placeholder-private-key
 export CURRENT_SERVER_PUBLIC_KEY=placeholder-public-key
@@ -20,10 +24,10 @@ export FIREBASE_SERVICE_ACCOUNT_JSON={}
 export SOCIAIR_KEY=sk-placeholder
 export GOOGLE_CLIENT_ID=google-client-id-placeholder
 export GOOGLE_CLIENT_SECRET=google-client-secret-placeholder
-export REDIS_PASSWORD=1c5d9f2e4a7b8c0d3f6e1a2b4c9d8f7e
-export CORS_ORIGINS=http://localhost:3000,http://localhost:3001
+
 export CORS_ORIGINS=http://localhost:3000,http://localhost:3001
 export S3_BUCKET=placeholder-bucket
+
 export LOG_DIR=/var/log/microsample
 
 ./gradlew run -Pdocs

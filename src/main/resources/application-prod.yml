@@ -18,7 +18,7 @@ micronaut:
 # ==========================
 datasources:
   default:
-    url: jdbc:${DATASOURCE_URL}
+    url: ${DATASOURCE_URL}
     username: ${DATASOURCE_USERNAME}
     password: ${DATASOURCE_PASSWORD}
     driverClassName: org.postgresql.Driver
@@ -37,7 +37,7 @@ nats:
     password: ${NATS_PASSWORD}
 
 redis:
-  uri: ${REDIS_URL}
+  uri: ${REDIS_URI}
 
 storage:
   s3:

@@ -52,16 +52,16 @@ datasources:
 nats:
   default:
     addresses:
-      - "nats://localhost:4222"
+      - ${NATS_URL:-nats://localhost:4222}
     username: ${NATS_USERNAME:-microsample-system-1}
     password: ${NATS_PASSWORD}
 
 redis:
-  uri: ${DEV_REDIS_URI}
+  uri: ${REDIS_URI}
 
 storage:
   s3:
-    bucket: test-bucket
+    bucket: ${S3_BUCKET:-test-bucket}
 
 # ==========================
 # Development Settings
