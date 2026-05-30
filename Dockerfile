@@ -14,6 +14,7 @@ RUN --mount=type=cache,target=~/.gradle ./gradlew assemble -x test -x generateJo
 FROM bellsoft/liberica-runtime-container:jre-26-cds-glibc
 WORKDIR /app
 COPY --from=builder /app/build/libs/microsample-1.0.0-all.jar app.jar
+COPY microsampleServiceAccount.json ./
 
 EXPOSE 9096
 

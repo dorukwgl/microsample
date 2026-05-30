@@ -16,12 +16,12 @@ public class SysDebugController {
     @Get("/transport")
     String transport() {
         try {
-            var epoll = Class.forName("io.netty.channel.epoll.Epoll");
-            if ((boolean) epoll.getMethod("isAvailable").invoke(null)) return "epoll";
+            var uring = Class.forName("io.netty.channel.uring.IoUring");
+            if ((boolean) uring.getMethod("isAvailable").invoke(null)) return "io_uring";
         } catch (Exception ignored) {}
         try {
-            var uring = Class.forName("io.netty.incubator.channel.uring.IoUring");
-            if ((boolean) uring.getMethod("isAvailable").invoke(null)) return "io_uring";
+            var epoll = Class.forName("io.netty.channel.epoll.Epoll");
+            if ((boolean) epoll.getMethod("isAvailable").invoke(null)) return "epoll";
         } catch (Exception ignored) {}
         return "nio";
     }
