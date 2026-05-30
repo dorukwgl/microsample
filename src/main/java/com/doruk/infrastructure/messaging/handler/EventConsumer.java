@@ -9,7 +9,13 @@ import io.nats.client.Connection;
 import io.nats.client.JetStreamSubscription;
 import io.nats.client.Message;
 import io.nats.client.PullSubscribeOptions;
+import io.nats.client.JetStreamApiException;
+import io.nats.client.JetStreamManagement;
 import io.nats.client.api.ConsumerConfiguration;
+import io.nats.client.api.ConsumerInfo;
+import io.nats.client.api.RetentionPolicy;
+import io.nats.client.api.StorageType;
+import io.nats.client.api.StreamConfiguration;
 import jakarta.annotation.PreDestroy;
 
 import java.io.IOException;
@@ -59,6 +65,9 @@ public abstract class EventConsumer<T> {
 
     @EventListener
     void start(StartupEvent event) throws Exception {
+        ensureStreamExists();
+        ensureConsumer();
+
         var options = PullSubscribeOptions.builder()
                 .stream(this.stream())
                 .configuration(ConsumerConfiguration.builder()
@@ -73,6 +82,59 @@ public abstract class EventConsumer<T> {
 
         this.subscription = natsConnection.jetStream().subscribe(this.subject(), options);
         this.loopFuture = executors.VIRTUAL().submit(this::loop);
+    }
+
+    private void ensureStreamExists() {
+        try {
+            JetStreamManagement jsm = natsConnection.jetStreamManagement();
+            try {
+                jsm.getStreamInfo(stream());
+            } catch (JetStreamApiException e) {
+                if (e.getErrorCode() == 10059) {
+                    StreamConfiguration config = StreamConfiguration.builder()
+                            .name(stream())
+                            .subjects("event.>", "file.>", "profile.>")
+                            .storageType(StorageType.File)
+                            .retentionPolicy(RetentionPolicy.Interest)
+                            .maxAge(Duration.ofDays(7))
+                            .build();
+                    jsm.addStream(config);
+                    LoggingService.logInfo("Created JetStream stream: " + stream());
+                } else {
+                    throw e;
+                }
+            }
+        } catch (IOException | JetStreamApiException e) {
+            LoggingService.logError("Failed to ensure JetStream stream '" + stream() + "': " + e.getMessage());
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void ensureConsumer() {
+        try {
+            JetStreamManagement jsm = natsConnection.jetStreamManagement();
+            ConsumerInfo info = jsm.getConsumerInfo(stream(), durable());
+            ConsumerConfiguration existing = info.getConsumerConfiguration();
+            Duration currentAckWait = Duration.ofMinutes(5);
+            boolean configChanged = !currentAckWait.equals(existing.getAckWait());
+
+            if (!configChanged) {
+                List<Duration> currentBackoff = List.of(
+                        Duration.ofSeconds(1), Duration.ofSeconds(5),
+                        Duration.ofSeconds(30), Duration.ofSeconds(60)
+                );
+                configChanged = !currentBackoff.equals(existing.getBackoff());
+            }
+
+            if (configChanged) {
+                jsm.deleteConsumer(stream(), durable());
+                LoggingService.logInfo("Deleted consumer '" + durable() + "' due to configuration change");
+            }
+        } catch (JetStreamApiException e) {
+            // Consumer doesn't exist — will be created fresh by subscribe
+        } catch (IOException e) {
+            LoggingService.logError("Failed to check consumer '" + durable() + "': " + e.getMessage());
+        }
     }
 
     private void loop() {

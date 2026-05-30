@@ -276,12 +276,15 @@ tasks.matching { it.name == "generateJooq" }.configureEach {
 
 tasks.named<JavaExec>("run") {
     jvmArgs(
+        // Disable NioIoHandler selector instrumentation (fails on Java 26)
+        "-Dio.netty.noIoHandler=true",
         // Allow Netty to access native transport and JDK internals
         "--add-opens", "java.base/sun.nio.ch=ALL-UNNAMED",
         "--add-opens", "java.base/java.nio=ALL-UNNAMED",
         "--add-opens", "java.base/jdk.internal.misc=ALL-UNNAMED",
         "--add-opens", "java.base/java.lang.reflect=ALL-UNNAMED",
         "--add-opens", "java.base/java.util=ALL-UNNAMED",
+        "--add-opens", "java.base/sun.nio.ch=ALL-UNNAMED",
         "--enable-native-access=ALL-UNNAMED"
     )
 }

@@ -78,7 +78,6 @@ micronaut:
           prefer-native-transport: true
           transport: io_uring
           loom-carrier: true
-
       event-loop-shutdown-quiet-period: 0ms
       event-loop-shutdown-timeout: 0ms
 
