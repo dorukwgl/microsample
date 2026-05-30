@@ -1,14 +1,14 @@
-FROM bellsoft/hardened-liberica-runtime-container:jre-26-cds-glibc AS builder
+FROM bellsoft/liberica-runtime-container:jdk-26-cds-glibc AS builder
 WORKDIR /app
 
 # Cache Gradle dependencies
-COPY gradlew settings.gradle.kts build.gradle.kts ./
+COPY gradlew settings.gradle.kts build.gradle.kts gradle.properties ./
 COPY gradle/ gradle/
 RUN ./gradlew --no-daemon dependencies 2>/dev/null || true
 
 # Build the application
 COPY src/ src/
-RUN ./gradlew assemble -x test --no-daemon
+RUN --mount=type=cache,target=~/.gradle ./gradlew assemble -x test -x generateJooq --no-daemon
 
 # ─────────────────────────────────────────────────────
 FROM bellsoft/liberica-runtime-container:jre-26-cds-glibc
@@ -18,6 +18,7 @@ COPY --from=builder /app/build/libs/microsample-1.0.0-all.jar app.jar
 EXPOSE 9096
 
 CMD ["java", \
+     "-DLOG_DIR=/var/log/microsample", \
      "--enable-native-access=ALL-UNNAMED", \
      "--add-opens", "java.base/sun.nio.ch=ALL-UNNAMED", \
      "--add-opens", "java.base/java.nio=ALL-UNNAMED", \

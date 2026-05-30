@@ -15,6 +15,7 @@ app:
   private-path-prefix: "drk"
   sociair-api-key: ${SOCIAIR_KEY}
   resource-api-path: "res"
+  log-dir: /var/log/microsample
 
 # ==========================
 # Micronaut Framework

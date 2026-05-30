@@ -128,6 +128,14 @@ java {
     targetCompatibility = JavaVersion.toVersion("26")
 }
 
+sourceSets {
+    main {
+        java {
+            srcDir("src/main/generated-jooq")
+        }
+    }
+}
+
 // Logic to replicate Maven Profiles:
 // By default, don't generate docs. If `-Pdocs` is passed to gradle, enable them.
 val generateDocs = project.hasProperty("docs")
@@ -202,7 +210,7 @@ jooq {
 
                     target.apply {
                         packageName = "com.doruk.jooq"
-                        directory = "build/generated-src/jooq"
+                        directory = "src/main/generated-jooq"
                     }
                 }
             }
@@ -233,7 +241,7 @@ micronaut {
         optimizeClassLoading = true
         deduceEnvironment = true
         optimizeNetty = true
-        replaceLogbackXml = true
+        replaceLogbackXml = false
         configurationProperties.put("micronaut.security.jwks.enabled","false")
     }
 }
@@ -262,9 +270,6 @@ tasks.assemble {
     dependsOn(tasks.shadowJar)
 }
 
-tasks.named("compileJava") {
-    dependsOn("generateJooq")
-}
 
 tasks.named<JavaExec>("run") {
     jvmArgs(

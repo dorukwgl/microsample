@@ -8,10 +8,11 @@ services:
     ports:
       - "${LEDGER_PORT:-9096}:9096"
     environment:
-      MICRONAUT_ENVIRONMENTS: prod
+      MICRONAUT_ENVIRONMENTS: "prod,object-storage-local"
       LEDGER_PORT: "9096"
       APP_ID: ${APP_ID:-microsample-app}
       APP_URL: ${APP_URL:?APP_URL is required}
+      LOG_DIR: ${LOG_DIR:?required}
       CORS_ORIGINS: ${CORS_ORIGINS:?CORS_ORIGINS is required}
       DATASOURCE_URL: "postgresql://shared-postgres:5432/sampledb"
       DATASOURCE_USERNAME: micro_infra
@@ -32,7 +33,14 @@ services:
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
     networks:
       - shared-infra-net
+    volumes:
+      - uploads:/var/www/microsample
+      - logs:/var/log/microsample
 
 networks:
   shared-infra-net:
     external: true
+
+volumes:
+  uploads:
+  logs:

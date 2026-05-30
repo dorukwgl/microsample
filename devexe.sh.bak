@@ -25,5 +25,6 @@ export REDIS_PASSWORD=1c5d9f2e4a7b8c0d3f6e1a2b4c9d8f7e
 export CORS_ORIGINS=http://localhost:3000,http://localhost:3001
 export CORS_ORIGINS=http://localhost:3000,http://localhost:3001
 export S3_BUCKET=placeholder-bucket
+export LOG_DIR=/var/log/microsample
 
 ./gradlew run -Pdocs
