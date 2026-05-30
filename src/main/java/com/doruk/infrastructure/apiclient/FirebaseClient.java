@@ -2,9 +2,8 @@ package com.doruk.infrastructure.apiclient;
 
 import com.doruk.infrastructure.config.FirebaseConfig;
 import com.doruk.infrastructure.logging.LoggingService;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micronaut.context.annotation.Context;
+import io.micronaut.json.JsonMapper;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.HttpStatus;
@@ -15,12 +14,15 @@ import jakarta.inject.Singleton;
 
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.KeyFactory;
 import java.security.Signature;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.time.Instant;
 import java.util.Base64;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
 
 @Singleton
@@ -35,18 +37,24 @@ public class FirebaseClient {
     private final java.security.PrivateKey privateKey;
     private final HttpClient httpClient;
     private final HttpClient oauthHttpClient;
+    private final JsonMapper jsonMapper;
 
     private volatile String accessToken;
     private volatile Instant tokenExpiry = Instant.EPOCH;
     private final ReentrantLock tokenLock = new ReentrantLock();
 
-    public FirebaseClient(FirebaseConfig config) {
+    public FirebaseClient(FirebaseConfig config, JsonMapper jsonMapper) {
+        this.jsonMapper = jsonMapper;
         try {
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode json = mapper.readTree(config.serviceAccountJson());
-            this.projectId = json.get("project_id").asText();
-            this.clientEmail = json.get("client_email").asText();
-            String rawKey = json.get("private_key").asText()
+            String jsonContent = config.serviceAccountJson();
+            if (!jsonContent.startsWith("{")) {
+                jsonContent = Files.readString(
+                        Path.of(jsonContent));
+            }
+            Map<String, Object> json = jsonMapper.readValue(jsonContent, Map.class);
+            this.projectId = (String) json.get("project_id");
+            this.clientEmail = (String) json.get("client_email");
+            String rawKey = ((String) json.get("private_key"))
                     .replace("\\n", "\n")
                     .replace("-----BEGIN PRIVATE KEY-----", "")
                     .replace("-----END PRIVATE KEY-----", "")
@@ -116,9 +124,9 @@ public class FirebaseClient {
                             String.class
                     );
 
-            JsonNode json = new ObjectMapper().readTree(response.body());
-            this.accessToken = json.get("access_token").asText();
-            this.tokenExpiry = Instant.now().plusSeconds(json.get("expires_in").asLong());
+            Map<String, Object> json = jsonMapper.readValue(response.body(), Map.class);
+            this.accessToken = (String) json.get("access_token");
+            this.tokenExpiry = Instant.now().plusSeconds(((Number) json.get("expires_in")).longValue());
         } catch (Exception e) {
             throw new RuntimeException("Failed to obtain Firebase access token", e);
         }
@@ -186,7 +194,7 @@ public class FirebaseClient {
 
     private String serialize(Object obj) {
         try {
-            return new ObjectMapper().writeValueAsString(obj);
+            return jsonMapper.writeValueAsString(obj);
         } catch (Exception e) {
             throw new RuntimeException("Failed to serialize FCM request", e);
         }

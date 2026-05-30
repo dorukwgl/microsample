@@ -22,5 +22,8 @@ CMD ["java", \
      "--enable-native-access=ALL-UNNAMED", \
      "--add-opens", "java.base/sun.nio.ch=ALL-UNNAMED", \
      "--add-opens", "java.base/java.nio=ALL-UNNAMED", \
+     "--add-opens", "java.base/jdk.internal.misc=ALL-UNNAMED", \
+     "--add-opens", "java.base/java.lang.reflect=ALL-UNNAMED", \
+     "--add-opens", "java.base/java.util=ALL-UNNAMED", \
      "-XX:+UseZGC", \
      "-jar", "app.jar"]

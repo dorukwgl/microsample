@@ -20,7 +20,6 @@ export REDIS_URI="redis://:1c5d9f2e4a7b8c0d3f6e1a2b4c9d8f7e@localhost:6379"
 export APP_URL=http://localhost:3000
 export CURRENT_SERVER_PRIVATE_KEY=placeholder-private-key
 export CURRENT_SERVER_PUBLIC_KEY=placeholder-public-key
-export FIREBASE_SERVICE_ACCOUNT_JSON={}
 export SOCIAIR_KEY=sk-placeholder
 export GOOGLE_CLIENT_ID=google-client-id-placeholder
 export GOOGLE_CLIENT_SECRET=google-client-secret-placeholder
@@ -29,5 +28,8 @@ export CORS_ORIGINS=http://localhost:3000,http://localhost:3001
 export S3_BUCKET=placeholder-bucket
 
 export LOG_DIR=/var/log/microsample
+
+export FIREBASE_SERVICE_ACCOUNT_JSON={}
+
 
 ./gradlew run -Pdocs

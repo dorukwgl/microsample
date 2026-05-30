@@ -5,6 +5,8 @@ services:
     build: .
     container_name: microsample-app
     restart: unless-stopped
+    security_opt:
+      - seccomp=unconfined
     ports:
       - "${LEDGER_PORT:-9096}:9096"
     environment:

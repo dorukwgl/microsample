@@ -88,14 +88,17 @@ micronaut:
     client:
       event-loop-group: default
       pool:
-        connection-locality: enforced_always
+        connection-locality: enforced_if_same_group
     services:
       jwks:
         url: http://localhost:41518
+        event-loop-group: default
       brevo:
         url: ${brevo.url}
+        event-loop-group: default
       sociair:
         url: https://sms.sociair.com
+        event-loop-group: default
 
   router:
     static-resources:

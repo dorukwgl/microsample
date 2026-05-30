@@ -276,9 +276,12 @@ tasks.matching { it.name == "generateJooq" }.configureEach {
 
 tasks.named<JavaExec>("run") {
     jvmArgs(
-        // Allow Netty to optimize NIO Selectors
+        // Allow Netty to access native transport and JDK internals
         "--add-opens", "java.base/sun.nio.ch=ALL-UNNAMED",
         "--add-opens", "java.base/java.nio=ALL-UNNAMED",
+        "--add-opens", "java.base/jdk.internal.misc=ALL-UNNAMED",
+        "--add-opens", "java.base/java.lang.reflect=ALL-UNNAMED",
+        "--add-opens", "java.base/java.util=ALL-UNNAMED",
         "--enable-native-access=ALL-UNNAMED"
     )
 }
