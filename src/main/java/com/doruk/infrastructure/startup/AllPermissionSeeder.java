@@ -1,35 +1,30 @@
 package com.doruk.infrastructure.startup;
 
-import com.doruk.domain.shared.enums.Permissions;
-import com.doruk.infrastructure.persistence.entity.Permission;
-import com.doruk.infrastructure.persistence.entity.PermissionDraft;
+import com.doruk.jooq.tables.Permissions;
+
 import io.micronaut.context.annotation.Requires;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
-import org.babyfish.jimmer.sql.JSqlClient;
-import org.babyfish.jimmer.sql.ast.mutation.SaveMode;
+import org.jooq.DSLContext;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.time.OffsetDateTime;
 
 @Singleton
 @Requires(env = "setup")
 @RequiredArgsConstructor
 public class AllPermissionSeeder {
-    private final JSqlClient sqlClient;
+    private final DSLContext dsl;
 
     public void seedAllPermissions() {
-        List<Permission> permissions = new LinkedList<>();
-        for (Permissions permission : Permissions.values()) {
-            permissions.add(PermissionDraft.$.produce(p ->
-            {
-                p.setName(permission.name());
-                p.setDeletedAt(null);
-            }));
-        }
+        var p = Permissions.PERMISSIONS;
 
-        sqlClient.saveEntitiesCommand(permissions)
-                .execute();
+        for (var permission : com.doruk.domain.shared.enums.Permissions.values()) {
+            dsl.insertInto(p)
+                    .set(p.NAME, permission.name())
+                    .set(p.DELETED_AT, (OffsetDateTime) null)
+                    .onConflictDoNothing()
+                    .execute();
+        }
 
         System.out.println("All permissions from Permissions enum seeded...");
     }

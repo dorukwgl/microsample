@@ -1,27 +1,37 @@
 package com.doruk.infrastructure.startup;
 
-import com.doruk.infrastructure.persistence.entity.Role;
-import com.doruk.infrastructure.persistence.entity.RoleDraft;
 import com.doruk.infrastructure.util.Constants;
+import com.doruk.jooq.tables.Roles;
 import io.micronaut.context.annotation.Requires;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
-import org.babyfish.jimmer.sql.JSqlClient;
+import org.jooq.DSLContext;
 
 import java.time.OffsetDateTime;
-import java.util.List;
 
 @Singleton
 @Requires(env = "setup")
 @RequiredArgsConstructor
 public class RolesSeeder {
-    private final JSqlClient client;
+    private final DSLContext dsl;
 
     public void seedRoles() {
-        Role role2 = RoleDraft.$.produce(r -> r.setName(Constants.DICTATOR_ROLE).setDeletedAt(OffsetDateTime.now()));
-        Role role3 = RoleDraft.$.produce(r -> r.setName(Constants.SYS_ADMIN_ROLE).setDeletedAt(null));
-        Role role4 = RoleDraft.$.produce(r -> r.setName("USER").setDeletedAt(null));
-        client.saveEntitiesCommand(List.of(role2, role3, role4))
+        var r = Roles.ROLES;
+
+        dsl.insertInto(r)
+                .set(r.NAME, Constants.DICTATOR_ROLE)
+                .set(r.DELETED_AT, OffsetDateTime.now())
+                .onConflictDoNothing()
+                .execute();
+
+        dsl.insertInto(r)
+                .set(r.NAME, Constants.SYS_ADMIN_ROLE)
+                .onConflictDoNothing()
+                .execute();
+
+        dsl.insertInto(r)
+                .set(r.NAME, "USER")
+                .onConflictDoNothing()
                 .execute();
 
         System.out.println("Roles seeded...");

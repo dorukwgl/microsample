@@ -1,36 +1,36 @@
 package com.doruk.infrastructure.startup;
 
 import com.doruk.domain.shared.enums.Permissions;
-import com.doruk.infrastructure.persistence.entity.PermissionDraft;
-import com.doruk.infrastructure.persistence.entity.RoleDraft;
 import com.doruk.infrastructure.util.Constants;
+import com.doruk.jooq.tables.RolePermissions;
 import io.micronaut.context.annotation.Requires;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
-import org.babyfish.jimmer.sql.JSqlClient;
-
-import java.util.Arrays;
-import java.util.List;
+import org.jooq.DSLContext;
 
 @Singleton
 @Requires(env = "setup")
 @RequiredArgsConstructor
 public class GrantsSeeder {
-    private final JSqlClient sqlClient;
+    private final DSLContext dsl;
 
     public void seedGrants() {
-        var dictatorPermission = PermissionDraft.$.produce(p -> p.setName("DICTATOR_PERMISSION"));
+        var rp = RolePermissions.ROLE_PERMISSIONS;
 
-        var adminPermissions = Arrays.stream(Permissions.values())
-                .map(permission -> PermissionDraft.$.produce(p -> p.setName(permission.name())))
-                .toList();
+        // SYS_ADMIN gets all permissions
+        for (Permissions permission : Permissions.values()) {
+            dsl.insertInto(rp)
+                    .set(rp.ROLE_NAME, Constants.SYS_ADMIN_ROLE)
+                    .set(rp.PERMISSION_NAME, permission.name())
+                    .onConflictDoNothing()
+                    .execute();
+        }
 
-        var sysAdminPerm = RoleDraft.$.produce(RoleDraft.$.produce(r -> r.setName(Constants.SYS_ADMIN_ROLE)),
-                r -> r.setPermissions(adminPermissions));
-        var dictatorPerm = RoleDraft.$.produce(RoleDraft.$.produce(
-                r -> r.setName(Constants.DICTATOR_ROLE)), r -> r.setPermissions(List.of(dictatorPermission)));
-
-        sqlClient.saveEntitiesCommand(List.of(sysAdminPerm, dictatorPerm))
+        // DICTATOR gets only DICTATOR_PERMISSION
+        dsl.insertInto(rp)
+                .set(rp.ROLE_NAME, Constants.DICTATOR_ROLE)
+                .set(rp.PERMISSION_NAME, "DICTATOR_PERMISSION")
+                .onConflictDoNothing()
                 .execute();
 
         System.out.println("Grants seeded...");
