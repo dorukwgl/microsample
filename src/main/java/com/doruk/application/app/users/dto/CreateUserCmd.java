@@ -12,7 +12,7 @@ public record CreateUserCmd(
         String phone
 ) {
     public CreateUserCmd {
-        username = username.toLowerCase(Locale.ROOT);
+        username = username != null ? username.toLowerCase(Locale.ROOT) : null;
         email = email.toLowerCase(Locale.ROOT);
     }
 }
