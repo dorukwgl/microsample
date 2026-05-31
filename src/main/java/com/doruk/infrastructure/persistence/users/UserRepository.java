@@ -52,8 +52,9 @@ public class UserRepository {
         var u = Users.USERS;
         var r = UserRoles.USER_ROLES;
 
-        return dsl.transactionResult(() -> {
-            var usr = dsl.insertInto(u)
+        return dsl.transactionResult(configuration -> {
+            var ctx = DSL.using(configuration);
+            var usr = ctx.insertInto(u)
                     .set(u.USERNAME, dto.username())
                     .set(u.EMAIL, dto.email())
                     .set(u.PASSWORD, hashedPassword)
@@ -74,7 +75,7 @@ public class UserRepository {
                     );
 
             // Assign default role
-            dsl.insertInto(r)
+            ctx.insertInto(r)
                     .set(r.USER_ID, Objects.requireNonNull(usr).id())
                     .set(r.NAME, "USER")
                     .execute();
