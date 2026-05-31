@@ -17,22 +17,21 @@ micronaut:
       enabled: true
       configurations:
         web:
-          allowedOrigins: "http://localhost:3000" 
+          allowedOrigins: "http://localhost:3000"
     multipart:
       max-file-size: 10
       max-request-size: 52MB
-
-    router:
-      static-resources:
-        swagger:
-          paths: classpath:META-INF/swagger
-          mapping: /swagger/**
-        swagger-ui:
-          paths: classpath:META-INF/swagger/views/swagger-ui
-          mapping: /api-docs/**
-        swagger-ui-default:
-          paths: classpath:META-INF/swagger/views/swagger-ui
-          mapping: /swagger-ui/**
+  router:
+    static-resources:
+      swagger:
+        paths: classpath:META-INF/swagger
+        mapping: /swagger/**
+      swagger-ui:
+        paths: classpath:META-INF/swagger/views/swagger-ui
+        mapping: /api-docs/**
+      swagger-ui-default:
+        paths: classpath:META-INF/swagger/views/swagger-ui
+        mapping: /swagger-ui/**
 
   security:
     intercept-url-map:
@@ -42,6 +41,18 @@ micronaut:
           - isAnonymous()
       -
         pattern: /control-panel/*
+        access:
+          - isAnonymous()
+      -
+        pattern: /swagger/**
+        access:
+          - isAnonymous()
+      -
+        pattern: /api-docs/**
+        access:
+          - isAnonymous()
+      -
+        pattern: /swagger-ui/**
         access:
           - isAnonymous()
 
