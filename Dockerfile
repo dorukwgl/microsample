@@ -28,5 +28,6 @@ CMD ["java", \
      "--add-opens", "java.base/jdk.internal.misc=ALL-UNNAMED", \
      "--add-opens", "java.base/java.lang.reflect=ALL-UNNAMED", \
      "--add-opens", "java.base/java.util=ALL-UNNAMED", \
+     "-Dlogback.configurationFile=classpath:logback-prod.xml", \
      "-XX:+UseZGC", \
      "-jar", "app.jar"]
