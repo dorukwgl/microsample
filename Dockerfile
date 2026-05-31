@@ -16,10 +16,12 @@ WORKDIR /app
 COPY --from=builder /app/build/libs/microsample-1.0.0-all.jar app.jar
 COPY microsampleServiceAccount.json ./
 
+RUN mkdir -p /var/log/microsample
+RUN mkdir -p /var/www/microsample
+
 EXPOSE 9096
 
 CMD ["java", \
-     "-DLOG_DIR=/var/log/microsample", \
      "--enable-native-access=ALL-UNNAMED", \
      "--add-opens", "java.base/sun.nio.ch=ALL-UNNAMED", \
      "--add-opens", "java.base/java.nio=ALL-UNNAMED", \

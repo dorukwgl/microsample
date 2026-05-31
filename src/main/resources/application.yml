@@ -99,18 +99,6 @@ micronaut:
         url: https://sms.sociair.com
         event-loop-group: default
 
-  router:
-    static-resources:
-      swagger:
-        paths: classpath:META-INF/swagger
-        mapping: /swagger/**
-      swagger-ui:
-        paths: classpath:META-INF/swagger/views/swagger-ui
-        mapping: /api-docs/**
-      swagger-ui-default:
-        paths: classpath:META-INF/swagger/views/swagger-ui
-        mapping: /swagger-ui/**
-
 # ==========================
 # Infrastructure — Shared
 # ==========================
