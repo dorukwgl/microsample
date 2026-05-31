@@ -3,7 +3,8 @@ package com.doruk.presentation.notifications.controller;
 import com.doruk.application.app.notifications.dto.NotificationResponse;
 import com.doruk.application.app.notifications.service.NotificationService;
 import com.doruk.application.dto.PageResponse;
-import com.doruk.infrastructure.annotataions.AppController;
+import com.doruk.infrastructure.annotataions.Routes;
+import io.micronaut.http.annotation.Controller;
 import com.doruk.presentation.dto.PageQueryMapper;
 import com.doruk.presentation.dto.PageQueryRequest;
 import io.micronaut.http.HttpResponse;
@@ -22,7 +23,7 @@ import java.util.UUID;
 @Tag(name = "Notifications")
 @Secured(SecurityRule.IS_AUTHENTICATED)
 @RequiredArgsConstructor
-@AppController("notifications")
+@Controller(Routes.APP + "/notifications")
 public class NotificationController {
     private final NotificationService service;
 

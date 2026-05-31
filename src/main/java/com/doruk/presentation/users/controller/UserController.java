@@ -5,7 +5,7 @@ import com.doruk.application.app.users.dto.ProfileDto;
 import com.doruk.application.app.users.dto.UserResponseDto;
 import com.doruk.application.app.users.service.UserService;
 import com.doruk.application.files.FileService;
-import com.doruk.infrastructure.annotataions.AppController;
+import com.doruk.infrastructure.annotataions.Routes;
 import com.doruk.presentation.users.dto.ProfileUpdateRequest;
 import com.doruk.presentation.users.dto.RegistrationRequest;
 import com.doruk.presentation.users.mapper.ProfileMapper;
@@ -27,7 +27,7 @@ import java.util.Map;
 @Tag(name = "User Management", description = "User registration and profile management")
 @Secured(SecurityRule.IS_AUTHENTICATED)
 @RequiredArgsConstructor
-@AppController("users")
+@Controller(Routes.APP + "/users")
 public class UserController {
     private final UserService service;
     private final RegistrationMapper registrationMapper;
