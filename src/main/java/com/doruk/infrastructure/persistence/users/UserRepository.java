@@ -37,7 +37,7 @@ public class UserRepository {
     private final DSLContext dsl;
 
     public Optional<UserUniqueFields> findByUsernameOrEmail(String username, String email) {
-        var t = UserTable.$;
+        var userName = username != null ? username.toLowerCase(Locale.ROOT) : null;
         return sqlClient.createQuery(t)
                 .where(Predicate.or(t.username().eq(username.toLowerCase(Locale.ROOT)),
                         t.email().eq(email.toLowerCase(Locale.ROOT))))
