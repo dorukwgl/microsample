@@ -7,8 +7,10 @@ import io.micronaut.http.MediaType;
 import io.micronaut.http.MutableHttpResponse;
 import io.micronaut.http.annotation.Filter;
 import io.micronaut.core.async.publisher.Publishers;
+import io.micronaut.http.body.ByteBody;
 import io.micronaut.http.filter.HttpServerFilter;
 import io.micronaut.http.filter.ServerFilterChain;
+import io.micronaut.http.ServerHttpRequest;
 import io.micronaut.http.server.types.files.SystemFile;
 import io.micronaut.json.JsonMapper;
 import jakarta.inject.Singleton;
@@ -16,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.reactivestreams.Publisher;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 @Requires(env = "dev")
 @Singleton
@@ -46,12 +49,22 @@ public class LoggingFilter implements HttpServerFilter {
         // Log request line
         System.out.printf("%s[%s: %s]: %s%n", BLUE_BOLD, method, clientIp, route);
 
-        // Log incoming raw body if JSON
-        request.getBody(String.class).ifPresent(body -> {
-            String contentType = request.getContentType().orElse(MediaType.APPLICATION_JSON_TYPE).toString();
-            if (contentType.contains("json"))
-                System.out.printf("%s=>: %s%s%n", BLUE_DIM, body, RESET);
-        });
+        // Read and log raw body bytes using ByteBody API (body not yet parsed at filter time)
+        if (request instanceof ServerHttpRequest serverRequest) {
+            ByteBody rawBody = serverRequest.byteBody();
+            byte[] bodyBytes = rawBody.buffer().join().toByteArray();
+            String bodyStr = new String(bodyBytes, StandardCharsets.UTF_8);
+            if (bodyStr.length() > 0) {
+                String contentType = request.getContentType().orElse(MediaType.APPLICATION_JSON_TYPE).toString();
+                if (contentType.contains("json")) {
+                    System.out.printf("%s=>: %s%s%n", BLUE_DIM, bodyStr.replaceAll("\\s+", ""), RESET);
+                } else {
+                    System.out.printf("%s=>: %s", BLUE_DIM, "unreadable body");
+                }
+            }
+            // Re-set body so controller argument binder can still parse it as JSON
+            request = request.mutate().body(bodyBytes);
+        }
 
         // Proceed with request response
         return Publishers.map(chain.proceed(request), response -> {
