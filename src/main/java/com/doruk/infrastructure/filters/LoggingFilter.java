@@ -8,6 +8,7 @@ import io.micronaut.http.MutableHttpResponse;
 import io.micronaut.http.annotation.Filter;
 import io.micronaut.core.async.publisher.Publishers;
 import io.micronaut.http.body.ByteBody;
+import io.micronaut.http.body.CloseableByteBody;
 import io.micronaut.http.filter.HttpServerFilter;
 import io.micronaut.http.filter.ServerFilterChain;
 import io.micronaut.http.ServerHttpRequest;
@@ -49,21 +50,22 @@ public class LoggingFilter implements HttpServerFilter {
         // Log request line
         System.out.printf("%s[%s: %s]: %s%n", BLUE_BOLD, method, clientIp, route);
 
-        // Read and log raw body bytes using ByteBody API (body not yet parsed at filter time)
+        // Read and log raw body bytes using ByteBody split API
+        // split() creates independent copy — original stays intact for controller argument resolution
         if (request instanceof ServerHttpRequest serverRequest) {
             ByteBody rawBody = serverRequest.byteBody();
-            byte[] bodyBytes = rawBody.buffer().join().toByteArray();
-            String bodyStr = new String(bodyBytes, StandardCharsets.UTF_8);
-            if (bodyStr.length() > 0) {
-                String contentType = request.getContentType().orElse(MediaType.APPLICATION_JSON_TYPE).toString();
-                if (contentType.contains("json")) {
-                    System.out.printf("%s=>: %s%s%n", BLUE_DIM, bodyStr.replaceAll("\\s+", ""), RESET);
-                } else {
-                    System.out.printf("%s=>: %s", BLUE_DIM, "unreadable body");
+            try (CloseableByteBody logBody = rawBody.split()) {
+                byte[] bodyBytes = logBody.buffer().join().toByteArray();
+                String bodyStr = new String(bodyBytes, StandardCharsets.UTF_8);
+                if (!bodyStr.isEmpty()) {
+                    String contentType = request.getContentType().orElse(MediaType.APPLICATION_JSON_TYPE).toString();
+                    if (contentType.contains("json")) {
+                        System.out.printf("%s=>: %s%s%n", BLUE_DIM, bodyStr.replaceAll("\\s+", ""), RESET);
+                    } else {
+                        System.out.printf("%s=>: %s", BLUE_DIM, "unreadable body");
+                    }
                 }
             }
-            // Re-set body so controller argument binder can still parse it as JSON
-            request = request.mutate().body(bodyBytes);
         }
 
         // Proceed with request response
