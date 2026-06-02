@@ -177,7 +177,9 @@ public class AuthController {
     @Post("/mfa/verify/{mfaToken}")
     LoginResponse verifyMfa(
             @Valid @RequestBean DeviceInfoRequest info,
+            @PathVariable("mfaToken")
             String mfaToken,
+            @Body("otp")
             @Max(value = 999999, message = "OTP must be 6 digits")
             @Min(value = 100000, message = "OTP must be 6 digits")
             int otp
@@ -259,8 +261,9 @@ public class AuthController {
 
     @Post("/email/verify-otp/{transactionId}")
     public InfoResponse verifyEmailOtp(Authentication auth,
+                                       @PathVariable("transactionId")
                                        String transactionId,
-                                       @Body
+                                       @Body("otp")
                                        @Min(value = 100000)
                                        @Max(value = 999999)
                                        int otp) {
@@ -304,6 +307,7 @@ public class AuthController {
     )
     @Put("/update/email")
     public HttpResponse<AuthUpdateResponse> updateEmail(Authentication auth,
+                                                        @Body("email")
                                                         @Email
                                                         @NotBlank
                                                         String email) {
@@ -324,6 +328,7 @@ public class AuthController {
     )
     @Put("/update/phone")
     public HttpResponse<AuthUpdateResponse> updatePhone(Authentication auth,
+                                                        @Body("phone")
                                                         @NotBlank
                                                         @Pattern(regexp = "^\\+?\\d{6,14}$\n")
                                                         String phone) {
@@ -337,9 +342,9 @@ public class AuthController {
     @Put("/update/phone/verify")
     public InfoResponse verifyUpdatePhone(Authentication auth,
                                           @Size(max = 80)
-                                          @Body
+                                          @Body("tid")
                                           String tid,
-                                          @Body
+                                          @Body("otp")
                                           @Max(999999)
                                           @Min(1)
                                           int otp
@@ -352,9 +357,9 @@ public class AuthController {
     @Put("/update/email/verify")
     public InfoResponse verifyUpdateEmail(Authentication auth,
                                           @Size(max = 80)
-                                          @Body
+                                          @Body("tid")
                                           String tid,
-                                          @Body
+                                          @Body("otp")
                                           @Max(999999)
                                           @Min(1)
                                           int otp) {
@@ -365,7 +370,7 @@ public class AuthController {
     @Operation(description = "Initiate password reset")
     @Secured(SecurityRule.IS_ANONYMOUS)
     @Post("/forgot-password/init{?usePhone}")
-    public Map<String, String> initPasswordReset(@Body @Size(max = 500) String identifier,
+    public Map<String, String> initPasswordReset(@Body("identifier") @Size(max = 500) String identifier,
                                                  @QueryValue(defaultValue = "false") boolean usePhone) {
         return service.initPasswordReset(identifier, usePhone);
     }
@@ -374,11 +379,11 @@ public class AuthController {
     @Secured(SecurityRule.IS_ANONYMOUS)
     @Put("/forgot-password/verify-update-otp/{tid}")
     public InfoResponse verifyAndUpdatePassword(@PathVariable String tid,
-                                                @Body
+                                                @Body("otp")
                                                 @Min(0)
                                                 @Max(999999)
                                                 int otp,
-                                                @Body
+                                                @Body("password")
                                                 @Size(min = 8, max = 35)
                                                 String password) {
 
@@ -391,7 +396,7 @@ public class AuthController {
     @Get(value = "/forgot-password/verify-update-magic/{magic}",
             produces = MediaType.TEXT_HTML)
     public HttpResponse<String> getMagicPasswordResetPage(
-            @PathVariable
+            @PathVariable("magic")
             String magic
     ) {
         return HttpResponse.ok(renderResetFormPage(magic))
@@ -402,9 +407,9 @@ public class AuthController {
     @Secured(SecurityRule.IS_ANONYMOUS)
     @Post("/forgot-password/verify-update-magic/{magic}")
     public InfoResponse verifyAndUpdatePasswordMagic(
-            @PathVariable
+            @PathVariable("magic")
             String magic,
-            @Body
+            @Body("password")
             @Size(min = 8, max = 25)
             String password) {
         service.verifyAndResetPasswordMagic(magic, password);
@@ -422,7 +427,7 @@ public class AuthController {
     @Operation(description = "Resend MFA Phone/Email OTP")
     @Secured(SecurityRule.IS_ANONYMOUS)
     @CustomHttpMethod(value = "/otp/resend-mfa", method = "repeat")
-    public InfoResponse resendMfaOtp(String tid) {
+    public InfoResponse resendMfaOtp(@Body("tid") String tid) {
         service.resendMfaOtp(tid);
         return new InfoResponse("MFA otp sent successfully");
     }
@@ -452,7 +457,7 @@ public class AuthController {
     @Operation(description = "Disable MFA")
     @Post("/mfa/disable")
     public InfoResponse disableMultiFactorAuthorization(Authentication user,
-                                                        @Body
+                                                        @Body("password")
                                                         @Size(max = 50)
                                                         String password) {
         service.disableMfa(user.getName(), password);
@@ -486,7 +491,7 @@ public class AuthController {
     @Operation(description = "Set password. When registered via google sign in, the user doesn't have to set password." +
             "Such user can use this route to set the password for future log in using email/password.")
     @Post("/set-password")
-    public InfoResponse setPassword(Authentication user, @Body @Size(min = 8, max = 25) String password) {
+    public InfoResponse setPassword(Authentication user, @Body("password") @Size(min = 8, max = 25) String password) {
         service.setPasswordFirstTime(UUID.fromString(user.getName()), password);
         return new InfoResponse("Password set successfully");
     }

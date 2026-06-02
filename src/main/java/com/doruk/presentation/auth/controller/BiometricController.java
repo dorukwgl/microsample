@@ -43,7 +43,7 @@ public class BiometricController {
     @Post("/perform/init")
     public HttpResponse<Map<String, String>> initBiometrics(Authentication auth,
                                                             @Parameter(description = "Unique device identifier, the one sent during enrollment")
-                                                            @Body
+                                                            @Body("deviceId")
                                                             @Size(min = 64, max = 72)
                                                             String deviceId,
                                                             HttpRequest<?> request) {

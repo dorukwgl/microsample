@@ -1,10 +1,8 @@
 package com.doruk.presentation.system.controller;
 
 import com.doruk.infrastructure.annotataions.Routes;
-import io.micronaut.http.annotation.Controller;
+import io.micronaut.http.annotation.*;
 import io.micronaut.http.MediaType;
-import io.micronaut.http.annotation.Get;
-import io.micronaut.http.annotation.Produces;
 import io.micronaut.security.annotation.Secured;
 import io.micronaut.security.rules.SecurityRule;
 import io.swagger.v3.oas.annotations.Operation;
@@ -38,5 +36,15 @@ public class SysDebugController {
     @Get("/testauth")
     String testAuth() {
         return "you are authenticated...";
+    }
+
+    @Post("/body-test")
+    String bodyTest(@Body("help") String body) {
+        return body;
+    }
+
+    @Post("/body-test2")
+    String bodyTest2(@Body("first") String firstName, @Body("last") String lastName) {
+        return "Hey Mr. " + firstName + " " + lastName;
     }
 }

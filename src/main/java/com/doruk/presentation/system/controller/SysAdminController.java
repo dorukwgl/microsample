@@ -51,6 +51,7 @@ public class SysAdminController {
     }
 
     @Operation(description = "Get the list of available user roles")
+    @Secured(SecurityRule.IS_AUTHENTICATED)
     @Get("/roles")
     public RolesResponse getRoles() {
         return service.getRoles();
@@ -64,21 +65,21 @@ public class SysAdminController {
 
     @Operation(description = "Create a new role")
     @Post("/roles")
-    public InfoResponse changeUserRoles(Authentication auth, @Body @NotBlank String role) {
+    public InfoResponse changeUserRoles(Authentication auth, @Body("role") @NotBlank String role) {
         service.createRole(AuthUtils.extractPermissions(auth), role);
         return new InfoResponse("Role added successfully");
     }
 
     @Operation(description = "Delete the given role")
     @Delete("/roles/{role}")
-    public InfoResponse deleteUserRole(Authentication auth, @PathVariable String role) {
+    public InfoResponse deleteUserRole(Authentication auth, @PathVariable("role") String role) {
         service.deleteRole(AuthUtils.extractPermissions(auth), role);
         return new InfoResponse("Role deleted successfully");
     }
 
     @Operation(description = "Update or rename the given role into new one")
     @Put("/roles/{role}")
-    public InfoResponse updateRole(Authentication auth, @PathVariable String role, @Body @NotBlank String newRole) {
+    public InfoResponse updateRole(Authentication auth, @PathVariable("role") String role, @Body("newRole") @NotBlank String newRole) {
         service.updateRole(AuthUtils.extractPermissions(auth), role, newRole);
         return new InfoResponse("Role updated successfully");
     }
@@ -89,7 +90,7 @@ public class SysAdminController {
             "New permissions can be intersection, subset or superset of the previous permissions." +
             "Note: Given list of permissions will completely overwrite the previous list")
     @Put("/roles/permissions/{role}")
-    public InfoResponse changePermissions(Authentication auth, @PathVariable String role, @Body @NotBlank Set<Permissions> permissions) {
+    public InfoResponse changePermissions(Authentication auth, @PathVariable String role, @Body("permissions") @NotBlank Set<Permissions> permissions) {
         service.updateRolePermissions(AuthUtils.extractPermissions(auth), role, permissions);
         return new InfoResponse("Permissions for given role updated successfully");
     }
@@ -100,7 +101,7 @@ public class SysAdminController {
             "It can be intersection, superset or subset of previous roles. " +
             "Note: new roles will completely overwrite the previous list.")
     @Put("/users/roles/{userId}")
-    public InfoResponse changeUserRoles(Authentication auth, @PathVariable String userId, @Body @NotBlank Set<String> roles) {
+    public InfoResponse changeUserRoles(Authentication auth, @PathVariable String userId, @Body("roles") @NotBlank Set<String> roles) {
         service.changeUserRole(AuthUtils.extractPermissions(auth), userId, roles);
         return new InfoResponse("Roles for given user updated successfully");
     }
