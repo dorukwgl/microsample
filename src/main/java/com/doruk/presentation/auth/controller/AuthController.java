@@ -363,6 +363,7 @@ public class AuthController {
     }
 
     @Operation(description = "Initiate password reset")
+    @Secured(SecurityRule.IS_ANONYMOUS)
     @Post("/forgot-password/init{?usePhone}")
     public Map<String, String> initPasswordReset(@Body @Size(max = 500) String identifier,
                                                  @QueryValue(defaultValue = "false") boolean usePhone) {
@@ -370,6 +371,7 @@ public class AuthController {
     }
 
     @Operation(description = "Verify the otp and update the password")
+    @Secured(SecurityRule.IS_ANONYMOUS)
     @Put("/forgot-password/verify-update-otp/{tid}")
     public InfoResponse verifyAndUpdatePassword(@PathVariable String tid,
                                                 @Body
@@ -385,6 +387,7 @@ public class AuthController {
     }
 
     @Operation(description = "Returns the password reset page for given magic link")
+    @Secured(SecurityRule.IS_ANONYMOUS)
     @Get(value = "/forgot-password/verify-update-magic/{magic}",
             produces = MediaType.TEXT_HTML)
     public HttpResponse<String> getMagicPasswordResetPage(
@@ -396,6 +399,7 @@ public class AuthController {
     }
 
     @Operation(description = "Update password via given reset link")
+    @Secured(SecurityRule.IS_ANONYMOUS)
     @Post("/forgot-password/verify-update-magic/{magic}")
     public InfoResponse verifyAndUpdatePasswordMagic(
             @PathVariable
@@ -408,6 +412,7 @@ public class AuthController {
     }
 
     @Operation(description = "Resend Email/Phone verification OTP")
+    @Secured(SecurityRule.IS_ANONYMOUS)
     @CustomHttpMethod(value = "/otp/resend-verification/{tid}", method = "repeat")
     public InfoResponse resendOtp(String tid) {
         service.resendVerificationOtp(tid);
@@ -415,6 +420,7 @@ public class AuthController {
     }
 
     @Operation(description = "Resend MFA Phone/Email OTP")
+    @Secured(SecurityRule.IS_ANONYMOUS)
     @CustomHttpMethod(value = "/otp/resend-mfa", method = "repeat")
     public InfoResponse resendMfaOtp(String tid) {
         service.resendMfaOtp(tid);
@@ -429,6 +435,7 @@ public class AuthController {
     }
 
     @Operation(description = "Resend password reset OTP to Phone or Email")
+    @Secured(SecurityRule.IS_ANONYMOUS)
     @CustomHttpMethod(value = "/otp/resend-pw-reset", method = "repeat")
     public InfoResponse resendPasswordResetOtp(String tid) {
         service.resendPasswordResetOtp(tid);
