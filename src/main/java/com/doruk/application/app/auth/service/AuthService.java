@@ -70,7 +70,7 @@ public class AuthService {
         var txn = transBuilder.otp(otp).build();
 
         // create attempts, cooldown
-        storage.saveEx(KeyNamespace.getNamespacedId(prefix, transactionId), txn, duration);
+        storage.saveEx(transactionId, txn, duration);
         storage.saveEx(KeyNamespace.cooldownPrefix(prefix, tid), Boolean.TRUE, cooldownDuration);
         storage.saveEx(KeyNamespace.attemptPrefix(prefix, tid), 0, duration);
 
