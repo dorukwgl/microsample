@@ -11,8 +11,6 @@ import com.doruk.infrastructure.annotataions.Routes;
 import com.doruk.infrastructure.dto.InfoResponse;
 import com.doruk.infrastructure.security.annotation.RequiresPermission;
 import com.doruk.presentation.dto.PageQueryMapper;
-import io.micronaut.http.MediaType;
-import io.micronaut.http.annotation.Produces;
 import com.doruk.presentation.dto.PageQueryRequest;
 import com.doruk.presentation.system.dto.UserQueryRequest;
 import com.doruk.presentation.utils.AuthUtils;

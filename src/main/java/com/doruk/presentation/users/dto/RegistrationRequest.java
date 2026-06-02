@@ -21,7 +21,7 @@ public record RegistrationRequest(
         @Nullable
         @Pattern(
 //                regexp = "^\\+?[0-9]{1,4}[\\s-]?(\\([0-9]+\\)|[0-9])[0-9\\s-]*$",
-                regexp = "^\\+?\\d{6,14}$\n",
+                regexp = "^\\+?\\d{6,14}$",
                 message = "Invalid phone number"
         )
         String phone

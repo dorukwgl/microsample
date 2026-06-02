@@ -156,8 +156,10 @@ public class AuthRepository {
                 .execute();
     }
 
-    /** Deletes the session AND nullifies the notification_device_id in user_devices
-     *  so push notifications stop, but biometric link is preserved for re-login. */
+    /**
+     * Deletes the session AND nullifies the notification_device_id in user_devices
+     * so push notifications stop, but biometric link is preserved for re-login.
+     */
     public void deleteSessionAndDevice(String sessionId) {
         var t = SessionTable.$;
         var row = sqlClient.createQuery(t)
@@ -495,13 +497,13 @@ public class AuthRepository {
         );
         var pDraft = UserProfileDraft.$.produce(d -> d.setFullName(name));
 
-        var saved =sqlClient.transaction(() -> {
+        var saved = sqlClient.transaction(() -> {
             sqlClient.saveCommand(pDraft).execute();
             var usr = sqlClient.saveCommand(draft).execute().getModifiedEntity();
 
             // assign default role
             sqlClient.saveCommand(UserDraft.$.produce(d ->
-                    d.setRoles(List.of(RoleDraft.$.produce(r -> r.setName("USER"))))))
+                            d.setRoles(List.of(RoleDraft.$.produce(r -> r.setName("USER"))))))
                     .execute();
 
             return usr;

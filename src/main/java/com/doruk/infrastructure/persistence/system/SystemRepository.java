@@ -164,20 +164,4 @@ public class SystemRepository {
                 )
                 .exists();
     }
-
-//    public boolean isUserSystemAdmin(String userId) {
-//        var t = UserTableEx.$;
-//        return client.createQuery(t)
-//                .where(t.id().eq(UUID.fromString(userId)))
-//                .where(t.roles().name().eq(Constants.SYS_ADMIN_ROLE))
-//                .exists();
-//    }
-//
-//    public boolean isUserDictator(String userId) {
-//        var  t = UserTableEx.$;
-//        return client.createQuery(t)
-//                .where(t.id().eq(UUID.fromString(userId)))
-//                .where(t.roles().name().eq(Constants.DICTATOR))
-//                .exists();
-//    }
 }

@@ -6,6 +6,7 @@ import com.doruk.application.app.users.dto.UserResponseDto;
 import com.doruk.application.app.users.service.UserService;
 import com.doruk.application.files.FileService;
 import com.doruk.infrastructure.annotataions.Routes;
+import io.micronaut.http.annotation.Controller;
 import com.doruk.presentation.users.dto.ProfileUpdateRequest;
 import com.doruk.presentation.users.dto.RegistrationRequest;
 import com.doruk.presentation.users.mapper.ProfileMapper;
