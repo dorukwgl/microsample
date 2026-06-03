@@ -471,7 +471,7 @@ public class AuthService {
         if (usePhone && user.phone() == null)
             return successMsg;
 
-        var tid = this.createAndPublishPasswordResetTransaction(user.id(), user.phone(), usePhone);
+        var tid = this.createAndPublishPasswordResetTransaction(user.id(), usePhone ? user.phone() : user.email(), usePhone);
 
         successMsg.put("tid", tid);
         return successMsg;
