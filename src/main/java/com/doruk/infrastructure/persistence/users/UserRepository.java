@@ -181,6 +181,7 @@ public class UserRepository {
                 .from(u)
                 .leftJoin(p).on(u.ID.eq(p.USER_ID))
                 .leftJoin(m).on(p.PROFILE_ICON.eq(m.ID))
+                .leftJoin(r).on(u.ID.eq(r.USER_ID))
                 .where(u.ID.eq(UUID.fromString(userId)))
                 .fetchOne(rs -> CurrentUserDto.builder()
                         .id(rs.get(0, String.class))

@@ -65,7 +65,7 @@ public class UserController {
     }
 
     @Operation(summary = "Get information about current user")
-    @CustomHttpMethod(method = "info", uri = "/me")
+    @Get("/me")
     public CurrentUserDto currentUser(Authentication auth) {
         return service.getCurrentUser(auth.getName());
     }

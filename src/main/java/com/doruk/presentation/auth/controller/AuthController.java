@@ -169,8 +169,8 @@ public class AuthController {
                         .httpOnly()
                         .secure(appConfig.cookieSecure())
                         .maxAge(Duration.ofDays(appConfig.sessionExpiration()))
-                        .path("/app/auth/session")
-                        .sameSite(SameSite.Lax));
+                        .path("/app/auth/session/")
+                        .sameSite(appConfig.cookieSecure() ? SameSite.None : SameSite.Lax));
     }
 
     @Secured(SecurityRule.IS_ANONYMOUS)
@@ -484,8 +484,8 @@ public class AuthController {
                         .httpOnly()
                         .secure(appConfig.cookieSecure())
                         .maxAge(Duration.ofDays(appConfig.sessionExpiration()))
-                        .path("/app/auth/session")
-                        .sameSite(SameSite.Lax));
+                        .path("/app/auth/session/")
+                        .sameSite(appConfig.cookieSecure() ? SameSite.None : SameSite.Lax));
     }
 
     @Operation(description = "Set password. When registered via google sign in, the user doesn't have to set password." +
