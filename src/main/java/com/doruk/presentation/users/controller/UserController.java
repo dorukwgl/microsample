@@ -15,7 +15,7 @@ import com.doruk.presentation.users.mapper.ProfileMapper;
 import com.doruk.presentation.users.mapper.RegistrationMapper;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.*;
-import io.micronaut.http.multipart.StreamingFileUpload;
+import io.micronaut.http.multipart.CompletedFileUpload;
 import io.micronaut.security.annotation.Secured;
 import io.micronaut.security.authentication.Authentication;
 import io.micronaut.security.rules.SecurityRule;
@@ -80,7 +80,7 @@ public class UserController {
     @Put("/profile/icon")
     public Map<String, String> updateProfileIcon(Authentication auth,
                                                  @Part("profile-icon")
-                                                 StreamingFileUpload file) {
+                                                 CompletedFileUpload file) {
         var uploaded = fileService.imageUploadPublic(file);
         return service.updateProfileIcon(auth.getName(), uploaded);
     }

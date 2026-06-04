@@ -1,21 +1,22 @@
 package com.doruk.infrastructure.fileio;
 
 import com.doruk.application.interfaces.UploadSource;
-import io.micronaut.http.multipart.StreamingFileUpload;
+import io.micronaut.http.multipart.CompletedFileUpload;
 
 import java.io.BufferedInputStream;
+import java.io.IOException;
 
-public final class StreamingUploadSource implements UploadSource {
+public final class CompletedUploadSource implements UploadSource {
 
-    private final StreamingFileUpload upload;
+    private final CompletedFileUpload upload;
 
-    public StreamingUploadSource(StreamingFileUpload upload) {
+    public CompletedUploadSource(CompletedFileUpload upload) {
         this.upload = upload;
     }
 
     @Override
-    public BufferedInputStream openStream() {
-        return new BufferedInputStream(upload.asInputStream(), 8192);
+    public BufferedInputStream openStream() throws IOException {
+        return new BufferedInputStream(upload.getInputStream(), 8192);
     }
 
     @Override
@@ -33,4 +34,3 @@ public final class StreamingUploadSource implements UploadSource {
         return upload.getContentType().map(Object::toString).orElse("");
     }
 }
-

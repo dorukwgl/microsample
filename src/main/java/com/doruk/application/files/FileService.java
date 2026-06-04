@@ -5,9 +5,9 @@ import com.doruk.application.enums.FileType;
 import com.doruk.application.enums.ObjectVisibility;
 import com.doruk.application.interfaces.ObjectStorage;
 import com.doruk.infrastructure.config.AppConfig;
-import com.doruk.infrastructure.fileio.StreamingUploadSource;
+import com.doruk.infrastructure.fileio.CompletedUploadSource;
 import com.doruk.infrastructure.persistence.files.FileRepository;
-import io.micronaut.http.multipart.StreamingFileUpload;
+import io.micronaut.http.multipart.CompletedFileUpload;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 
@@ -20,23 +20,23 @@ public class FileService {
     private final AppConfig config;
     private final FileRepository fileRepo;
 
-    public UploadedFile imageUploadPublic(StreamingFileUpload upload) {
-        var obj = storage.store(new StreamingUploadSource(upload), FileType.IMAGE, ObjectVisibility.PUBLIC, config.imageMaxSize());
+    public UploadedFile imageUploadPublic(CompletedFileUpload upload) {
+        var obj = storage.store(new CompletedUploadSource(upload), FileType.IMAGE, ObjectVisibility.PUBLIC, config.imageMaxSize());
         var id = fileRepo.save(obj);
         return new UploadedFile(id, obj);
     }
 
-    public List<UploadedFile> imageUploadPublicBatch(List<StreamingFileUpload> uploads) {
+    public List<UploadedFile> imageUploadPublicBatch(List<CompletedFileUpload> uploads) {
         return uploads.stream().map(this::imageUploadPublic).toList();
     }
 
-    public UploadedFile imageUploadPrivate(StreamingFileUpload upload) {
-        var obj = storage.store(new StreamingUploadSource(upload), FileType.IMAGE, ObjectVisibility.PRIVATE, config.imageMaxSize());
+    public UploadedFile imageUploadPrivate(CompletedFileUpload upload) {
+        var obj = storage.store(new CompletedUploadSource(upload), FileType.IMAGE, ObjectVisibility.PRIVATE, config.imageMaxSize());
         var id = fileRepo.save(obj);
         return new UploadedFile(id, obj);
     }
 
-    public List<UploadedFile> imageUploadPrivateBatch(List<StreamingFileUpload> uploads) {
+    public List<UploadedFile> imageUploadPrivateBatch(List<CompletedFileUpload> uploads) {
         return uploads.stream().map(this::imageUploadPrivate).toList();
     }
 }
