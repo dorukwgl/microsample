@@ -84,7 +84,8 @@ micronaut:
 
     thread-selection: blocking
     multipart:
-      threshold: 100KB
+      threshold: 102400
+      mixed: true
 
   http:
     client:
