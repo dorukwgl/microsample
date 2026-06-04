@@ -7,7 +7,7 @@ import com.doruk.application.app.auth.dto.SessionDto;
 import com.doruk.application.app.auth.service.AuthService;
 import com.doruk.infrastructure.security.GoogleTokenVerifier;
 import com.doruk.domain.shared.enums.MultiAuthType;
-import com.doruk.infrastructure.annotataions.Routes;
+import com.doruk.infrastructure.annotations.Routes;
 import io.micronaut.http.annotation.Controller;
 import com.doruk.infrastructure.config.AppConfig;
 import com.doruk.infrastructure.dto.InfoResponse;

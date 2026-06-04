@@ -3,7 +3,7 @@ package com.doruk.presentation.auth.controller;
 import com.doruk.application.app.auth.dto.DeviceInfoObject;
 import com.doruk.application.app.auth.dto.LoginResponse;
 import com.doruk.application.app.auth.service.BiometricService;
-import com.doruk.infrastructure.annotataions.Routes;
+import com.doruk.infrastructure.annotations.Routes;
 import io.micronaut.http.annotation.Controller;
 import com.doruk.infrastructure.dto.InfoResponse;
 import com.doruk.presentation.auth.dto.BiometricEnrollRequest;

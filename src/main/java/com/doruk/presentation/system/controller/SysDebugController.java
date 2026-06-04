@@ -1,6 +1,6 @@
 package com.doruk.presentation.system.controller;
 
-import com.doruk.infrastructure.annotataions.Routes;
+import com.doruk.infrastructure.annotations.Routes;
 import io.micronaut.http.annotation.*;
 import io.micronaut.http.MediaType;
 import io.micronaut.security.annotation.Secured;

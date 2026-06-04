@@ -3,7 +3,7 @@ package com.doruk.presentation.notifications.controller;
 import com.doruk.application.app.notifications.dto.NotificationResponse;
 import com.doruk.application.app.notifications.service.NotificationService;
 import com.doruk.application.dto.PageResponse;
-import com.doruk.infrastructure.annotataions.Routes;
+import com.doruk.infrastructure.annotations.Routes;
 import io.micronaut.http.annotation.Controller;
 import com.doruk.presentation.dto.PageQueryMapper;
 import com.doruk.presentation.dto.PageQueryRequest;

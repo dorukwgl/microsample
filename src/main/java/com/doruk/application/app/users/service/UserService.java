@@ -22,6 +22,7 @@ import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 
 import java.time.Duration;
+import java.util.Locale;
 import java.util.Map;
 
 @Singleton
@@ -98,6 +99,18 @@ public class UserService {
         ));
 
         return Map.of("newProfilePicture", storage.resolveUrl(stored));
+    }
+
+    public UserResponseDto updateUsername(String userId, String newUsername) {
+        var normalized = newUsername.toLowerCase(Locale.ROOT);
+        if (userRepo.existsByUsername(normalized, userId))
+            throw new ConflictingArgumentException("Username already taken");
+
+        return userRepo.updateUsername(userId, normalized);
+    }
+
+    public UserResponseDto updatePhone(String userId, String newPhone) {
+        return userRepo.updatePhone(userId, newPhone);
     }
 
     public CurrentUserDto getCurrentUser(String userId) {

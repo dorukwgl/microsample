@@ -1,15 +1,12 @@
 package com.doruk.infrastructure.config;
 
-import com.doruk.infrastructure.annotataions.ValidUserAgent;
+import com.doruk.infrastructure.annotations.ValidUserAgent;
 import io.micronaut.context.annotation.Factory;
 import io.micronaut.validation.validator.constraints.ConstraintValidator;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import nl.basjes.parse.useragent.UserAgent;
 import nl.basjes.parse.useragent.UserAgentAnalyzer;
-
-import java.util.Locale;
-import java.util.Set;
 
 @Factory
 @RequiredArgsConstructor

@@ -5,10 +5,12 @@ import com.doruk.application.app.users.dto.ProfileDto;
 import com.doruk.application.app.users.dto.UserResponseDto;
 import com.doruk.application.app.users.service.UserService;
 import com.doruk.application.files.FileService;
-import com.doruk.infrastructure.annotataions.Routes;
 import io.micronaut.http.annotation.Controller;
+import com.doruk.infrastructure.annotations.Routes;
+import com.doruk.presentation.users.dto.PhoneUpdateRequest;
 import com.doruk.presentation.users.dto.ProfileUpdateRequest;
 import com.doruk.presentation.users.dto.RegistrationRequest;
+import com.doruk.presentation.users.dto.UsernameUpdateRequest;
 import com.doruk.presentation.users.mapper.ProfileMapper;
 import com.doruk.presentation.users.mapper.RegistrationMapper;
 import io.micronaut.http.HttpStatus;
@@ -81,5 +83,26 @@ public class UserController {
                                                  StreamingFileUpload file) {
         var uploaded = fileService.imageUploadPublic(file);
         return service.updateProfileIcon(auth.getName(), uploaded);
+    }
+
+    @Operation(summary = "Update username")
+    @Put("/username")
+    public UserResponseDto updateUsername(
+            Authentication auth,
+            @Valid @Body @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "New username")
+            UsernameUpdateRequest req
+    ) {
+        return service.updateUsername(auth.getName(), req.username());
+    }
+
+    @Operation(summary = "Update phone number",
+            description = "Updates phone and resets phone verification to false")
+    @Put("/phone")
+    public UserResponseDto updatePhone(
+            Authentication auth,
+            @Valid @Body @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "New phone number")
+            PhoneUpdateRequest req
+    ) {
+        return service.updatePhone(auth.getName(), req.phone());
     }
 }

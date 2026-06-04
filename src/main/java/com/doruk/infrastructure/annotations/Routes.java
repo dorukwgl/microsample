@@ -1,4 +1,4 @@
-package com.doruk.infrastructure.annotataions;
+package com.doruk.infrastructure.annotations;
 
 public class Routes {
     public static final String APP = "/app";

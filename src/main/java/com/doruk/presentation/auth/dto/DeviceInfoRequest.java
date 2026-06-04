@@ -1,6 +1,6 @@
 package com.doruk.presentation.auth.dto;
 
-import com.doruk.infrastructure.annotataions.ValidUserAgent;
+import com.doruk.infrastructure.annotations.ValidUserAgent;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.http.annotation.Header;
 import io.micronaut.serde.annotation.Serdeable;

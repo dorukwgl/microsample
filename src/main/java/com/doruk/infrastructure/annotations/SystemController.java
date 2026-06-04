@@ -1,4 +1,4 @@
-package com.doruk.infrastructure.annotataions;
+package com.doruk.infrastructure.annotations;
 
 
 import io.micronaut.http.annotation.Controller;

@@ -7,7 +7,7 @@ import com.doruk.application.app.system.dto.UserResponse;
 import com.doruk.application.app.system.service.SystemService;
 import com.doruk.application.dto.PageResponse;
 import com.doruk.domain.shared.enums.Permissions;
-import com.doruk.infrastructure.annotataions.Routes;
+import com.doruk.infrastructure.annotations.Routes;
 import com.doruk.infrastructure.dto.InfoResponse;
 import com.doruk.infrastructure.security.annotation.RequiresPermission;
 import com.doruk.presentation.dto.PageQueryMapper;

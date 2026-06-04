@@ -1,4 +1,4 @@
-package com.doruk.infrastructure.annotataions;
+package com.doruk.infrastructure.annotations;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;

@@ -29,6 +29,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.jooq.impl.DSL.default_;
+
 @Singleton
 @RequiredArgsConstructor
 public class UserRepository {
@@ -123,6 +125,59 @@ public class UserRepository {
                     })
                     .findFirst();
         });
+    }
+
+    public boolean existsByUsername(String username, String excludeUserId) {
+        var t = UserTable.$;
+        return sqlClient.createQuery(t)
+                .where(t.username().eq(username.toLowerCase(Locale.ROOT)))
+                .where(t.id().ne(UUID.fromString(excludeUserId)))
+                .exists();
+    }
+
+    public UserResponseDto updateUsername(String userId, String username) {
+        var u = Users.USERS;
+        return dsl.update(u)
+                .set(u.USERNAME, username)
+                .set(u.UPDATED_AT, default_(u.UPDATED_AT))
+                .where(u.ID.eq(UUID.fromString(userId)))
+                .returning()
+                .fetchOne(rs -> UserResponseDto.builder()
+                        .id(rs.getId())
+                        .username(rs.getUsername())
+                        .email(rs.getEmail())
+                        .phone(rs.getPhone())
+                        .status(rs.getStatus())
+                        .emailVerified(rs.getIsEmailVerified())
+                        .phoneVerified(rs.getIsPhoneVerified())
+                        .multiFactorAuth(rs.getMultiFactorAuth())
+                        .createdAt(rs.getCreatedAt())
+                        .updatedAt(rs.getUpdatedAt())
+                        .build()
+                );
+    }
+
+    public UserResponseDto updatePhone(String userId, String phone) {
+        var u = Users.USERS;
+        return dsl.update(u)
+                .set(u.PHONE, phone)
+                .set(u.IS_PHONE_VERIFIED, false)
+                .set(u.UPDATED_AT, default_(u.UPDATED_AT))
+                .where(u.ID.eq(UUID.fromString(userId)))
+                .returning()
+                .fetchOne(rs -> UserResponseDto.builder()
+                        .id(rs.getId())
+                        .username(rs.getUsername())
+                        .email(rs.getEmail())
+                        .phone(rs.getPhone())
+                        .status(rs.getStatus())
+                        .emailVerified(rs.getIsEmailVerified())
+                        .phoneVerified(rs.getIsPhoneVerified())
+                        .multiFactorAuth(rs.getMultiFactorAuth())
+                        .createdAt(rs.getCreatedAt())
+                        .updatedAt(rs.getUpdatedAt())
+                        .build()
+                );
     }
 
     public CurrentUserDto getCurrentUser(String userId) {
