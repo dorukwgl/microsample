@@ -1,9 +1,9 @@
 import org.jooq.meta.jaxb.ForcedType
 
-val awssdkVersion = "2.44.8"
+val awssdkVersion = "2.46.3"
 val postgresVersion = "42.7.11"
-val flywayPostgresVersion = "12.6.1"
-val jimmerVersion = "0.10.7"
+val flywayPostgresVersion = "12.8.0"
+val jimmerVersion = "0.10.9"
 val jooqVersion = "3.21.4"
 val lombokVersion = "1.18.46"
 
@@ -19,10 +19,10 @@ buildscript {
 }
 
 plugins {
-    id("io.micronaut.application") version "4.6.2"
+    id("io.micronaut.application") version "5.0.0"
     id("com.gradleup.shadow") version "9.4.1"
-    id("io.micronaut.test-resources") version "4.6.2"
-    id("io.micronaut.aot") version "4.6.2"
+    id("io.micronaut.test-resources") version "5.0.0"
+    id("io.micronaut.aot") version "5.0.0"
     id("org.flywaydb.flyway") version "12.6.1"
     id("nu.studer.jooq") version "10.2.1"
 }
@@ -108,7 +108,7 @@ dependencies {
     developmentOnly("io.micronaut.controlpanel:micronaut-control-panel-management")
     developmentOnly("io.micronaut.controlpanel:micronaut-control-panel-ui")
 
-    aotPlugins(platform("io.micronaut.platform:micronaut-platform:4.10.14"))
+    aotPlugins(platform("io.micronaut.platform:micronaut-platform:5.0.2"))
     aotPlugins("io.micronaut.security:micronaut-security-aot")
 
     // Testcontainers
