@@ -2,6 +2,7 @@ package com.doruk.application.app.auth.dto;
 
 import com.doruk.domain.shared.enums.MultiAuthType;
 import com.doruk.domain.shared.enums.Permissions;
+import com.doruk.domain.shared.enums.UserAccountStatus;
 import io.micronaut.core.annotation.Introspected;
 import lombok.Builder;
 
@@ -15,6 +16,7 @@ public record AuthDto(
         String password,
         String email,
         String phone,
+        UserAccountStatus status,
         boolean emailVerified,
         boolean phoneVerified,
         MultiAuthType multiFactorAuth,

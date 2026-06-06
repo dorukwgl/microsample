@@ -243,10 +243,10 @@ public class AuthController {
     @Operation(description = "Change Password")
     @Put("/password")
     HttpResponse<?> changePassword(Authentication auth,
-                                   @Body
+                                   @Body("newPassword")
                                    @Size(min = 8, max = 50)
                                    String newPassword,
-                                   @Body
+                                   @Body("password")
                                    @Size(min = 8, max = 50)
                                    String password) {
         service.updatePassword(auth.getName(), password, newPassword);
@@ -288,7 +288,7 @@ public class AuthController {
     @Post("/phone/verify-otp/{transactionId}")
     public InfoResponse verifyPhoneNumber(
             String transactionId,
-            @Body
+            @Body("otp")
             @Min(value = 100000)
             @Max(value = 999999)
             int otp) {

@@ -11,6 +11,7 @@ import com.doruk.application.interfaces.EventPublisher;
 import com.doruk.application.interfaces.MemoryStorage;
 import com.doruk.application.security.PasswordEncoder;
 import com.doruk.domain.shared.enums.MultiAuthType;
+import com.doruk.domain.shared.enums.UserAccountStatus;
 import com.doruk.infrastructure.config.AppConfig;
 import com.doruk.infrastructure.persistence.auth.AuthRepository;
 import com.doruk.infrastructure.security.JwtIssuer;
@@ -233,6 +234,9 @@ public class AuthService {
 
         var user = authRepo.findByUsernameOrEmail(identifier)
                 .orElseThrow(() -> invalidCredentials);
+
+        if (user.status() != UserAccountStatus.ACTIVE)
+            throw new ForbiddenException("User account is inactive. Please contact support");
 
         if (!hasher.matches(password, user.password()))
             throw invalidCredentials;

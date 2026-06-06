@@ -54,6 +54,7 @@ public class AuthRepository {
                         u.EMAIL,
                         u.IS_EMAIL_VERIFIED,
                         u.IS_PHONE_VERIFIED,
+                        u.STATUS,
                         u.MULTI_FACTOR_AUTH,
                         // fetch list of permissions
                         DSL.multiset(
@@ -73,8 +74,9 @@ public class AuthRepository {
                         .email(rs.value5())
                         .emailVerified(rs.value6())
                         .phoneVerified(rs.value7())
-                        .multiFactorAuth(rs.value8())
-                        .permissions(rs.value9())
+                        .status(rs.value8())
+                        .multiFactorAuth(rs.value9())
+                        .permissions(rs.value10())
                         .build()
                 );
 
